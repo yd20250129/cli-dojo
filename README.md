@@ -1,36 +1,151 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# CLI Dojo
 
-## Getting Started
+CLI Dojo is a Japanese quiz app for learning common CLI commands by category.
 
-First, run the development server:
+The MVP uses static TypeScript question data and stores learning progress in Neon PostgreSQL through Next.js Route Handlers.
+
+## Current Scope
+
+- 6 learning sections
+- 2 questions per section for the current MVP seed data
+- Anonymous learner ID stored in `localStorage`
+- Progress saved to Neon
+- No authentication in MVP
+- No ORM in MVP
+
+## Stack
+
+| Area | Technology |
+|------|------------|
+| Frontend | Next.js App Router, React, TypeScript |
+| API | Next.js Route Handlers |
+| Database | Neon PostgreSQL |
+| DB access | Direct SQL with `@neondatabase/serverless` |
+| Styling | Tailwind CSS, shadcn/ui |
+| Hosting | Vercel |
+
+## Repository / Worktree
+
+During development, only the app source is managed in GitHub.
+
+| Directory | Branch | Purpose |
+|-----------|--------|---------|
+| `01_Source/dev` | `dev` | Daily development |
+| `01_Source/main` | `main` | Production-equivalent worktree |
+
+GitHub:
+
+```text
+https://github.com/yd20250129/cli-dojo
+```
+
+Production:
+
+```text
+https://cli-dojo.vercel.app
+```
+
+Project-wide documents under `00_Docs/` are kept locally during development and will be added to a project-wide repository when the MVP is complete.
+
+## Local Setup
+
+Install dependencies:
+
+```bash
+npm install
+```
+
+Pull environment variables from Vercel:
+
+```bash
+npx vercel env pull .env.local --yes
+```
+
+Required environment variable:
+
+```text
+DATABASE_URL
+```
+
+Do not commit `.env.local`.
+
+## Database
+
+Migration file:
+
+```text
+db/migrations/001_create_learning_progress_tables.sql
+```
+
+Current Neon tables:
+
+- `section_attempts`
+- `answer_records`
+
+Question data is not stored in Neon. It is stored in TypeScript files:
+
+```text
+data/questions/
+data/sections.ts
+```
+
+## Development
+
+Run the development server:
+
+```bash
+npm run dev -- --port 3001
+```
+
+Open:
+
+```text
+http://localhost:3001
+```
+
+## Verification
+
+Static checks:
+
+```bash
+npm run lint
+npm run build
+```
+
+Browser verification with `agent-browser`:
+
+```bash
+agent-browser open http://localhost:3001
+agent-browser wait --load networkidle
+agent-browser snapshot -i
+agent-browser console
+agent-browser errors
+agent-browser close
+```
+
+## Deploy
+
+Production deployments are run from the `main` worktree:
+
+```bash
+cd /Users/yudai/local_development/02_Personal_Projects/cli-dojo/01_Source/main
+npm install
+npm run lint
+npm run build
+npx vercel --prod --yes
+```
+
+## Scripts
 
 ```bash
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+npm run lint
+npm run build
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## Notes
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
-
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
-
-## Learn More
-
-To learn more about Next.js, take a look at the following resources:
-
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+- `dev` is the active development branch.
+- `main` is the production-equivalent branch.
+- Keep secrets out of Git.
+- Test data created during manual verification should be removed from Neon after verification.
