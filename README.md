@@ -7,9 +7,10 @@ The MVP uses static TypeScript question data and stores learning progress in Neo
 ## Current Scope
 
 - 6 learning sections
-- 2 questions per section for the current MVP seed data
+- 118 questions across all sections
 - Anonymous learner ID stored in `localStorage`
 - Progress saved to Neon
+- In-progress sections resume from the next unanswered question
 - No authentication in MVP
 - No ORM in MVP
 
@@ -71,10 +72,12 @@ Do not commit `.env.local`.
 
 ## Database
 
-Migration file:
+Migration files:
 
 ```text
 db/migrations/001_create_learning_progress_tables.sql
+db/migrations/002_drop_total_questions_default.sql
+db/migrations/003_clear_reordered_section_progress.sql
 ```
 
 Current Neon tables:
@@ -108,6 +111,7 @@ http://localhost:3001
 Static checks:
 
 ```bash
+npm run test
 npm run lint
 npm run build
 ```
@@ -139,6 +143,7 @@ npx vercel --prod --yes
 
 ```bash
 npm run dev
+npm run test
 npm run lint
 npm run build
 ```
