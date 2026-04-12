@@ -22,6 +22,7 @@ import {
   saveAnswer,
   startAttempt,
 } from "@/lib/client/api";
+import { getResumeQuestionIndex } from "@/lib/shared/resume";
 import { cn } from "@/lib/utils";
 import type { ChoiceId, Question, Section, SectionAttempt } from "@/types";
 
@@ -50,6 +51,19 @@ export function QuizView({ section, questions }: QuizViewProps) {
       .then((data) => {
         if (active) {
           setAttempt(data);
+          const resumeIndex = getResumeQuestionIndex(questions, data.answeredQuestionIds);
+          if (resumeIndex === -1) {
+            completeAttempt(data.id)
+              .then(() => {
+                router.push(`/section/${section.id}/result?attemptId=${data.id}`);
+              })
+              .catch(() => {
+                setStartError("結果を保存できませんでした");
+              });
+            return;
+          }
+          setCurrentIndex(resumeIndex);
+          setSelectedChoiceId(null);
           setStartError("");
         }
       })
@@ -62,7 +76,7 @@ export function QuizView({ section, questions }: QuizViewProps) {
     return () => {
       active = false;
     };
-  }, [section.id]);
+  }, [questions, router, section.id]);
 
   const correctChoiceText = useMemo(() => {
     return currentQuestion?.choices.find((choice) => choice.id === currentQuestion.answer)?.text ?? "";

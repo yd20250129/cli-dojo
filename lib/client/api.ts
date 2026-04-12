@@ -5,6 +5,7 @@ import type {
   ApiErrorResponse,
   ApiSuccess,
   ChoiceId,
+  CurrentSectionAttempt,
   ProgressSummary,
   SectionAttempt,
   SectionId,
@@ -30,15 +31,37 @@ async function requestJson<T>(path: string, init: RequestInit = {}) {
   return payload.data;
 }
 
+const startAttemptRequests = new Map<string, Promise<CurrentSectionAttempt>>();
+
 export function fetchProgress() {
   return requestJson<ProgressSummary>("/api/progress");
 }
 
 export function startAttempt(sectionId: SectionId, retry = false) {
-  return requestJson<SectionAttempt>("/api/attempts", {
+  if (!retry) {
+    const existingRequest = startAttemptRequests.get(sectionId);
+
+    if (existingRequest) {
+      return existingRequest;
+    }
+  }
+
+  const request = requestJson<CurrentSectionAttempt>("/api/attempts", {
     method: "POST",
     body: JSON.stringify({ sectionId, retry }),
   });
+
+  if (retry) {
+    return request;
+  }
+
+  startAttemptRequests.set(sectionId, request);
+  request.then(
+    () => startAttemptRequests.delete(sectionId),
+    () => startAttemptRequests.delete(sectionId),
+  );
+
+  return request;
 }
 
 export function saveAnswer(params: {

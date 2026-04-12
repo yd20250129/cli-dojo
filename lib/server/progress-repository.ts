@@ -8,6 +8,7 @@ import {
 import type {
   AnswerRecord,
   ChoiceId,
+  CurrentSectionAttempt,
   ProgressSummary,
   SectionAttempt,
   SectionId,
@@ -87,7 +88,7 @@ function isUniqueViolation(error: unknown) {
 export async function getOrCreateCurrentAttempt(params: {
   learnerId: string;
   sectionId: SectionId;
-}) {
+}): Promise<CurrentSectionAttempt> {
   const sql = getSql();
   const existing = await sql`
     SELECT *
@@ -100,7 +101,14 @@ export async function getOrCreateCurrentAttempt(params: {
   `;
 
   if (existing[0]) {
-    return mapAttempt(existing[0] as AttemptRow);
+    const attempt = mapAttempt(existing[0] as AttemptRow);
+    return {
+      ...attempt,
+      answeredQuestionIds: await getAnsweredQuestionIds({
+        learnerId: params.learnerId,
+        attemptId: attempt.id,
+      }),
+    };
   }
 
   return createRetryAttempt(params);
@@ -109,7 +117,7 @@ export async function getOrCreateCurrentAttempt(params: {
 export async function createRetryAttempt(params: {
   learnerId: string;
   sectionId: SectionId;
-}) {
+}): Promise<CurrentSectionAttempt> {
   const sql = getSql();
   const totalQuestions = getTotalQuestions(params.sectionId);
   const rows = await sql`
@@ -137,7 +145,26 @@ export async function createRetryAttempt(params: {
     RETURNING *
   `;
 
-  return mapAttempt(rows[0] as AttemptRow);
+  return {
+    ...mapAttempt(rows[0] as AttemptRow),
+    answeredQuestionIds: [],
+  };
+}
+
+async function getAnsweredQuestionIds(params: {
+  learnerId: string;
+  attemptId: string;
+}) {
+  const sql = getSql();
+  const rows = await sql`
+    SELECT question_id
+    FROM answer_records
+    WHERE learner_id = ${params.learnerId}
+      AND attempt_id = ${params.attemptId}
+    ORDER BY answered_at ASC
+  `;
+
+  return rows.map((row) => String(row.question_id));
 }
 
 export async function saveAnswer(params: {

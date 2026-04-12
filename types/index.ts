@@ -46,6 +46,10 @@ export type SectionAttempt = {
   completedAt: string | null;
 };
 
+export type CurrentSectionAttempt = SectionAttempt & {
+  answeredQuestionIds: string[];
+};
+
 export type AnswerRecord = {
   id: string;
   attemptId: string;
