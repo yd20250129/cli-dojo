@@ -68,7 +68,7 @@ export function ProgressView({ sections }: ProgressViewProps) {
         </div>
 
         <div className="grid gap-4 md:grid-cols-3">
-          <Card className="rounded-lg">
+          <Card className="rounded-2xl border-zinc-200/80 bg-white/90 shadow-sm">
             <CardHeader>
               <CardTitle>{percent(progress?.overallProgressRate ?? 0)}%</CardTitle>
               <CardDescription>進捗率</CardDescription>
@@ -77,7 +77,7 @@ export function ProgressView({ sections }: ProgressViewProps) {
               <Progress value={percent(progress?.overallProgressRate ?? 0)} />
             </CardContent>
           </Card>
-          <Card className="rounded-lg">
+          <Card className="rounded-2xl border-zinc-200/80 bg-white/90 shadow-sm">
             <CardHeader>
               <CardTitle>{percent(progress?.overallCorrectRate ?? 0)}%</CardTitle>
               <CardDescription>正答率</CardDescription>
@@ -86,7 +86,7 @@ export function ProgressView({ sections }: ProgressViewProps) {
               <Progress value={percent(progress?.overallCorrectRate ?? 0)} />
             </CardContent>
           </Card>
-          <Card className="rounded-lg">
+          <Card className="rounded-2xl border-zinc-200/80 bg-white/90 shadow-sm">
             <CardHeader>
               <CardTitle>
                 {progress?.totalAnsweredCount ?? 0} / {progress?.totalQuestionCount ?? 12}
@@ -98,7 +98,55 @@ export function ProgressView({ sections }: ProgressViewProps) {
 
         {error ? <p className="text-sm text-red-600">{error}</p> : null}
 
-        <Card className="rounded-lg">
+        <Card className="rounded-2xl border-zinc-200/80 bg-white/90 shadow-sm md:hidden">
+          <CardHeader>
+            <CardTitle>セクション別</CardTitle>
+            <CardDescription>スマートフォンではカード形式で確認できます。</CardDescription>
+          </CardHeader>
+          <CardContent className="space-y-3">
+            {sections.map((section) => {
+              const item = progressBySection.get(section.id);
+              const answered = item?.answeredCount ?? 0;
+              const correct = item?.correctCount ?? 0;
+              const correctRate = percent(item?.correctRate ?? 0);
+
+              return (
+                <div key={section.id} className="rounded-2xl border border-zinc-200 bg-zinc-50 p-4">
+                  <div className="flex items-start justify-between gap-3">
+                    <div>
+                      <p className="font-medium">{section.name}</p>
+                      <p className="mt-1 text-sm text-zinc-500">{section.description}</p>
+                    </div>
+                    <span className="rounded-full bg-white px-2.5 py-1 text-xs font-medium text-zinc-600">
+                      {item?.isPerfect ? "全問正解" : item?.isCompleted ? "完了" : "学習中"}
+                    </span>
+                  </div>
+                  <div className="mt-4 space-y-2">
+                    <div className="flex items-center justify-between text-sm text-zinc-600">
+                      <span>
+                        {answered} / {section.questionCount} 問
+                      </span>
+                      <span>正答率 {correctRate}%</span>
+                    </div>
+                    <Progress value={(answered / section.questionCount) * 100} />
+                  </div>
+                  <div className="mt-4 grid grid-cols-2 gap-3 text-sm">
+                    <div className="rounded-xl border border-white bg-white p-3">
+                      <p className="text-zinc-500">回答済み</p>
+                      <p className="mt-1 text-lg font-semibold">{answered}</p>
+                    </div>
+                    <div className="rounded-xl border border-white bg-white p-3">
+                      <p className="text-zinc-500">正解</p>
+                      <p className="mt-1 text-lg font-semibold">{correct}</p>
+                    </div>
+                  </div>
+                </div>
+              );
+            })}
+          </CardContent>
+        </Card>
+
+        <Card className="hidden rounded-2xl border-zinc-200/80 bg-white/90 shadow-sm md:block">
           <CardHeader>
             <CardTitle>セクション別</CardTitle>
             <CardDescription>回答数、正答数、直近回答日時を確認できます。</CardDescription>

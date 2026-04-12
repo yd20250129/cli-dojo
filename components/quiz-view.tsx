@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useEffect, useMemo, useState } from "react";
+import { CheckCircle2, CircleAlert, CircleCheckBig, Info, XCircle } from "lucide-react";
 import { toast } from "sonner";
 
 import { AppHeader } from "@/components/app-header";
@@ -132,7 +133,7 @@ export function QuizView({ section, questions }: QuizViewProps) {
   return (
     <div className="min-h-screen bg-zinc-50 text-zinc-950">
       <AppHeader />
-      <main className="mx-auto flex w-full max-w-4xl flex-col gap-6 px-4 pb-24 pt-8">
+      <main className="mx-auto flex w-full max-w-4xl flex-col gap-6 px-4 py-8">
         <div className="flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
           <div>
             <p className="font-mono text-sm text-emerald-700">{section.id}</p>
@@ -143,7 +144,7 @@ export function QuizView({ section, questions }: QuizViewProps) {
           </Button>
         </div>
 
-        <Card className="rounded-lg">
+        <Card className="rounded-2xl border-zinc-200/80 bg-white/90 shadow-sm">
           <CardHeader>
             <CardTitle>
               {currentIndex + 1} / {questions.length} 問
@@ -154,7 +155,8 @@ export function QuizView({ section, questions }: QuizViewProps) {
             <Progress value={progressValue} />
 
             {startError ? (
-              <p className="rounded-lg border border-red-200 bg-red-50 p-3 text-sm text-red-700">
+              <p className="flex items-start gap-2 rounded-xl border border-red-200 bg-red-50 p-3 text-sm text-red-700">
+                <CircleAlert className="mt-0.5 size-4 shrink-0" />
                 {startError}
               </p>
             ) : null}
@@ -174,8 +176,8 @@ export function QuizView({ section, questions }: QuizViewProps) {
                   <button
                     key={choice.id}
                     className={cn(
-                      "min-h-14 rounded-lg border bg-white px-4 py-3 text-left text-base transition focus-visible:outline-none focus-visible:ring-3 focus-visible:ring-zinc-300",
-                      !answered && "hover:border-zinc-900",
+                      "min-h-14 rounded-2xl border bg-white px-4 py-3 text-left text-base transition focus-visible:outline-none focus-visible:ring-3 focus-visible:ring-zinc-300",
+                      !answered && "hover:border-zinc-900 hover:bg-zinc-50",
                       answered && isAnswer && "border-emerald-600 bg-emerald-50 text-emerald-950",
                       answered && isSelected && !isAnswer && "border-red-500 bg-red-50 text-red-950",
                     )}
@@ -183,30 +185,64 @@ export function QuizView({ section, questions }: QuizViewProps) {
                     onClick={() => handleAnswer(choice.id)}
                     type="button"
                   >
-                    <span className="mr-3 font-mono font-semibold">{choice.id}</span>
-                    {choice.text}
+                    <span className="inline-flex items-center gap-3">
+                      <span
+                        className={cn(
+                          "inline-flex size-8 items-center justify-center rounded-full border font-mono text-sm font-semibold",
+                          answered && isAnswer && "border-emerald-600 bg-emerald-100",
+                          answered && isSelected && !isAnswer && "border-red-500 bg-red-100",
+                          !answered && "border-zinc-300 bg-zinc-100",
+                        )}
+                      >
+                        {choice.id}
+                      </span>
+                      <span className="leading-7">{choice.text}</span>
+                    </span>
                   </button>
                 );
               })}
             </div>
 
             {selectedChoiceId ? (
-              <div className="rounded-lg border bg-white p-4">
-                <p className={cn("font-semibold", isCorrect ? "text-emerald-700" : "text-red-700")}>
-                  {isCorrect ? "正解！" : "不正解"}
-                </p>
+              <div className="rounded-2xl border bg-zinc-50 p-4">
+                <div className="flex items-center gap-2">
+                  {isCorrect ? (
+                    <CheckCircle2 className="size-5 text-emerald-600" />
+                  ) : (
+                    <XCircle className="size-5 text-red-600" />
+                  )}
+                  <p className={cn("font-semibold", isCorrect ? "text-emerald-700" : "text-red-700")}>
+                    {isCorrect ? "正解！" : "不正解"}
+                  </p>
+                </div>
                 {!isCorrect ? (
-                  <p className="mt-2 text-sm text-zinc-600">
+                  <p className="mt-3 flex items-start gap-2 text-sm text-zinc-600">
+                    <Info className="mt-0.5 size-4 shrink-0 text-zinc-500" />
                     正解は {currentQuestion.answer}: {correctChoiceText}
                   </p>
                 ) : null}
-                <p className="mt-3 leading-7 text-zinc-700">{currentQuestion.explanation}</p>
+                <div className="mt-4 grid gap-3 sm:grid-cols-2">
+                  <div className="rounded-xl border border-zinc-200 bg-white p-3">
+                    <p className="text-xs font-medium uppercase tracking-[0.2em] text-zinc-500">あなたの選択</p>
+                    <p className="mt-1 text-base font-semibold text-zinc-900">{selectedChoiceId}</p>
+                  </div>
+                  <div className="rounded-xl border border-emerald-200 bg-emerald-50 p-3">
+                    <p className="text-xs font-medium uppercase tracking-[0.2em] text-emerald-700">正解</p>
+                    <p className="mt-1 text-base font-semibold text-emerald-900">
+                      {currentQuestion.answer}: {correctChoiceText}
+                    </p>
+                  </div>
+                </div>
+                <p className="mt-4 flex items-start gap-2 leading-7 text-zinc-700">
+                  <CircleCheckBig className="mt-1 size-4 shrink-0 text-zinc-500" />
+                  <span>{currentQuestion.explanation}</span>
+                </p>
               </div>
             ) : null}
           </CardContent>
-          <CardFooter className="fixed bottom-0 left-0 right-0 z-20 mx-auto max-w-4xl justify-between gap-3 border bg-white/95 backdrop-blur">
-            <p className="text-sm text-zinc-500">{isSaving ? "保存中..." : " "}</p>
-            <Button disabled={!selectedChoiceId || isSaving} onClick={handleNext}>
+          <CardFooter className="flex-col items-stretch gap-3 border-t bg-zinc-50/90 backdrop-blur sm:flex-row sm:items-center sm:justify-between">
+            <p className="text-sm text-zinc-500">{isSaving ? "保存中..." : "次の問題へ進めます"}</p>
+            <Button className="w-full sm:w-auto" disabled={!selectedChoiceId || isSaving} onClick={handleNext}>
               {isLastQuestion ? "結果を見る" : "次の問題へ"}
             </Button>
           </CardFooter>
