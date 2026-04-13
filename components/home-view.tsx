@@ -65,7 +65,7 @@ export function HomeView({ sections }: HomeViewProps) {
       <AppHeader />
       <main className="mx-auto flex w-full max-w-6xl flex-col gap-8 px-4 py-8 sm:py-10">
         <section className="grid gap-5 lg:grid-cols-[1.2fr_0.8fr]">
-          <div className="space-y-5">
+          <div className="flex h-full flex-col justify-center space-y-6 lg:pr-8">
             <div className="flex flex-wrap items-center gap-2">
               <span className="inline-flex items-center gap-1 rounded-full border border-emerald-200 bg-emerald-50 px-3 py-1 text-xs font-medium text-emerald-800">
                 <Sparkles className="size-3.5" />
@@ -81,19 +81,11 @@ export function HomeView({ sections }: HomeViewProps) {
               </span>
             </div>
             <h1 className="max-w-3xl text-4xl font-semibold leading-tight text-zinc-950 sm:text-5xl">
-              CLIコマンドを、カテゴリごとに短く反復する。
+              CLIコマンドを<br />一問一答で反復
             </h1>
             <p className="max-w-2xl text-base leading-7 text-zinc-600 sm:text-lg">
               ターミナル、npm、Git、開発サーバー、テスト、デプロイを4択で確認します。
             </p>
-            <div className="flex flex-wrap gap-2 text-sm text-zinc-600">
-              <span className="rounded-full border border-zinc-200 bg-white px-3 py-1.5">
-                1問ずつ即時フィードバック
-              </span>
-              <span className="rounded-full border border-zinc-200 bg-white px-3 py-1.5">
-                匿名学習IDで進捗保存
-              </span>
-            </div>
           </div>
           <Card className="self-start rounded-2xl border-zinc-200/80 bg-white/90 shadow-sm backdrop-blur">
             <CardHeader>
