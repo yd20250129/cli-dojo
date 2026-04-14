@@ -81,7 +81,7 @@ export function HomeView({ sections }: HomeViewProps) {
               </span>
             </div>
             <h1 className="max-w-3xl text-4xl font-semibold leading-tight text-zinc-950 sm:text-5xl">
-              CLIコマンドを<br />一問一答で反復
+              CLIコマンドを<br />一問一答で反復する。
             </h1>
             <p className="max-w-2xl text-base leading-7 text-zinc-600 sm:text-lg">
               ターミナル、npm、Git、開発サーバー、テスト、デプロイを4択で確認します。
