@@ -126,9 +126,9 @@ export function HomeView({ sections }: HomeViewProps) {
             return (
               <Card
                 key={section.id}
-                className="rounded-2xl border-zinc-200/80 bg-white/90 shadow-sm transition duration-200 hover:-translate-y-0.5 hover:shadow-md"
+                className="flex h-full flex-col rounded-2xl border-zinc-200/80 bg-white/90 shadow-sm transition duration-200 hover:-translate-y-0.5 hover:shadow-md"
               >
-                <CardHeader>
+                <CardHeader className="flex-1">
                   <CardTitle>{section.name}</CardTitle>
                   <CardDescription>{section.description}</CardDescription>
                   <CardAction>
