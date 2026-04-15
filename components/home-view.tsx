@@ -128,7 +128,7 @@ export function HomeView({ sections }: HomeViewProps) {
                 key={section.id}
                 className="flex h-full flex-col rounded-2xl border-zinc-200/80 bg-white/90 shadow-sm transition duration-200 hover:-translate-y-0.5 hover:shadow-md"
               >
-                <CardHeader className="flex-1">
+                <CardHeader>
                   <CardTitle>{section.name}</CardTitle>
                   <CardDescription>{section.description}</CardDescription>
                   <CardAction>
@@ -140,7 +140,7 @@ export function HomeView({ sections }: HomeViewProps) {
                     ) : null}
                   </CardAction>
                 </CardHeader>
-                <CardContent className="space-y-3">
+                <CardContent className="mt-auto space-y-3">
                   <div className="flex items-center justify-between text-sm text-zinc-600">
                     <span>
                       {answeredCount} / {section.questionCount} 問
