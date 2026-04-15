@@ -175,10 +175,7 @@ export function QuizView({ section, questions }: QuizViewProps) {
               </p>
             ) : null}
 
-            <div className="space-y-3">
-              <p className="font-mono text-sm text-zinc-500">{currentQuestion.command}</p>
-              <h2 className="text-xl font-semibold leading-8">{currentQuestion.question}</h2>
-            </div>
+            <h2 className="text-xl font-semibold leading-8">{currentQuestion.question}</h2>
 
             <div className="grid gap-3">
               {currentQuestion.choices.map((choice) => {
@@ -254,10 +251,9 @@ export function QuizView({ section, questions }: QuizViewProps) {
               </div>
             ) : null}
           </CardContent>
-          <CardFooter className="flex-col items-stretch gap-3 border-t bg-zinc-50/90 backdrop-blur sm:flex-row sm:items-center sm:justify-between">
-            <p className="text-sm text-zinc-500">{isSaving ? "保存中..." : "次の問題へ進めます"}</p>
+          <CardFooter className="border-t bg-zinc-50/90 py-4 backdrop-blur sm:justify-end">
             <Button className="w-full sm:w-auto" disabled={!selectedChoiceId || isSaving} onClick={handleNext}>
-              {isLastQuestion ? "結果を見る" : "次の問題へ"}
+              {isSaving ? "保存中..." : isLastQuestion ? "結果を見る" : "次の問題へ"}
             </Button>
           </CardFooter>
         </Card>
