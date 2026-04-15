@@ -62,37 +62,34 @@ export function ProgressView({ sections }: ProgressViewProps) {
             <p className="font-mono text-sm text-emerald-700">Progress</p>
             <h1 className="text-3xl font-semibold">全体進捗</h1>
           </div>
-          <Button asChild variant="outline">
-            <Link href="/">ホームへ戻る</Link>
-          </Button>
         </div>
 
-        <div className="grid gap-4 md:grid-cols-3">
+        <div className="grid gap-4 md:grid-cols-2">
           <Card className="rounded-2xl border-zinc-200/80 bg-white/90 shadow-sm">
-            <CardHeader>
-              <CardTitle>{percent(progress?.overallProgressRate ?? 0)}%</CardTitle>
-              <CardDescription>進捗率</CardDescription>
+            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+              <div className="space-y-1">
+                <CardTitle>{percent(progress?.overallProgressRate ?? 0)}%</CardTitle>
+                <CardDescription>進捗率</CardDescription>
+              </div>
+              <div className="space-y-1 text-right">
+                <CardTitle>
+                  {progress?.totalAnsweredCount ?? 0} / {progress?.totalQuestionCount ?? 118}
+                </CardTitle>
+                <CardDescription>回答済み</CardDescription>
+              </div>
             </CardHeader>
             <CardContent>
               <Progress value={percent(progress?.overallProgressRate ?? 0)} />
             </CardContent>
           </Card>
           <Card className="rounded-2xl border-zinc-200/80 bg-white/90 shadow-sm">
-            <CardHeader>
+            <CardHeader className="pb-2">
               <CardTitle>{percent(progress?.overallCorrectRate ?? 0)}%</CardTitle>
               <CardDescription>正答率</CardDescription>
             </CardHeader>
             <CardContent>
               <Progress value={percent(progress?.overallCorrectRate ?? 0)} />
             </CardContent>
-          </Card>
-          <Card className="rounded-2xl border-zinc-200/80 bg-white/90 shadow-sm">
-            <CardHeader>
-              <CardTitle>
-                {progress?.totalAnsweredCount ?? 0} / {progress?.totalQuestionCount ?? 12}
-              </CardTitle>
-              <CardDescription>回答済み</CardDescription>
-            </CardHeader>
           </Card>
         </div>
 
@@ -118,7 +115,7 @@ export function ProgressView({ sections }: ProgressViewProps) {
                       <p className="mt-1 text-sm text-zinc-500">{section.description}</p>
                     </div>
                     <span className="rounded-full bg-white px-2.5 py-1 text-xs font-medium text-zinc-600">
-                      {item?.isPerfect ? "全問正解" : item?.isCompleted ? "完了" : "学習中"}
+                      {item?.isPerfect ? "全問正解" : item?.isCompleted ? "完了" : answered > 0 ? "学習中" : "未着手"}
                     </span>
                   </div>
                   <div className="mt-4 space-y-2">
@@ -179,7 +176,7 @@ export function ProgressView({ sections }: ProgressViewProps) {
                       <td className="py-4 pr-4">{percent(item?.correctRate ?? 0)}%</td>
                       <td className="py-4 pr-4">{formatDate(item?.latestAnsweredAt ?? null)}</td>
                       <td className="py-4">
-                        {item?.isPerfect ? "全問正解" : item?.isCompleted ? "完了" : "学習中"}
+                        {item?.isPerfect ? "全問正解" : item?.isCompleted ? "完了" : answered > 0 ? "学習中" : "未着手"}
                       </td>
                     </tr>
                   );
@@ -188,6 +185,12 @@ export function ProgressView({ sections }: ProgressViewProps) {
             </table>
           </CardContent>
         </Card>
+
+        <div className="mt-4 flex justify-center">
+          <Button asChild variant="outline" className="w-full sm:w-auto">
+            <Link href="/">ホームへ戻る</Link>
+          </Button>
+        </div>
       </main>
     </div>
   );

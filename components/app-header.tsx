@@ -1,8 +1,13 @@
+"use client";
+
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 
 import { Button } from "@/components/ui/button";
 
 export function AppHeader() {
+  const pathname = usePathname();
+
   return (
     <header className="sticky top-0 z-30 border-b border-zinc-200/80 bg-background/85 backdrop-blur supports-[backdrop-filter]:bg-background/70">
       <div className="mx-auto flex w-full max-w-6xl flex-col gap-3 px-4 py-3 sm:flex-row sm:items-center sm:justify-between">
@@ -15,10 +20,10 @@ export function AppHeader() {
           </span>
         </div>
         <nav className="flex items-center gap-2">
-          <Button asChild size="sm" variant="ghost">
+          <Button asChild size="sm" variant={pathname === "/" ? "outline" : "ghost"}>
             <Link href="/">ホーム</Link>
           </Button>
-          <Button asChild size="sm" variant="outline">
+          <Button asChild size="sm" variant={pathname === "/progress" ? "outline" : "ghost"}>
             <Link href="/progress">全体進捗</Link>
           </Button>
         </nav>
