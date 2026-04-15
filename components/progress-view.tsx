@@ -95,12 +95,12 @@ export function ProgressView({ sections }: ProgressViewProps) {
 
         {error ? <p className="text-sm text-red-600">{error}</p> : null}
 
-        <Card className="rounded-2xl border-zinc-200/80 bg-white/90 shadow-sm md:hidden">
-          <CardHeader>
-            <CardTitle>セクション別</CardTitle>
-            <CardDescription>スマートフォンではカード形式で確認できます。</CardDescription>
-          </CardHeader>
-          <CardContent className="space-y-3">
+        <div className="md:hidden">
+          <div className="px-1 pb-4">
+            <h2 className="text-lg font-semibold tracking-tight">セクション別</h2>
+            <p className="text-sm text-zinc-500">回答数、正答数、直近回答日時を確認できます。</p>
+          </div>
+          <div className="space-y-3">
             {sections.map((section) => {
               const item = progressBySection.get(section.id);
               const answered = item?.answeredCount ?? 0;
@@ -140,8 +140,8 @@ export function ProgressView({ sections }: ProgressViewProps) {
                 </div>
               );
             })}
-          </CardContent>
-        </Card>
+          </div>
+        </div>
 
         <Card className="hidden rounded-2xl border-zinc-200/80 bg-white/90 shadow-sm md:block">
           <CardHeader>

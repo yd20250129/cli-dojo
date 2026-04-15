@@ -80,11 +80,11 @@ export function HomeView({ sections }: HomeViewProps) {
                 6セクション
               </span>
             </div>
-            <h1 className="max-w-3xl text-4xl font-semibold leading-tight text-zinc-950 sm:text-5xl">
+            <h1 className="max-w-3xl text-[32px] font-semibold leading-tight text-zinc-950 sm:text-5xl">
               CLIコマンドを<br />一問一答で反復する。
             </h1>
             <p className="max-w-2xl text-base leading-7 text-zinc-600 sm:text-lg">
-              ターミナル、npm、Git、開発サーバー、テスト、デプロイを4択で確認します。
+              ターミナル、npm、Git、開発サーバー、テスト、デプロイのコマンドを4択で確認します。
             </p>
           </div>
           <Card className="self-start rounded-2xl border-zinc-200/80 bg-white/90 shadow-sm backdrop-blur">
