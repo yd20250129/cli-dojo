@@ -23,6 +23,8 @@ type AnonymousProgressState = Partial<Record<SectionId, AnonymousSectionState>>;
 
 const UPDATE_EVENT = "cli-dojo:anonymous-progress-updated";
 const STORAGE_KEY = "cli-dojo:anonymous-progress";
+let cachedSerializedState: string | null | undefined;
+let cachedSnapshot: ProgressSummary | null = null;
 
 function getEmptySectionState(): AnonymousSectionState {
   return {
@@ -47,6 +49,14 @@ function readState(): AnonymousProgressState {
   } catch {
     return {};
   }
+}
+
+function readSerializedState() {
+  if (typeof window === "undefined") {
+    return null;
+  }
+
+  return window.sessionStorage.getItem(STORAGE_KEY);
 }
 
 function writeState(state: AnonymousProgressState) {
@@ -156,8 +166,9 @@ export function getAnonymousSectionResult(sectionId: SectionId): SectionResult |
   };
 }
 
-export function getAnonymousProgressSummary(): ProgressSummary {
-  const state = readState();
+export function getAnonymousProgressSummary(
+  state: AnonymousProgressState = readState(),
+): ProgressSummary {
   const sections = getSections();
 
   const sectionProgress: SectionProgress[] = sections.map((section) => {
@@ -209,5 +220,13 @@ export function getAnonymousProgressSummary(): ProgressSummary {
 }
 
 export function getAnonymousProgressSnapshot() {
-  return getAnonymousProgressSummary();
+  const serializedState = readSerializedState();
+
+  if (serializedState === cachedSerializedState && cachedSnapshot) {
+    return cachedSnapshot;
+  }
+
+  cachedSerializedState = serializedState;
+  cachedSnapshot = getAnonymousProgressSummary(readState());
+  return cachedSnapshot;
 }
