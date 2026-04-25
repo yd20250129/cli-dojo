@@ -18,21 +18,18 @@ export function AuthShell({ children, title, description, footer }: AuthShellPro
           <div className="space-y-3">
             <p className="text-sm font-medium text-zinc-500">CLI Dojo Authentication</p>
             <h1 className="text-3xl font-semibold leading-tight sm:text-4xl">{title}</h1>
+            <div className="flex flex-wrap gap-2">
+              {AUTH_METHODS.map((provider) => (
+                <span
+                  key={provider}
+                  className="rounded-full border border-zinc-200 bg-white px-3 py-1 text-sm font-medium text-zinc-700"
+                >
+                  {provider}
+                </span>
+              ))}
+            </div>
             <p className="max-w-xl text-sm leading-7 text-zinc-600 sm:text-base">{description}</p>
           </div>
-          <div className="flex flex-wrap gap-2">
-            {AUTH_METHODS.map((provider) => (
-              <span
-                key={provider}
-                className="rounded-full border border-zinc-200 bg-white px-3 py-1 text-sm font-medium text-zinc-700"
-              >
-                {provider}
-              </span>
-            ))}
-          </div>
-          <p className="max-w-xl text-sm leading-7 text-zinc-500">
-            学習データはログイン中のアカウントに紐づいて保存されます。旧ブラウザ進捗が残っている場合は、初回ログイン時に移行します。
-          </p>
           <div className="text-sm text-zinc-600">
             <Link className="font-medium text-zinc-950 underline underline-offset-4" href="/">
               ホームへ戻る
