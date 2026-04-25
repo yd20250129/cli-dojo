@@ -79,7 +79,7 @@ export function HomeView({ sections }: HomeViewProps) {
   const answered = visibleProgress?.totalAnsweredCount ?? 0;
 
   return (
-    <div className="relative min-h-screen overflow-hidden bg-zinc-50 text-zinc-950">
+    <div className="relative min-h-screen bg-zinc-50 text-zinc-950">
       <div className="pointer-events-none absolute inset-x-0 top-0 -z-10 h-72 bg-[radial-gradient(circle_at_top_left,_rgba(16,185,129,0.18),_transparent_35%),radial-gradient(circle_at_top_right,_rgba(39,39,42,0.08),_transparent_28%)]" />
       <AppHeader />
       <main className="mx-auto flex w-full max-w-6xl flex-col gap-8 px-4 py-8 sm:py-10">
