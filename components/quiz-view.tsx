@@ -1,5 +1,6 @@
 "use client";
 
+import { useAuth } from "@clerk/nextjs";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useEffect, useMemo, useState } from "react";
@@ -18,10 +19,10 @@ import {
 } from "@/components/ui/card";
 import { Progress } from "@/components/ui/progress";
 import {
-  completeAttempt,
-  saveAnswer,
-  startAttempt,
-} from "@/lib/client/api";
+  getAnonymousAnsweredQuestionIds,
+  recordAnonymousAnswer,
+} from "@/lib/client/anonymous-progress";
+import { completeAttempt, saveAnswer, startAttempt } from "@/lib/client/api";
 import { getResumeQuestionIndex } from "@/lib/shared/resume";
 import { cn } from "@/lib/utils";
 import type { ChoiceId, Question, Section, SectionAttempt } from "@/types";
@@ -32,6 +33,7 @@ type QuizViewProps = {
 };
 
 export function QuizView({ section, questions }: QuizViewProps) {
+  const { isLoaded, userId } = useAuth();
   const router = useRouter();
   const [attempt, setAttempt] = useState<SectionAttempt | null>(null);
   const [currentIndex, setCurrentIndex] = useState(0);
@@ -39,13 +41,39 @@ export function QuizView({ section, questions }: QuizViewProps) {
   const [isSaving, setIsSaving] = useState(false);
   const [startError, setStartError] = useState("");
 
+  const isSignedIn = isLoaded && Boolean(userId);
+
   const currentQuestion = questions[currentIndex];
   const isLastQuestion = currentIndex === questions.length - 1;
   const isCorrect = selectedChoiceId === currentQuestion?.answer;
   const progressValue = ((currentIndex + (selectedChoiceId ? 1 : 0)) / questions.length) * 100;
 
   useEffect(() => {
+    if (!isLoaded) {
+      return;
+    }
+
     let active = true;
+
+    if (!isSignedIn) {
+      setAttempt(null);
+      const answeredQuestionIds = getAnonymousAnsweredQuestionIds(section.id);
+      const resumeIndex = getResumeQuestionIndex(questions, answeredQuestionIds);
+
+      if (resumeIndex === -1 && answeredQuestionIds.length > 0) {
+        router.push(`/section/${section.id}/result?anonymous=1`);
+        return () => {
+          active = false;
+        };
+      }
+
+      setCurrentIndex(resumeIndex === -1 ? 0 : resumeIndex);
+      setSelectedChoiceId(null);
+      setStartError("");
+      return () => {
+        active = false;
+      };
+    }
 
     startAttempt(section.id)
       .then((data) => {
@@ -76,18 +104,32 @@ export function QuizView({ section, questions }: QuizViewProps) {
     return () => {
       active = false;
     };
-  }, [questions, router, section.id]);
+  }, [isLoaded, isSignedIn, questions, router, section.id]);
 
   const correctChoiceText = useMemo(() => {
     return currentQuestion?.choices.find((choice) => choice.id === currentQuestion.answer)?.text ?? "";
   }, [currentQuestion]);
 
   async function handleAnswer(choiceId: ChoiceId) {
-    if (!attempt || selectedChoiceId || !currentQuestion) {
+    if (selectedChoiceId || !currentQuestion) {
       return;
     }
 
     setSelectedChoiceId(choiceId);
+
+    if (!isSignedIn) {
+      recordAnonymousAnswer({
+        sectionId: section.id,
+        questionId: currentQuestion.id,
+        selectedChoiceId: choiceId,
+      });
+      return;
+    }
+
+    if (!attempt) {
+      return;
+    }
+
     setIsSaving(true);
 
     try {
@@ -105,13 +147,18 @@ export function QuizView({ section, questions }: QuizViewProps) {
   }
 
   async function handleNext() {
-    if (!attempt) {
-      return;
-    }
-
     if (!isLastQuestion) {
       setCurrentIndex((index) => index + 1);
       setSelectedChoiceId(null);
+      return;
+    }
+
+    if (!isSignedIn) {
+      router.push(`/section/${section.id}/result?anonymous=1`);
+      return;
+    }
+
+    if (!attempt) {
       return;
     }
 
@@ -153,9 +200,6 @@ export function QuizView({ section, questions }: QuizViewProps) {
             <p className="font-mono text-sm text-emerald-700">{section.id}</p>
             <h1 className="text-3xl font-semibold">{section.name}</h1>
           </div>
-          <Button asChild variant="outline">
-            <Link href="/">ホームへ戻る</Link>
-          </Button>
         </div>
 
         <Card className="rounded-2xl border-zinc-200/80 bg-white/90 shadow-sm">
@@ -192,7 +236,7 @@ export function QuizView({ section, questions }: QuizViewProps) {
                       answered && isAnswer && "border-emerald-600 bg-emerald-50 text-emerald-950",
                       answered && isSelected && !isAnswer && "border-red-500 bg-red-50 text-red-950",
                     )}
-                    disabled={!attempt || answered}
+                    disabled={(isSignedIn && !attempt) || answered}
                     onClick={() => handleAnswer(choice.id)}
                     type="button"
                   >
@@ -251,10 +295,15 @@ export function QuizView({ section, questions }: QuizViewProps) {
               </div>
             ) : null}
           </CardContent>
-          <CardFooter className="border-t bg-zinc-50/90 py-4 backdrop-blur sm:justify-end">
-            <Button className="w-full sm:w-auto" disabled={!selectedChoiceId || isSaving} onClick={handleNext}>
-              {isSaving ? "保存中..." : isLastQuestion ? "結果を見る" : "次の問題へ"}
-            </Button>
+          <CardFooter className="border-t bg-zinc-50/90 py-4 backdrop-blur">
+            <div className="flex w-full flex-col gap-3 sm:flex-row sm:justify-end">
+              <Button asChild className="w-full sm:w-auto" variant="outline">
+                <Link href="/">ホームへ戻る</Link>
+              </Button>
+              <Button className="w-full sm:w-auto" disabled={!selectedChoiceId || isSaving} onClick={handleNext}>
+                {isSaving ? "保存中..." : isLastQuestion ? "結果を見る" : "次の問題へ"}
+              </Button>
+            </div>
           </CardFooter>
         </Card>
       </main>

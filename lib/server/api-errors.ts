@@ -1,6 +1,7 @@
 import type { AppErrorCode } from "@/types";
 
 const messages: Record<AppErrorCode, string> = {
+  UNAUTHORIZED: "再ログインしてください",
   INVALID_LEARNER_ID: "学習IDを確認できませんでした",
   INVALID_SECTION: "セクションが見つかりません",
   QUESTION_NOT_FOUND: "問題データがありません",

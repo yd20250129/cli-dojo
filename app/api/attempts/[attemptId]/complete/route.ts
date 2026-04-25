@@ -1,15 +1,15 @@
 import { errorResponse } from "@/lib/server/api-errors";
+import { getAuthenticatedAccount } from "@/lib/server/auth";
 import { completeAttempt } from "@/lib/server/progress-repository";
-import { getLearnerId } from "@/lib/server/request";
 
 export async function POST(
   request: Request,
   context: { params: Promise<{ attemptId: string }> },
 ) {
   try {
-    const learnerId = getLearnerId(request);
+    const account = await getAuthenticatedAccount(request);
     const { attemptId } = await context.params;
-    const attempt = await completeAttempt({ learnerId, attemptId });
+    const attempt = await completeAttempt({ accountId: account.id, attemptId });
 
     return Response.json({ data: attempt });
   } catch (error) {

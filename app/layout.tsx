@@ -1,3 +1,4 @@
+import { ClerkProvider } from "@clerk/nextjs";
 import type { Metadata } from "next";
 import { M_PLUS_Rounded_1c, JetBrains_Mono } from "next/font/google";
 import { Toaster } from "@/components/ui/sonner";
@@ -28,11 +29,22 @@ export default function RootLayout({
   return (
     <html
       lang="ja"
-      className={`${roundedSans.variable} ${monoFont.variable} font-sans h-full antialiased`}
+        className={`${roundedSans.variable} ${monoFont.variable} font-sans h-full antialiased`}
     >
       <body className="min-h-full flex flex-col">
-        {children}
-        <Toaster position="top-center" />
+        <ClerkProvider
+          appearance={{
+            options: {
+              socialButtonsPlacement: "top",
+              socialButtonsVariant: "iconButton",
+            },
+          }}
+          signInUrl="/sign-in"
+          signUpUrl="/sign-up"
+        >
+          {children}
+          <Toaster position="top-center" />
+        </ClerkProvider>
       </body>
     </html>
   );

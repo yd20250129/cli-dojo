@@ -1,6 +1,6 @@
 import { AppError, errorResponse } from "@/lib/server/api-errors";
+import { getAuthenticatedAccount } from "@/lib/server/auth";
 import { getSectionResult } from "@/lib/server/progress-repository";
-import { getLearnerId } from "@/lib/server/request";
 import { isSectionId } from "@/lib/shared/validation";
 
 export async function GET(
@@ -8,7 +8,7 @@ export async function GET(
   context: { params: Promise<{ sectionId: string }> },
 ) {
   try {
-    const learnerId = getLearnerId(request);
+    const account = await getAuthenticatedAccount(request);
     const { sectionId } = await context.params;
 
     if (!isSectionId(sectionId)) {
@@ -17,7 +17,7 @@ export async function GET(
 
     const url = new URL(request.url);
     const attemptId = url.searchParams.get("attemptId") ?? undefined;
-    const result = await getSectionResult({ learnerId, sectionId, attemptId });
+    const result = await getSectionResult({ accountId: account.id, sectionId, attemptId });
 
     return Response.json({ data: result });
   } catch (error) {

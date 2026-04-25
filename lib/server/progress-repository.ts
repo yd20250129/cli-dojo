@@ -18,7 +18,7 @@ import type {
 
 type AttemptRow = {
   id: string;
-  learner_id: string;
+  account_id: string;
   section_id: SectionId;
   attempt_no: number;
   status: "in_progress" | "completed";
@@ -31,7 +31,7 @@ type AttemptRow = {
 type AnswerRow = {
   id: string;
   attempt_id: string;
-  learner_id: string;
+  account_id: string;
   section_id: SectionId;
   question_id: string;
   selected_choice_id: ChoiceId;
@@ -47,7 +47,7 @@ function toIso(value: Date | string) {
 function mapAttempt(row: AttemptRow): SectionAttempt {
   return {
     id: row.id,
-    learnerId: row.learner_id,
+    accountId: row.account_id,
     sectionId: row.section_id,
     attemptNo: row.attempt_no,
     status: row.status,
@@ -62,7 +62,7 @@ function mapAnswer(row: AnswerRow): AnswerRecord {
   return {
     id: row.id,
     attemptId: row.attempt_id,
-    learnerId: row.learner_id,
+    accountId: row.account_id,
     sectionId: row.section_id,
     questionId: row.question_id,
     selectedChoiceId: row.selected_choice_id,
@@ -86,14 +86,14 @@ function isUniqueViolation(error: unknown) {
 }
 
 export async function getOrCreateCurrentAttempt(params: {
-  learnerId: string;
+  accountId: string;
   sectionId: SectionId;
 }): Promise<CurrentSectionAttempt> {
   const sql = getSql();
   const existing = await sql`
     SELECT *
     FROM section_attempts
-    WHERE learner_id = ${params.learnerId}
+    WHERE account_id = ${params.accountId}
       AND section_id = ${params.sectionId}
       AND status = 'in_progress'
     ORDER BY attempt_no DESC
@@ -105,7 +105,7 @@ export async function getOrCreateCurrentAttempt(params: {
     return {
       ...attempt,
       answeredQuestionIds: await getAnsweredQuestionIds({
-        learnerId: params.learnerId,
+        accountId: params.accountId,
         attemptId: attempt.id,
       }),
     };
@@ -115,13 +115,14 @@ export async function getOrCreateCurrentAttempt(params: {
 }
 
 export async function createRetryAttempt(params: {
-  learnerId: string;
+  accountId: string;
   sectionId: SectionId;
 }): Promise<CurrentSectionAttempt> {
   const sql = getSql();
   const totalQuestions = getTotalQuestions(params.sectionId);
   const rows = await sql`
     INSERT INTO section_attempts (
+      account_id,
       learner_id,
       section_id,
       attempt_no,
@@ -130,12 +131,13 @@ export async function createRetryAttempt(params: {
       total_questions
     )
     VALUES (
-      ${params.learnerId},
+      ${params.accountId},
+      null,
       ${params.sectionId},
       COALESCE((
         SELECT MAX(attempt_no) + 1
         FROM section_attempts
-        WHERE learner_id = ${params.learnerId}
+        WHERE account_id = ${params.accountId}
           AND section_id = ${params.sectionId}
       ), 1),
       'in_progress',
@@ -152,14 +154,14 @@ export async function createRetryAttempt(params: {
 }
 
 async function getAnsweredQuestionIds(params: {
-  learnerId: string;
+  accountId: string;
   attemptId: string;
 }) {
   const sql = getSql();
   const rows = await sql`
     SELECT question_id
     FROM answer_records
-    WHERE learner_id = ${params.learnerId}
+    WHERE account_id = ${params.accountId}
       AND attempt_id = ${params.attemptId}
     ORDER BY answered_at ASC
   `;
@@ -168,7 +170,7 @@ async function getAnsweredQuestionIds(params: {
 }
 
 export async function saveAnswer(params: {
-  learnerId: string;
+  accountId: string;
   attemptId: string;
   sectionId: SectionId;
   questionId: string;
@@ -185,7 +187,7 @@ export async function saveAnswer(params: {
     SELECT *
     FROM section_attempts
     WHERE id = ${params.attemptId}
-      AND learner_id = ${params.learnerId}
+      AND account_id = ${params.accountId}
       AND section_id = ${params.sectionId}
     LIMIT 1
   `;
@@ -198,6 +200,7 @@ export async function saveAnswer(params: {
     const rows = await sql`
       INSERT INTO answer_records (
         attempt_id,
+        account_id,
         learner_id,
         section_id,
         question_id,
@@ -207,7 +210,8 @@ export async function saveAnswer(params: {
       )
       VALUES (
         ${params.attemptId},
-        ${params.learnerId},
+        ${params.accountId},
+        null,
         ${params.sectionId},
         ${params.questionId},
         ${params.selectedChoiceId},
@@ -228,7 +232,7 @@ export async function saveAnswer(params: {
 }
 
 export async function completeAttempt(params: {
-  learnerId: string;
+  accountId: string;
   attemptId: string;
 }) {
   const sql = getSql();
@@ -236,7 +240,7 @@ export async function completeAttempt(params: {
     SELECT *
     FROM section_attempts
     WHERE id = ${params.attemptId}
-      AND learner_id = ${params.learnerId}
+      AND account_id = ${params.accountId}
     LIMIT 1
   `;
 
@@ -252,7 +256,7 @@ export async function completeAttempt(params: {
       COALESCE(SUM(CASE WHEN is_correct THEN 1 ELSE 0 END), 0)::int AS correct_count
     FROM answer_records
     WHERE attempt_id = ${params.attemptId}
-      AND learner_id = ${params.learnerId}
+      AND account_id = ${params.accountId}
   `;
 
   const score = Number(totals[0]?.correct_count ?? 0);
@@ -263,7 +267,7 @@ export async function completeAttempt(params: {
       score = ${score},
       completed_at = now()
     WHERE id = ${params.attemptId}
-      AND learner_id = ${params.learnerId}
+      AND account_id = ${params.accountId}
     RETURNING *
   `;
 
@@ -271,7 +275,7 @@ export async function completeAttempt(params: {
 }
 
 export async function getSectionResult(params: {
-  learnerId: string;
+  accountId: string;
   sectionId: SectionId;
   attemptId?: string;
 }): Promise<SectionResult | null> {
@@ -281,14 +285,14 @@ export async function getSectionResult(params: {
         SELECT *
         FROM section_attempts
         WHERE id = ${params.attemptId}
-          AND learner_id = ${params.learnerId}
+          AND account_id = ${params.accountId}
           AND section_id = ${params.sectionId}
         LIMIT 1
       `
     : await sql`
         SELECT *
         FROM section_attempts
-        WHERE learner_id = ${params.learnerId}
+        WHERE account_id = ${params.accountId}
           AND section_id = ${params.sectionId}
           AND status = 'completed'
         ORDER BY attempt_no DESC
@@ -304,7 +308,7 @@ export async function getSectionResult(params: {
   const answers = await sql`
     SELECT *
     FROM answer_records
-    WHERE learner_id = ${params.learnerId}
+    WHERE account_id = ${params.accountId}
       AND attempt_id = ${attempt.id}
     ORDER BY answered_at ASC
   `;
@@ -334,13 +338,13 @@ export async function getSectionResult(params: {
   };
 }
 
-export async function getProgressSummary(learnerId: string): Promise<ProgressSummary> {
+export async function getProgressSummary(accountId: string): Promise<ProgressSummary> {
   const sql = getSql();
   const sections = getSections();
   const latestAttempts = await sql`
     SELECT DISTINCT ON (section_id) *
     FROM section_attempts
-    WHERE learner_id = ${learnerId}
+    WHERE account_id = ${accountId}
     ORDER BY section_id, attempt_no DESC
   `;
   const latestBySection = new Map(
@@ -354,7 +358,7 @@ export async function getProgressSummary(learnerId: string): Promise<ProgressSum
       COALESCE(SUM(CASE WHEN is_correct THEN 1 ELSE 0 END), 0)::int AS correct_count,
       MAX(answered_at) AS latest_answered_at
     FROM answer_records
-    WHERE learner_id = ${learnerId}
+    WHERE account_id = ${accountId}
     GROUP BY attempt_id
   `;
   const aggregateByAttempt = new Map(
@@ -416,4 +420,49 @@ export async function getProgressSummary(learnerId: string): Promise<ProgressSum
       totalAnsweredCount === 0 ? 0 : totalCorrectCount / totalAnsweredCount,
     sections: sectionProgress,
   };
+}
+
+export async function migrateLegacyProgressIfNeeded(params: {
+  accountId: string;
+  legacyLearnerId: string;
+}) {
+  const sql = getSql();
+  const existingAccountProgress = await sql`
+    SELECT 1
+    FROM section_attempts
+    WHERE account_id = ${params.accountId}
+    LIMIT 1
+  `;
+
+  if (existingAccountProgress[0]) {
+    return { migrated: false, reason: "account_progress_exists" as const };
+  }
+
+  const existingLegacyProgress = await sql`
+    SELECT 1
+    FROM section_attempts
+    WHERE learner_id = ${params.legacyLearnerId}
+      AND account_id IS NULL
+    LIMIT 1
+  `;
+
+  if (!existingLegacyProgress[0]) {
+    return { migrated: false, reason: "no_legacy_progress" as const };
+  }
+
+  await sql`
+    UPDATE section_attempts
+    SET account_id = ${params.accountId}
+    WHERE learner_id = ${params.legacyLearnerId}
+      AND account_id IS NULL
+  `;
+
+  await sql`
+    UPDATE answer_records
+    SET account_id = ${params.accountId}
+    WHERE learner_id = ${params.legacyLearnerId}
+      AND account_id IS NULL
+  `;
+
+  return { migrated: true, reason: "migrated" as const };
 }

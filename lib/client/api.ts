@@ -1,6 +1,6 @@
 "use client";
 
-import { getOrCreateLearnerId } from "@/lib/client/learner-id";
+import { getLegacyLearnerId } from "@/lib/client/learner-id";
 import type {
   ApiErrorResponse,
   ApiSuccess,
@@ -12,20 +12,34 @@ import type {
   SectionResult,
 } from "@/types";
 
+export class ApiRequestError extends Error {
+  constructor(
+    message: string,
+    public readonly code: string,
+    public readonly status: number,
+  ) {
+    super(message);
+  }
+}
+
 async function requestJson<T>(path: string, init: RequestInit = {}) {
-  const learnerId = getOrCreateLearnerId();
+  const legacyLearnerId = getLegacyLearnerId();
   const response = await fetch(path, {
     ...init,
     headers: {
       "Content-Type": "application/json",
-      "X-Learner-Id": learnerId,
+      ...(legacyLearnerId ? { "X-Legacy-Learner-Id": legacyLearnerId } : {}),
       ...init.headers,
     },
   });
   const payload = (await response.json()) as ApiSuccess<T> | ApiErrorResponse;
 
   if (!response.ok || "error" in payload) {
-    throw new Error("error" in payload ? payload.error.message : "通信に失敗しました");
+    if ("error" in payload) {
+      throw new ApiRequestError(payload.error.message, payload.error.code, response.status);
+    }
+
+    throw new ApiRequestError("通信に失敗しました", "UNKNOWN", response.status);
   }
 
   return payload.data;

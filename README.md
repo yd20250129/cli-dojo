@@ -2,16 +2,17 @@
 
 CLI Dojo is a Japanese quiz app for learning common CLI commands by category.
 
-The MVP uses static TypeScript question data and stores learning progress in Neon PostgreSQL through Next.js Route Handlers.
+The app uses static TypeScript question data and stores learning progress in Neon PostgreSQL through Next.js Route Handlers.
 
 ## Current Scope
 
 - 6 learning sections
 - 118 questions across all sections
-- Anonymous learner ID stored in `localStorage`
-- Progress saved to Neon
+- Account authentication with Clerk is implemented in `dev`
+- Progress saved to Neon per authenticated account
+- Auth methods: Email, GitHub, Google
 - In-progress sections resume from the next unanswered question
-- No authentication in MVP
+- Anonymous `localStorage` learner IDs are legacy MVP data and should only be used for migration
 - No ORM in MVP
 
 ## Stack
@@ -22,6 +23,7 @@ The MVP uses static TypeScript question data and stores learning progress in Neo
 | API | Next.js Route Handlers |
 | Database | Neon PostgreSQL |
 | DB access | Direct SQL with `@neondatabase/serverless` |
+| Auth | Clerk for Next.js |
 | Styling | Tailwind CSS, shadcn/ui |
 | Hosting | Vercel |
 
@@ -66,9 +68,40 @@ Required environment variable:
 
 ```text
 DATABASE_URL
+NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY
+CLERK_SECRET_KEY
+NEXT_PUBLIC_CLERK_SIGN_IN_URL
+NEXT_PUBLIC_CLERK_SIGN_UP_URL
 ```
 
 Do not commit `.env.local`.
+
+## Authentication And Progress Ownership
+
+Authentication is being added so scores and progress are managed per account instead of per browser.
+
+Current operation note:
+
+- Production is currently using Clerk `pk_test_` / `sk_test_` keys for private usability verification.
+- Before wider release or external user onboarding, switch Vercel Production to Clerk live keys and verify the production instance end to end.
+
+Target behavior:
+
+- Clerk is the authentication provider.
+- Email is enabled in Clerk sign-in methods.
+- GitHub and Google are the supported Clerk social connections.
+- Public routes: `/`, `/sign-in`, `/sign-up`.
+- Authenticated routes: `/section/[sectionId]`, `/section/[sectionId]/result`, `/progress`.
+- Progress APIs require an authenticated Clerk user.
+- The server derives ownership from Clerk `userId`; clients must not send ownership IDs for authorization.
+- Neon progress records are owned by an app account mapped to Clerk `userId`.
+- Existing anonymous `localStorage` learner progress may be migrated once after sign-in, then the account record becomes the source of truth.
+
+Legacy MVP behavior:
+
+- `localStorage` key `cli-dojo:learner-id` currently identifies progress.
+- `X-Learner-Id` currently carries that ID to Route Handlers.
+- This should be replaced by server-side authenticated user lookup during the auth migration.
 
 ## Database
 
@@ -82,8 +115,16 @@ db/migrations/003_clear_reordered_section_progress.sql
 
 Current Neon tables:
 
+- `accounts` (planned)
 - `section_attempts`
 - `answer_records`
+
+Planned ownership model:
+
+- `accounts.clerk_user_id` stores the external Clerk user ID.
+- `section_attempts.account_id` references `accounts.id`.
+- `answer_records.account_id` references `accounts.id`.
+- Legacy `learner_id` columns remain only long enough to migrate anonymous progress.
 
 Question data is not stored in Neon. It is stored in TypeScript files:
 

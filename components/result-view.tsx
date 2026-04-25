@@ -1,5 +1,6 @@
 "use client";
 
+import { useAuth } from "@clerk/nextjs";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
@@ -17,12 +18,17 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { Progress } from "@/components/ui/progress";
+import {
+  clearAnonymousSectionProgress,
+  getAnonymousSectionResult,
+} from "@/lib/client/anonymous-progress";
 import { fetchSectionResult, startAttempt } from "@/lib/client/api";
 import type { Section, SectionResult } from "@/types";
 
 type ResultViewProps = {
   section: Section;
   attemptId?: string;
+  anonymous?: boolean;
 };
 
 function percent(value: number) {
@@ -36,15 +42,44 @@ function resultMessage(rate: number) {
   return "まずは解説を確認しましょう";
 }
 
-export function ResultView({ section, attemptId }: ResultViewProps) {
+export function ResultView({ section, attemptId, anonymous = false }: ResultViewProps) {
+  const { isLoaded, userId } = useAuth();
   const router = useRouter();
   const [result, setResult] = useState<SectionResult | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
   const [retrying, setRetrying] = useState(false);
+  const isSignedIn = isLoaded && Boolean(userId);
 
   useEffect(() => {
+    if (anonymous) {
+      const anonymousResult = getAnonymousSectionResult(section.id);
+
+      setResult(anonymousResult);
+      setError(anonymousResult ? "" : "学習結果が見つかりませんでした");
+      setLoading(false);
+      return;
+    }
+
+    if (!isLoaded) {
+      return;
+    }
+
     let active = true;
+
+    if (!isSignedIn) {
+      const anonymousResult = getAnonymousSectionResult(section.id);
+
+      if (active) {
+        setResult(anonymousResult);
+        setError(anonymousResult ? "" : "学習結果が見つかりませんでした");
+        setLoading(false);
+      }
+
+      return () => {
+        active = false;
+      };
+    }
 
     fetchSectionResult(section.id, attemptId)
       .then((data) => {
@@ -67,10 +102,16 @@ export function ResultView({ section, attemptId }: ResultViewProps) {
     return () => {
       active = false;
     };
-  }, [attemptId, section.id]);
+  }, [anonymous, attemptId, isLoaded, isSignedIn, section.id]);
 
   async function handleRetry() {
     setRetrying(true);
+
+    if (!isSignedIn) {
+      clearAnonymousSectionProgress(section.id);
+      router.push(`/section/${section.id}`);
+      return;
+    }
 
     try {
       await startAttempt(section.id, true);
@@ -93,9 +134,6 @@ export function ResultView({ section, attemptId }: ResultViewProps) {
             <p className="font-mono text-sm text-emerald-700">{section.id}</p>
             <h1 className="text-3xl font-semibold">{section.name} の結果</h1>
           </div>
-          <Button asChild variant="outline">
-            <Link href="/">ホームへ戻る</Link>
-          </Button>
         </div>
 
         <Card className="rounded-2xl border-zinc-200/80 bg-white/90 shadow-sm">

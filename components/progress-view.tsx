@@ -59,8 +59,8 @@ export function ProgressView({ sections }: ProgressViewProps) {
       <main className="mx-auto flex w-full max-w-6xl flex-col gap-6 px-4 py-8">
         <div className="flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
           <div>
-            <p className="font-mono text-sm text-emerald-700">Progress</p>
-            <h1 className="text-3xl font-semibold">全体進捗</h1>
+            <p className="font-mono text-sm text-emerald-700">Learning Record</p>
+            <h1 className="text-3xl font-semibold">学習記録</h1>
           </div>
         </div>
 

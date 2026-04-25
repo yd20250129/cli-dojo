@@ -10,6 +10,13 @@ export type ChoiceId = "A" | "B" | "C" | "D";
 
 export type AttemptStatus = "in_progress" | "completed";
 
+export type Account = {
+  id: string;
+  clerkUserId: string;
+  createdAt: string;
+  updatedAt: string;
+};
+
 export type Section = {
   id: SectionId;
   name: string;
@@ -36,7 +43,7 @@ export type Question = {
 
 export type SectionAttempt = {
   id: string;
-  learnerId: string;
+  accountId: string;
   sectionId: SectionId;
   attemptNo: number;
   status: AttemptStatus;
@@ -53,7 +60,7 @@ export type CurrentSectionAttempt = SectionAttempt & {
 export type AnswerRecord = {
   id: string;
   attemptId: string;
-  learnerId: string;
+  accountId: string;
   sectionId: SectionId;
   questionId: string;
   selectedChoiceId: ChoiceId;
@@ -67,6 +74,7 @@ export type ApiSuccess<T> = {
 };
 
 export type AppErrorCode =
+  | "UNAUTHORIZED"
   | "INVALID_LEARNER_ID"
   | "INVALID_SECTION"
   | "QUESTION_NOT_FOUND"

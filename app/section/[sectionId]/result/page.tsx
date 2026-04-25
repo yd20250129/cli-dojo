@@ -11,10 +11,10 @@ export default async function SectionResultPage({
   searchParams,
 }: {
   params: Promise<{ sectionId: string }>;
-  searchParams: Promise<{ attemptId?: string }>;
+  searchParams: Promise<{ attemptId?: string; anonymous?: string }>;
 }) {
   const { sectionId } = await params;
-  const { attemptId } = await searchParams;
+  const { attemptId, anonymous } = await searchParams;
 
   if (!isSectionId(sectionId)) {
     return <SectionNotFound />;
@@ -26,7 +26,7 @@ export default async function SectionResultPage({
     return <SectionNotFound />;
   }
 
-  return <ResultView section={section} attemptId={attemptId} />;
+  return <ResultView section={section} attemptId={attemptId} anonymous={anonymous === "1"} />;
 }
 
 function SectionNotFound() {
