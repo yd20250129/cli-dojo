@@ -9,7 +9,6 @@ import { AppHeader } from "@/components/app-header";
 import { Button } from "@/components/ui/button";
 import {
   Card,
-  CardAction,
   CardContent,
   CardDescription,
   CardFooter,
@@ -161,14 +160,6 @@ export function HomeView({ sections }: HomeViewProps) {
                 <CardHeader>
                   <CardTitle>{section.name}</CardTitle>
                   <CardDescription>{section.description}</CardDescription>
-                  <CardAction>
-                    {completed ? (
-                      <span className="inline-flex items-center gap-1 rounded-full bg-emerald-100 px-2.5 py-1 text-xs font-medium text-emerald-800">
-                        <CheckCircle2 className="size-3.5" />
-                        完了
-                      </span>
-                    ) : null}
-                  </CardAction>
                 </CardHeader>
                 <CardContent className="mt-auto space-y-3">
                   <div className="flex items-center justify-between text-sm text-zinc-600">
