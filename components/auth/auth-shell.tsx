@@ -30,14 +30,14 @@ export function AuthShell({ children, title, description, footer }: AuthShellPro
             </div>
             <p className="max-w-xl text-sm leading-7 text-zinc-600 sm:text-base">{description}</p>
           </div>
-          <div className="text-sm text-zinc-600">
+          <div className="pt-4 text-sm text-zinc-600">
             <Link className="font-medium text-zinc-950 underline underline-offset-4" href="/">
               ホームへ戻る
             </Link>
           </div>
         </section>
-        <section className="flex justify-center lg:justify-end">
-          <div className="w-full max-w-md space-y-4">
+        <section className="flex justify-center">
+          <div className="flex w-full max-w-md flex-col items-center space-y-4">
             {children}
             <p className="text-center text-sm text-zinc-600">{footer}</p>
           </div>

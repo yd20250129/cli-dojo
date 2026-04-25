@@ -2,13 +2,12 @@ import { SignUp } from "@clerk/nextjs";
 import Link from "next/link";
 
 import { AuthShell } from "@/components/auth/auth-shell";
-import { AUTH_METHOD_LABEL } from "@/lib/shared/auth-methods";
 
 export default function SignUpPage() {
   return (
     <AuthShell
       title="アカウントを作成する"
-      description={`${AUTH_METHOD_LABEL} のいずれかで会員登録して、学習の進捗と成績をアカウント単位で保存します。`}
+      description="学習データはログイン中のアカウントに紐づいて保存されます。進捗と成績を保存し、学習を継続しましょう。"
       footer={
         <>
           すでにアカウントをお持ちの場合は{" "}
