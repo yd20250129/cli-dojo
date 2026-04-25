@@ -1,5 +1,6 @@
 "use client";
 
+import { useAuth } from "@clerk/nextjs";
 import Link from "next/link";
 import { useEffect, useMemo, useState } from "react";
 import { ArrowRight, CheckCircle2, CircleGauge, Sparkles } from "lucide-react";
@@ -28,10 +29,18 @@ function percent(value: number) {
 }
 
 export function HomeView({ sections }: HomeViewProps) {
+  const { isLoaded, userId } = useAuth();
   const [progress, setProgress] = useState<ProgressSummary | null>(null);
   const [error, setError] = useState("");
+  const isSignedIn = isLoaded && Boolean(userId);
+  const visibleProgress = isSignedIn ? progress : null;
+  const visibleError = isSignedIn ? error : "";
 
   useEffect(() => {
+    if (!isSignedIn) {
+      return;
+    }
+
     let active = true;
 
     fetchProgress()
@@ -50,14 +59,14 @@ export function HomeView({ sections }: HomeViewProps) {
     return () => {
       active = false;
     };
-  }, []);
+  }, [isSignedIn]);
 
   const progressBySection = useMemo(() => {
-    return new Map(progress?.sections.map((section) => [section.sectionId, section]));
-  }, [progress]);
+    return new Map(visibleProgress?.sections.map((section) => [section.sectionId, section]));
+  }, [visibleProgress]);
 
-  const totalQuestions = progress?.totalQuestionCount ?? sections.reduce((sum, section) => sum + section.questionCount, 0);
-  const answered = progress?.totalAnsweredCount ?? 0;
+  const totalQuestions = visibleProgress?.totalQuestionCount ?? sections.reduce((sum, section) => sum + section.questionCount, 0);
+  const answered = visibleProgress?.totalAnsweredCount ?? 0;
 
   return (
     <div className="relative min-h-screen overflow-hidden bg-zinc-50 text-zinc-950">
@@ -73,7 +82,7 @@ export function HomeView({ sections }: HomeViewProps) {
               </span>
               <span className="inline-flex items-center gap-1 rounded-full border border-zinc-200 bg-white px-3 py-1 text-xs font-medium text-zinc-600">
                 <CheckCircle2 className="size-3.5" />
-                回答保存対応
+                学習記録対応
               </span>
               <span className="inline-flex items-center gap-1 rounded-full border border-zinc-200 bg-white px-3 py-1 text-xs font-medium text-zinc-600">
                 <CircleGauge className="size-3.5" />
@@ -89,29 +98,37 @@ export function HomeView({ sections }: HomeViewProps) {
           </div>
           <Card className="self-start rounded-2xl border-zinc-200/80 bg-white/90 shadow-sm backdrop-blur">
             <CardHeader>
-              <CardTitle>全体進捗</CardTitle>
-              <CardDescription>
-                {answered} / {totalQuestions} 問 回答済み
-              </CardDescription>
+              <CardTitle>学習記録サマリー</CardTitle>
+              <p className="text-sm text-zinc-500">
+                {isSignedIn
+                  ? `${answered} / ${totalQuestions} 問 回答済み`
+                  : "ログインすると進捗を保存できます"}
+              </p>
             </CardHeader>
             <CardContent className="space-y-4">
-              <Progress value={percent(progress?.overallProgressRate ?? 0)} />
+              <Progress value={percent(visibleProgress?.overallProgressRate ?? 0)} />
               <div className="grid grid-cols-2 gap-3">
                 <div className="rounded-xl border border-zinc-200 bg-zinc-50 p-3">
                   <p className="text-sm text-zinc-500">進捗率</p>
-                  <p className="text-2xl font-semibold">{percent(progress?.overallProgressRate ?? 0)}%</p>
+                  <p className="text-2xl font-semibold">{percent(visibleProgress?.overallProgressRate ?? 0)}%</p>
                 </div>
                 <div className="rounded-xl border border-zinc-200 bg-zinc-50 p-3">
                   <p className="text-sm text-zinc-500">正答率</p>
-                  <p className="text-2xl font-semibold">{percent(progress?.overallCorrectRate ?? 0)}%</p>
+                  <p className="text-2xl font-semibold">{percent(visibleProgress?.overallCorrectRate ?? 0)}%</p>
                 </div>
               </div>
-              {error ? <p className="text-sm text-red-600">{error}</p> : null}
+              {visibleError ? <p className="text-sm text-red-600">{visibleError}</p> : null}
             </CardContent>
             <CardFooter>
-              <Button asChild variant="outline" className="w-full">
-                <Link href="/progress">詳しく見る</Link>
-              </Button>
+              {isSignedIn ? (
+                <Button asChild variant="outline" className="w-full">
+                  <Link href="/progress">詳しく見る</Link>
+                </Button>
+              ) : (
+                <Button asChild variant="outline" className="w-full">
+                  <Link href="/sign-up">無料で始める</Link>
+                </Button>
+              )}
             </CardFooter>
           </Card>
         </section>

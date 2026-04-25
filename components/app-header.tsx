@@ -1,12 +1,15 @@
 "use client";
 
+import { UserButton, useAuth } from "@clerk/nextjs";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 
 import { Button } from "@/components/ui/button";
 
 export function AppHeader() {
+  const { isLoaded, userId } = useAuth();
   const pathname = usePathname();
+  const isSignedIn = isLoaded && Boolean(userId);
 
   return (
     <header className="sticky top-0 z-30 border-b border-zinc-200/80 bg-background/85 backdrop-blur supports-[backdrop-filter]:bg-background/70">
@@ -24,8 +27,24 @@ export function AppHeader() {
             <Link href="/">ホーム</Link>
           </Button>
           <Button asChild size="sm" variant={pathname === "/progress" ? "outline" : "ghost"}>
-            <Link href="/progress">全体進捗</Link>
+            <Link href="/progress">学習記録</Link>
           </Button>
+          {isLoaded && !isSignedIn ? (
+            <Button asChild size="sm">
+              <Link href="/sign-in">ログイン</Link>
+            </Button>
+          ) : null}
+          {isSignedIn ? (
+            <div className="ml-1">
+              <UserButton
+                appearance={{
+                  elements: {
+                    userButtonAvatarBox: "size-8",
+                  },
+                }}
+              />
+            </div>
+          ) : null}
         </nav>
       </div>
     </header>

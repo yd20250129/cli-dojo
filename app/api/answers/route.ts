@@ -1,12 +1,12 @@
 import { AppError, errorResponse, requireJsonObject } from "@/lib/server/api-errors";
+import { getAuthenticatedAccount } from "@/lib/server/auth";
 import { saveAnswer } from "@/lib/server/progress-repository";
-import { getLearnerId } from "@/lib/server/request";
 import { isChoiceId, isSectionId } from "@/lib/shared/validation";
 import type { SaveAnswerRequest } from "@/types";
 
 export async function POST(request: Request) {
   try {
-    const learnerId = getLearnerId(request);
+    const account = await getAuthenticatedAccount(request);
     const body = requireJsonObject(await request.json()) as Partial<SaveAnswerRequest>;
 
     if (!body.sectionId || !isSectionId(body.sectionId)) {
@@ -22,7 +22,7 @@ export async function POST(request: Request) {
     }
 
     const answer = await saveAnswer({
-      learnerId,
+      accountId: account.id,
       attemptId: body.attemptId,
       sectionId: body.sectionId,
       questionId: body.questionId,
