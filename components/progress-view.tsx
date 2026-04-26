@@ -106,16 +106,30 @@ export function ProgressView({ sections }: ProgressViewProps) {
               const answered = item?.answeredCount ?? 0;
               const correct = item?.correctCount ?? 0;
               const correctRate = percent(item?.correctRate ?? 0);
+              const statusLabel = item?.isPerfect
+                ? "全問正解"
+                : item?.isCompleted
+                  ? "完了"
+                  : answered > 0
+                    ? "学習中"
+                    : "未着手";
+              const statusClassName = item?.isPerfect
+                ? "bg-emerald-100 text-emerald-800"
+                : item?.isCompleted
+                  ? "bg-sky-100 text-sky-800"
+                  : answered > 0
+                    ? "bg-amber-100 text-amber-800"
+                    : "bg-zinc-100 text-zinc-600";
 
               return (
-                <div key={section.id} className="rounded-2xl border border-zinc-200 bg-zinc-50 p-4">
+                <div key={section.id} className="rounded-2xl border border-zinc-200 bg-white p-4 shadow-sm">
                   <div className="flex items-start justify-between gap-3">
                     <div>
                       <p className="font-medium">{section.name}</p>
                       <p className="mt-1 text-sm text-zinc-500">{section.description}</p>
                     </div>
-                    <span className="rounded-full bg-white px-2.5 py-1 text-xs font-medium text-zinc-600">
-                      {item?.isPerfect ? "全問正解" : item?.isCompleted ? "完了" : answered > 0 ? "学習中" : "未着手"}
+                    <span className={`rounded-full px-2.5 py-1 text-xs font-medium ${statusClassName}`}>
+                      {statusLabel}
                     </span>
                   </div>
                   <div className="mt-4 space-y-2">
@@ -128,11 +142,11 @@ export function ProgressView({ sections }: ProgressViewProps) {
                     <Progress value={(answered / section.questionCount) * 100} />
                   </div>
                   <div className="mt-4 grid grid-cols-2 gap-3 text-sm">
-                    <div className="rounded-xl border border-white bg-white p-3">
+                    <div className="rounded-xl border border-emerald-100 bg-emerald-50/60 p-3">
                       <p className="text-zinc-500">回答済み</p>
                       <p className="mt-1 text-lg font-semibold">{answered}</p>
                     </div>
-                    <div className="rounded-xl border border-white bg-white p-3">
+                    <div className="rounded-xl border border-sky-100 bg-sky-50/60 p-3">
                       <p className="text-zinc-500">正解</p>
                       <p className="mt-1 text-lg font-semibold">{correct}</p>
                     </div>
