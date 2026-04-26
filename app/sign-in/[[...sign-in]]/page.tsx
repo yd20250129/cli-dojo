@@ -2,18 +2,17 @@ import { SignIn } from "@clerk/nextjs";
 import Link from "next/link";
 
 import { AuthShell } from "@/components/auth/auth-shell";
-import { AUTH_METHOD_LABEL } from "@/lib/shared/auth-methods";
 
 export default function SignInPage() {
   return (
     <AuthShell
       title="アカウントで学習を続ける"
-      description={`${AUTH_METHOD_LABEL} のいずれかでログインして、進捗と成績を端末をまたいで引き継ぎます。`}
+      description="学習データはログイン中のアカウントに紐づいて保存されます。進捗と成績を保存し、学習を継続しましょう。"
       footer={
         <>
           アカウントをお持ちでない場合は{" "}
           <Link className="font-medium text-zinc-950 underline underline-offset-4" href="/sign-up">
-            会員登録
+            サインアップ
           </Link>
         </>
       }

@@ -2,14 +2,13 @@
 
 import { useAuth } from "@clerk/nextjs";
 import Link from "next/link";
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useState, useSyncExternalStore } from "react";
 import { ArrowRight, CheckCircle2, CircleGauge, Sparkles } from "lucide-react";
 
 import { AppHeader } from "@/components/app-header";
 import { Button } from "@/components/ui/button";
 import {
   Card,
-  CardAction,
   CardContent,
   CardDescription,
   CardFooter,
@@ -17,6 +16,10 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { Progress } from "@/components/ui/progress";
+import {
+  getAnonymousProgressSnapshot,
+  subscribeAnonymousProgress,
+} from "@/lib/client/anonymous-progress";
 import { fetchProgress } from "@/lib/client/api";
 import type { ProgressSummary, Section } from "@/types";
 
@@ -33,8 +36,6 @@ export function HomeView({ sections }: HomeViewProps) {
   const [progress, setProgress] = useState<ProgressSummary | null>(null);
   const [error, setError] = useState("");
   const isSignedIn = isLoaded && Boolean(userId);
-  const visibleProgress = isSignedIn ? progress : null;
-  const visibleError = isSignedIn ? error : "";
 
   useEffect(() => {
     if (!isSignedIn) {
@@ -59,7 +60,16 @@ export function HomeView({ sections }: HomeViewProps) {
     return () => {
       active = false;
     };
-  }, [isSignedIn]);
+  }, [isLoaded, isSignedIn]);
+
+  const anonymousProgress = useSyncExternalStore(
+    subscribeAnonymousProgress,
+    getAnonymousProgressSnapshot,
+    () => null,
+  );
+
+  const visibleProgress = isSignedIn ? progress : isLoaded ? anonymousProgress : null;
+  const visibleError = isSignedIn ? error : "";
 
   const progressBySection = useMemo(() => {
     return new Map(visibleProgress?.sections.map((section) => [section.sectionId, section]));
@@ -69,7 +79,7 @@ export function HomeView({ sections }: HomeViewProps) {
   const answered = visibleProgress?.totalAnsweredCount ?? 0;
 
   return (
-    <div className="relative min-h-screen overflow-hidden bg-zinc-50 text-zinc-950">
+    <div className="relative min-h-screen bg-zinc-50 text-zinc-950">
       <div className="pointer-events-none absolute inset-x-0 top-0 -z-10 h-72 bg-[radial-gradient(circle_at_top_left,_rgba(16,185,129,0.18),_transparent_35%),radial-gradient(circle_at_top_right,_rgba(39,39,42,0.08),_transparent_28%)]" />
       <AppHeader />
       <main className="mx-auto flex w-full max-w-6xl flex-col gap-8 px-4 py-8 sm:py-10">
@@ -100,9 +110,11 @@ export function HomeView({ sections }: HomeViewProps) {
             <CardHeader>
               <CardTitle>学習記録サマリー</CardTitle>
               <p className="text-sm text-zinc-500">
-                {isSignedIn
+                {answered > 0
                   ? `${answered} / ${totalQuestions} 問 回答済み`
-                  : "ログインすると進捗を保存できます"}
+                  : isSignedIn
+                    ? "まだ回答はありません"
+                    : "未ログインでも、このセッション内の学習記録を表示します"}
               </p>
             </CardHeader>
             <CardContent className="space-y-4">
@@ -126,7 +138,7 @@ export function HomeView({ sections }: HomeViewProps) {
                 </Button>
               ) : (
                 <Button asChild variant="outline" className="w-full">
-                  <Link href="/sign-up">無料で始める</Link>
+                  <Link href="/sign-in">ログインして学習記録を確認</Link>
                 </Button>
               )}
             </CardFooter>
@@ -148,14 +160,6 @@ export function HomeView({ sections }: HomeViewProps) {
                 <CardHeader>
                   <CardTitle>{section.name}</CardTitle>
                   <CardDescription>{section.description}</CardDescription>
-                  <CardAction>
-                    {completed ? (
-                      <span className="inline-flex items-center gap-1 rounded-full bg-emerald-100 px-2.5 py-1 text-xs font-medium text-emerald-800">
-                        <CheckCircle2 className="size-3.5" />
-                        完了
-                      </span>
-                    ) : null}
-                  </CardAction>
                 </CardHeader>
                 <CardContent className="mt-auto space-y-3">
                   <div className="flex items-center justify-between text-sm text-zinc-600">
