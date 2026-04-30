@@ -1,0 +1,266 @@
+{
+  "SEC01-001": {
+    "category": "現在地の確認",
+    "question": "今いるディレクトリのパスを確認するコマンドはどれですか？",
+    "choices": {
+      "A": "pwd",
+      "B": "ls",
+      "C": "cd",
+      "D": "env"
+    },
+    "explanation": "pwd は現在の作業ディレクトリのパスを表示します。どの場所で作業しているか確認したいときに使います。作業開始時にそのまま pwd と打って現在地を確かめる使い方が基本です。pwd は print working directory の略です。",
+    "categoryKey": "CAT-061"
+  },
+  "SEC01-002": {
+    "category": "ファイル一覧",
+    "question": "現在のディレクトリにあるファイルやフォルダを一覧表示するコマンドはどれですか？",
+    "choices": {
+      "A": "ls",
+      "B": "cd",
+      "C": "mkdir",
+      "D": "rm"
+    },
+    "explanation": "ls はファイルやフォルダを一覧表示します。-a で隠しファイル、-l で詳細情報も確認できます。まずは ls、詳しく見たいときは ls -la のように使います。ls は list の略です。",
+    "categoryKey": "CAT-023"
+  },
+  "SEC01-003": {
+    "category": "ディレクトリ移動",
+    "question": "別のディレクトリへ移動するコマンドはどれですか？",
+    "choices": {
+      "A": "pwd",
+      "B": "cd",
+      "C": "cat",
+      "D": "grep"
+    },
+    "explanation": "cd は作業ディレクトリを変更します。cd .. で1つ上の階層へ、cd <path> で指定した場所へ移動します。たとえばプロジェクトへ入るときは cd my-app のように打ちます。cd は change directory の略です。",
+    "categoryKey": "CAT-021"
+  },
+  "SEC01-004": {
+    "category": "ディレクトリ作成",
+    "question": "新しいディレクトリを作成するコマンドはどれですか？",
+    "choices": {
+      "A": "rm",
+      "B": "cat",
+      "C": "mkdir",
+      "D": "grep"
+    },
+    "explanation": "mkdir は新しいディレクトリを作成します。親ディレクトリもまとめて作る場合は mkdir -p を使います。新しい作業フォルダを作るときは mkdir docs のように使います。mkdir は make directory の略です。",
+    "categoryKey": "CAT-020"
+  },
+  "SEC01-005": {
+    "category": "ファイル作成",
+    "question": "空のファイルを作成するときによく使うコマンドはどれですか？",
+    "choices": {
+      "A": "touch",
+      "B": "which",
+      "C": "tail",
+      "D": "chmod"
+    },
+    "explanation": "touch はファイルが存在しない場合に空ファイルを作成します。既存ファイルに対しては更新日時を変更します。ひな形ファイルを先に用意したいときは touch index.js のように使います。更新日時に触れる、と覚えると理解しやすいです。",
+    "categoryKey": "CAT-024"
+  },
+  "SEC01-006": {
+    "category": "コピー",
+    "question": "ファイルをコピーする基本コマンドはどれですか？",
+    "choices": {
+      "A": "mv",
+      "B": "cp",
+      "C": "rm",
+      "D": "cd"
+    },
+    "explanation": "cp はファイルやディレクトリをコピーします。ディレクトリをコピーするときは cp -r のように再帰オプションを使います。設定ファイルの複製なら cp .env.example .env のように打ちます。cp は copy の略です。",
+    "categoryKey": "CAT-010"
+  },
+  "SEC01-007": {
+    "category": "移動・リネーム",
+    "question": "ファイルの移動や名前変更に使うコマンドはどれですか？",
+    "choices": {
+      "A": "mv",
+      "B": "mkdir",
+      "C": "grep",
+      "D": "env"
+    },
+    "explanation": "mv はファイルやディレクトリを移動します。同じ場所で別名を指定するとリネームにも使えます。名前変更なら mv old.txt new.txt のように使います。mv は move の略です。",
+    "categoryKey": "CAT-067"
+  },
+  "SEC01-008": {
+    "category": "削除",
+    "question": "ファイルを削除するコマンドはどれですか？",
+    "choices": {
+      "A": "cat",
+      "B": "rm",
+      "C": "pwd",
+      "D": "find"
+    },
+    "explanation": "rm はファイルを削除します。削除は元に戻せないことが多いため、対象パスを確認してから実行します。不要ファイルを消すときは rm memo.txt のように打ちます。rm は remove の略です。",
+    "categoryKey": "CAT-048"
+  },
+  "SEC01-009": {
+    "category": "ファイル内容表示",
+    "question": "短いテキストファイルの内容をそのまま表示するコマンドはどれですか？",
+    "choices": {
+      "A": "cat",
+      "B": "cd",
+      "C": "mkdir",
+      "D": "chmod"
+    },
+    "explanation": "cat は本来、複数の内容を連結して出力するコマンドですが、単体ファイルの内容表示にもよく使います。短い設定ファイルを見るときは cat package.json のように使えます。cat は concatenate の略です。",
+    "categoryKey": "CAT-025"
+  },
+  "SEC01-010": {
+    "category": "ページ表示",
+    "question": "長いファイルをスクロールしながら読むときに適したコマンドはどれですか？",
+    "choices": {
+      "A": "clear",
+      "B": "less",
+      "C": "touch",
+      "D": "which"
+    },
+    "explanation": "less は長い出力をページ単位で確認できます。上下移動や検索ができるため、ログや大きめのファイル確認に便利です。たとえば less README.md と打って、q で終了します。",
+    "categoryKey": "CAT-033"
+  },
+  "SEC01-011": {
+    "category": "先頭表示",
+    "question": "ファイルの先頭部分だけを確認するコマンドはどれですか？",
+    "choices": {
+      "A": "tail",
+      "B": "head",
+      "C": "find",
+      "D": "history"
+    },
+    "explanation": "head はファイルの先頭部分を表示します。CSVやログの形式を軽く確認したいときに使います。冒頭だけ見たいときは head users.csv のように使います。",
+    "categoryKey": "CAT-045"
+  },
+  "SEC01-012": {
+    "category": "末尾表示",
+    "question": "ログファイルの末尾を確認するコマンドはどれですか？",
+    "choices": {
+      "A": "tail",
+      "B": "man",
+      "C": "cp",
+      "D": "echo"
+    },
+    "explanation": "tail はファイルの末尾部分を表示します。tail -f を使うと追記されるログを継続して確認できます。最新ログを追うときは tail -f app.log のように使います。",
+    "categoryKey": "CAT-058"
+  },
+  "SEC01-013": {
+    "category": "テキスト検索",
+    "question": "ファイルや出力の中から特定の文字列を探すコマンドはどれですか？",
+    "choices": {
+      "A": "grep",
+      "B": "mkdir",
+      "C": "pwd",
+      "D": "mv"
+    },
+    "explanation": "grep は指定した文字列やパターンに一致する行を探します。ログや設定ファイルから必要な行を見つけるときに使います。たとえば grep PORT .env で設定値の行を探せます。grep は global regular expression print に由来します。",
+    "categoryKey": "CAT-018"
+  },
+  "SEC01-014": {
+    "category": "ファイル検索",
+    "question": "ディレクトリ配下からファイル名や条件でファイルを探すコマンドはどれですか？",
+    "choices": {
+      "A": "cat",
+      "B": "find",
+      "C": "export",
+      "D": "clear"
+    },
+    "explanation": "find は指定した場所からファイルやディレクトリを検索します。find . -name '*.ts' のように条件を付けて使います。ファイル名をうろ覚えのときにそのまま実行すると探しやすいです。",
+    "categoryKey": "CAT-026"
+  },
+  "SEC01-015": {
+    "category": "文字列出力",
+    "question": "指定した文字列や変数の値を表示するコマンドはどれですか？",
+    "choices": {
+      "A": "echo",
+      "B": "chmod",
+      "C": "less",
+      "D": "rm"
+    },
+    "explanation": "echo は指定した文字列をそのまま返すように表示します。echo $PATH のように環境変数の値を確認するときにも使います。まずは echo hello や echo $HOME のように試すと動きが分かりやすいです。",
+    "categoryKey": "CAT-055"
+  },
+  "SEC01-016": {
+    "category": "環境変数確認",
+    "question": "現在の環境変数を一覧表示するコマンドはどれですか？",
+    "choices": {
+      "A": "which",
+      "B": "env",
+      "C": "head",
+      "D": "mkdir"
+    },
+    "explanation": "env は現在の環境変数を一覧表示します。APIキーやPATHなど、プロセスに渡される設定の確認に使います。まとめて確認したいときは env とだけ打てば一覧が出ます。env は environment の略です。",
+    "categoryKey": "CAT-063"
+  },
+  "SEC01-017": {
+    "category": "環境変数設定",
+    "question": "現在のシェルから起動するコマンドへ環境変数を渡せるようにするコマンドはどれですか？",
+    "choices": {
+      "A": "export",
+      "B": "history",
+      "C": "tail",
+      "D": "cp"
+    },
+    "explanation": "export は環境変数を現在のシェルの子プロセスへ渡せるようにします。export NODE_ENV=production のように使います。コマンド実行前に一時的な設定を入れたい場面でよく使います。",
+    "categoryKey": "CAT-064"
+  },
+  "SEC01-018": {
+    "category": "権限変更",
+    "question": "スクリプトファイルに実行権限を付けるときに使うコマンドはどれですか？",
+    "choices": {
+      "A": "grep",
+      "B": "chmod",
+      "C": "pwd",
+      "D": "touch"
+    },
+    "explanation": "chmod はファイルの権限を変更します。スクリプトを直接実行したい場合は chmod +x script.sh のように使います。ダウンロードしたシェルスクリプトを実行可能にするときの定番です。chmod は change mode の略で、mode はファイル権限の状態を指します。",
+    "categoryKey": "CAT-059"
+  },
+  "SEC01-019": {
+    "category": "ヘルプ確認",
+    "question": "コマンドの詳しいマニュアルを確認するコマンドはどれですか？",
+    "choices": {
+      "A": "man",
+      "B": "mv",
+      "C": "cat",
+      "D": "env"
+    },
+    "explanation": "man はコマンドのマニュアルを表示します。使い方やオプションを詳しく確認したいときに使います。たとえば man ls と打つと ls の説明を開けます。man は manual の略です。",
+    "categoryKey": "CAT-032"
+  },
+  "SEC01-020": {
+    "category": "コマンドの場所確認",
+    "question": "実行されるコマンドの実体パスを確認するコマンドはどれですか？",
+    "choices": {
+      "A": "which",
+      "B": "less",
+      "C": "find",
+      "D": "mkdir"
+    },
+    "explanation": "which はシェルがどのコマンド実体を実行するか、その場所を表示します。複数バージョンのツールがあるときの確認に役立ちます。たとえば which node で実際の実行先を確かめられます。",
+    "categoryKey": "CAT-011"
+  },
+  "SEC01-021": {
+    "category": "画面整理",
+    "question": "ターミナル画面の表示を消して見やすくするコマンドはどれですか？",
+    "choices": {
+      "A": "rm",
+      "B": "clear",
+      "C": "head",
+      "D": "export"
+    },
+    "explanation": "clear はターミナル画面の表示を整理します。ファイルや履歴を削除するわけではありません。出力が増えて見づらくなったら clear と打って画面だけを整えます。",
+    "categoryKey": "CAT-065"
+  },
+  "SEC01-022": {
+    "category": "履歴確認",
+    "question": "過去に実行したコマンドの履歴を確認するコマンドはどれですか？",
+    "choices": {
+      "A": "history",
+      "B": "chmod",
+      "C": "touch",
+      "D": "cat"
+    },
+    "explanation": "history は過去に実行したコマンドを一覧表示します。以前使った長いコマンドを探すときに便利です。直前までの操作を振り返りたいときに history と打って確認します。",
+    "categoryKey": "CAT-053"
+  }
+}

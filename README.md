@@ -9,7 +9,7 @@ The app uses static TypeScript question data and stores learning progress in Neo
 - 6 learning sections
 - 118 questions across all sections
 - Account authentication with Clerk is implemented in `dev`
-- Progress saved to Neon per authenticated account
+- Progress saved to Neon per authenticated app user
 - Auth methods: Email, GitHub, Google
 - In-progress sections resume from the next unanswered question
 - Anonymous `localStorage` learner IDs are legacy MVP data and should only be used for migration
@@ -90,18 +90,24 @@ Target behavior:
 - Clerk is the authentication provider.
 - Email is enabled in Clerk sign-in methods.
 - GitHub and Google are the supported Clerk social connections.
-- Public routes: `/`, `/sign-in`, `/sign-up`.
-- Authenticated routes: `/section/[sectionId]`, `/section/[sectionId]/result`, `/progress`.
+- Public routes: `/`, `/section/[sectionId]`, `/section/[sectionId]/result`, `/sign-in`, `/sign-up`.
+- Authenticated route: `/progress`.
 - Progress APIs require an authenticated Clerk user.
-- The server derives ownership from Clerk `userId`; clients must not send ownership IDs for authorization.
-- Neon progress records are owned by an app account mapped to Clerk `userId`.
+- The server derives ownership from Clerk identity resolution; clients must not send ownership IDs for authorization.
+- Neon progress records are owned by app-level `users.id`, while Clerk `userId` is treated as an external identity.
 - Existing anonymous `localStorage` learner progress may be migrated once after sign-in, then the account record becomes the source of truth.
+- Unauthenticated quiz answers are stored only in `sessionStorage` and reflected only on the home page summary/cards and anonymous result view.
 
 Legacy MVP behavior:
 
-- `localStorage` key `cli-dojo:learner-id` currently identifies progress.
-- `X-Learner-Id` currently carries that ID to Route Handlers.
-- This should be replaced by server-side authenticated user lookup during the auth migration.
+- `localStorage` key `cli-dojo:learner-id` is kept only for legacy progress migration.
+- `X-Learner-Id` is only sent to support legacy progress migration on sign-in.
+
+Anonymous session behavior:
+
+- `sessionStorage` key `cli-dojo:anonymous-progress` stores unauthenticated quiz answers for the current browser session only.
+- This anonymous session progress is visible on the home page and anonymous result view.
+- The detailed progress page `/progress` is not available without sign-in.
 
 ## Database
 
@@ -111,19 +117,33 @@ Migration files:
 db/migrations/001_create_learning_progress_tables.sql
 db/migrations/002_drop_total_questions_default.sql
 db/migrations/003_clear_reordered_section_progress.sql
+db/migrations/004_add_accounts_and_authenticated_progress.sql
+db/migrations/005_add_account_preferences.sql
+db/migrations/006_add_users_and_user_identities.sql
+```
+
+Manual operation helper:
+
+```text
+db/operations/001_merge_duplicate_user_ownership.sql
 ```
 
 Current Neon tables:
 
-- `accounts` (planned)
+- `users`
+- `user_identities`
+- `accounts`
 - `section_attempts`
 - `answer_records`
 
-Planned ownership model:
+Current ownership model:
 
-- `accounts.clerk_user_id` stores the external Clerk user ID.
-- `section_attempts.account_id` references `accounts.id`.
-- `answer_records.account_id` references `accounts.id`.
+- `users.id` is the source of truth for learning progress ownership.
+- `user_identities` stores external auth identities such as Clerk `userId`.
+- `accounts.user_id` references `users.id`.
+- `section_attempts.user_id` references `users.id`.
+- `answer_records.user_id` references `users.id`.
+- `account_id` columns remain temporarily for compatibility during the ownership-key transition.
 - Legacy `learner_id` columns remain only long enough to migrate anonymous progress.
 
 Question data is not stored in Neon. It is stored in TypeScript files:

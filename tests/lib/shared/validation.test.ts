@@ -4,6 +4,7 @@ import {
   isChoiceId,
   isLearnerId,
   isSectionId,
+  parseAnonymousProgressState,
   validateQuestionData,
 } from "../../../lib/shared/validation";
 import type { Question } from "../../../types";
@@ -33,11 +34,38 @@ describe("validation helpers", () => {
     expect(isLearnerId("550e8400-e29b-61d4-a716-446655440000")).toBe(false);
   });
 
+  it("sanitizes anonymous progress payloads", () => {
+    expect(
+      parseAnonymousProgressState({
+        "SEC-01": {
+          answers: {
+            "SEC01-001": "A",
+            "SEC01-002": "Z",
+          },
+          latestAnsweredAt: "2026-05-01T00:00:00.000Z",
+        },
+        "SEC-99": {
+          answers: {
+            "SEC99-001": "A",
+          },
+        },
+      }),
+    ).toEqual({
+      "SEC-01": {
+        answers: {
+          "SEC01-001": "A",
+        },
+        latestAnsweredAt: "2026-05-01T00:00:00.000Z",
+      },
+    });
+  });
+
   it("validates correct question data", () => {
     const questions: Question[] = [
       {
         id: "SEC01-001",
         sectionId: "SEC-01",
+        categoryKey: "CAT-023",
         category: "ファイル操作",
         command: "ls",
         question: "現在のディレクトリにあるファイルやフォルダを一覧表示するコマンドはどれですか？",
@@ -62,7 +90,8 @@ describe("validation helpers", () => {
     const questions: Question[] = [
       {
         id: "SEC01-001",
-        sectionId: "SEC-99",
+        sectionId: "SEC-99" as unknown as Question["sectionId"],
+        categoryKey: "CAT-023",
         category: "ファイル操作",
         command: "ls",
         question: "現在のディレクトリにあるファイルやフォルダを一覧表示するコマンドはどれですか？",
@@ -77,6 +106,7 @@ describe("validation helpers", () => {
       {
         id: "SEC01-001",
         sectionId: "SEC-01",
+        categoryKey: "CAT-020",
         category: "ファイル操作",
         command: "mkdir",
         question: "新しいディレクトリを作成するコマンドはどれですか？",

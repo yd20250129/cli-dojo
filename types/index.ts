@@ -7,11 +7,31 @@ export type SectionId =
   | "SEC-06";
 
 export type ChoiceId = "A" | "B" | "C" | "D";
+export type Locale = "ja" | "en";
+export type Region = "JP" | "US";
+export type Currency = "JPY" | "USD";
+export type CategoryKey = string;
+export type LegalDocumentKind = "terms" | "privacy";
+
+export type UserPreferences = {
+  locale: Locale;
+  region: Region;
+  timezone: string;
+  currency: Currency;
+};
 
 export type AttemptStatus = "in_progress" | "completed";
 
-export type Account = {
+export type AnonymousSectionProgress = {
+  answers: Record<string, ChoiceId>;
+  latestAnsweredAt: string | null;
+};
+
+export type AnonymousProgressState = Partial<Record<SectionId, AnonymousSectionProgress>>;
+
+export type Account = UserPreferences & {
   id: string;
+  userId: string;
   clerkUserId: string;
   createdAt: string;
   updatedAt: string;
@@ -30,9 +50,40 @@ export type Choice = {
   text: string;
 };
 
+export type QuestionDef = {
+  id: string;
+  sectionId: SectionId;
+  command: string;
+  answer: ChoiceId;
+  choiceIds: readonly ChoiceId[];
+};
+
+export type LocalizedQuestion = {
+  categoryKey: CategoryKey;
+  question: string;
+  choices: Record<ChoiceId, string>;
+  explanation: string;
+};
+
+export type QuestionLocaleMap = Record<string, LocalizedQuestion>;
+
+export type SectionDef = {
+  id: SectionId;
+  order: number;
+  questionCount: number;
+};
+
+export type LocalizedSection = {
+  name: string;
+  description: string;
+};
+
+export type SectionLocaleMap = Record<SectionId, LocalizedSection>;
+
 export type Question = {
   id: string;
   sectionId: SectionId;
+  categoryKey: CategoryKey;
   category: string;
   command: string;
   question: string;
@@ -43,7 +94,8 @@ export type Question = {
 
 export type SectionAttempt = {
   id: string;
-  accountId: string;
+  userId: string | null;
+  accountId: string | null;
   sectionId: SectionId;
   attemptNo: number;
   status: AttemptStatus;
@@ -60,7 +112,8 @@ export type CurrentSectionAttempt = SectionAttempt & {
 export type AnswerRecord = {
   id: string;
   attemptId: string;
-  accountId: string;
+  userId: string | null;
+  accountId: string | null;
   sectionId: SectionId;
   questionId: string;
   selectedChoiceId: ChoiceId;
@@ -103,6 +156,21 @@ export type SaveAnswerRequest = {
   sectionId: SectionId;
   questionId: string;
   selectedChoiceId: ChoiceId;
+};
+
+export type MigrateAnonymousProgressRequest = {
+  anonymousProgress: AnonymousProgressState;
+};
+
+export type MigrateProgressResultReason =
+  | "migrated"
+  | "account_progress_exists"
+  | "no_legacy_progress"
+  | "no_anonymous_progress";
+
+export type MigrateProgressResult = {
+  migrated: boolean;
+  reason: MigrateProgressResultReason;
 };
 
 export type IncorrectAnswer = {

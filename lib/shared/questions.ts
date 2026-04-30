@@ -5,7 +5,8 @@ import { sec03Questions } from "@/data/questions/sec03";
 import { sec04Questions } from "@/data/questions/sec04";
 import { sec05Questions } from "@/data/questions/sec05";
 import { sec06Questions } from "@/data/questions/sec06";
-import type { Question, SectionId } from "@/types";
+import { defaultLocale } from "@/lib/i18n/config";
+import type { Locale, Question, Section, SectionId } from "@/types";
 
 export const questions = [
   ...sec01Questions,
@@ -16,18 +17,38 @@ export const questions = [
   ...sec06Questions,
 ] satisfies Question[];
 
-export function getSections() {
-  return [...sections].sort((a, b) => a.order - b.order);
+const sectionCatalogs: Record<Locale, Section[]> = {
+  ja: sections,
+  en: sections,
+};
+
+const questionCatalogs: Record<Locale, Question[]> = {
+  ja: questions,
+  en: questions,
+};
+
+export function getSectionsForLocale(locale: Locale): Section[] {
+  return [...(sectionCatalogs[locale] ?? sectionCatalogs[defaultLocale])].sort(
+    (a, b) => a.order - b.order,
+  );
 }
 
-export function getSectionById(sectionId: string) {
-  return sections.find((section) => section.id === sectionId) ?? null;
+export function getQuestionsForLocale(locale: Locale): Question[] {
+  return [...(questionCatalogs[locale] ?? questionCatalogs[defaultLocale])];
 }
 
-export function getQuestionsBySectionId(sectionId: SectionId) {
-  return questions.filter((question) => question.sectionId === sectionId);
+export function getSections(locale: Locale = defaultLocale) {
+  return getSectionsForLocale(locale);
 }
 
-export function getQuestionById(questionId: string) {
-  return questions.find((question) => question.id === questionId) ?? null;
+export function getSectionById(sectionId: string, locale: Locale = defaultLocale) {
+  return getSectionsForLocale(locale).find((section) => section.id === sectionId) ?? null;
+}
+
+export function getQuestionsBySectionId(sectionId: SectionId, locale: Locale = defaultLocale) {
+  return getQuestionsForLocale(locale).filter((question) => question.sectionId === sectionId);
+}
+
+export function getQuestionById(questionId: string, locale: Locale = defaultLocale) {
+  return getQuestionsForLocale(locale).find((question) => question.id === questionId) ?? null;
 }

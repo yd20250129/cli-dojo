@@ -1,4 +1,10 @@
-import type { ChoiceId, Question, SectionId } from "@/types";
+import type {
+  AnonymousProgressState,
+  AnonymousSectionProgress,
+  ChoiceId,
+  Question,
+  SectionId,
+} from "@/types";
 
 const sectionIds = ["SEC-01", "SEC-02", "SEC-03", "SEC-04", "SEC-05", "SEC-06"] as const;
 const choiceIds = ["A", "B", "C", "D"] as const;
@@ -18,6 +24,50 @@ export function isChoiceId(value: string): value is ChoiceId {
 
 export function isLearnerId(value: string): boolean {
   return /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i.test(value);
+}
+
+function isAnonymousSectionProgress(
+  value: unknown,
+): value is { answers?: unknown; latestAnsweredAt?: unknown } {
+  return Boolean(value && typeof value === "object" && !Array.isArray(value));
+}
+
+export function parseAnonymousProgressState(value: unknown): AnonymousProgressState {
+  if (!value || typeof value !== "object" || Array.isArray(value)) {
+    return {};
+  }
+
+  const parsed: AnonymousProgressState = {};
+
+  for (const [sectionKey, rawSection] of Object.entries(value)) {
+    if (!isSectionId(sectionKey) || !isAnonymousSectionProgress(rawSection)) {
+      continue;
+    }
+
+    const rawAnswers = rawSection.answers;
+
+    if (!rawAnswers || typeof rawAnswers !== "object" || Array.isArray(rawAnswers)) {
+      continue;
+    }
+
+    const answers: Record<string, ChoiceId> = {};
+
+    for (const [questionId, choiceId] of Object.entries(rawAnswers)) {
+      if (typeof questionId === "string" && typeof choiceId === "string" && isChoiceId(choiceId)) {
+        answers[questionId] = choiceId;
+      }
+    }
+
+    const sectionState: AnonymousSectionProgress = {
+      answers,
+      latestAnsweredAt:
+        typeof rawSection.latestAnsweredAt === "string" ? rawSection.latestAnsweredAt : null,
+    };
+
+    parsed[sectionKey] = sectionState;
+  }
+
+  return parsed;
 }
 
 export function validateQuestionData(questions: Question[]): ValidationResult {

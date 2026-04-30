@@ -9,7 +9,7 @@ export async function POST(
   try {
     const account = await getAuthenticatedAccount(request);
     const { attemptId } = await context.params;
-    const attempt = await completeAttempt({ accountId: account.id, attemptId });
+    const attempt = await completeAttempt({ userId: account.userId, attemptId });
 
     return Response.json({ data: attempt });
   } catch (error) {

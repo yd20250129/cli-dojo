@@ -1,0 +1,218 @@
+{
+  "SEC02-001": {
+    "category": "初期化",
+    "question": "新しいNode.jsプロジェクトで package.json を作成するときに使うコマンドはどれですか？",
+    "choices": {
+      "A": "npm init",
+      "B": "npm run",
+      "C": "npm update",
+      "D": "npm list"
+    },
+    "explanation": "npm init は対話形式で package.json を作成します。package.json は依存パッケージや scripts などを管理する設定ファイルです。新規フォルダで最初の設定ファイルを作るときに npm init と打って進めます。npm はもともと Node Package Manager に由来します。",
+    "categoryKey": "CAT-047"
+  },
+  "SEC02-002": {
+    "category": "初期化",
+    "question": "質問に答えず、標準設定で package.json をすばやく作成するコマンドはどれですか？",
+    "choices": {
+      "A": "npm init -y",
+      "B": "npm install -y",
+      "C": "npm run -y",
+      "D": "npm ci -y"
+    },
+    "explanation": "npm init -y は yes を指定して、標準設定の package.json を作成します。学習用や小さな検証プロジェクトをすばやく始めたいときに便利です。まず土台だけ用意したい場面で npm init -y とそのまま実行します。",
+    "categoryKey": "CAT-047"
+  },
+  "SEC02-003": {
+    "category": "インストール",
+    "question": "package.json に書かれた依存パッケージをまとめてインストールするコマンドはどれですか？",
+    "choices": {
+      "A": "npm run dev",
+      "B": "npm install",
+      "C": "npm test",
+      "D": "npm run build"
+    },
+    "explanation": "npm install は package.json に定義された依存パッケージをインストールします。node_modules がないときや、依存関係を入れ直したいときに使います。リポジトリを clone した直後にまず npm install を実行する流れが定番です。",
+    "categoryKey": "CAT-007"
+  },
+  "SEC02-004": {
+    "category": "インストール",
+    "question": "lodash のような新しいパッケージを依存関係として追加する基本形はどれですか？",
+    "choices": {
+      "A": "npm install <package>",
+      "B": "npm run <package>",
+      "C": "npm list <package>",
+      "D": "npm ci <package>"
+    },
+    "explanation": "npm install <package> は指定したパッケージをインストールし、通常は package.json の dependencies に追加します。アプリ実行時に必要なライブラリを追加するときに使います。例えば npm install lodash のようにパッケージ名を続けて指定します。",
+    "categoryKey": "CAT-007"
+  },
+  "SEC02-005": {
+    "category": "開発用依存",
+    "question": "TypeScript や ESLint など、開発中だけ使うパッケージを devDependencies に追加するコマンドはどれですか？",
+    "choices": {
+      "A": "npm install -D <package>",
+      "B": "npm install -g <package>",
+      "C": "npm update <package>",
+      "D": "npm uninstall <package>"
+    },
+    "explanation": "npm install -D <package> は指定したパッケージを devDependencies に追加します。-D は --save-dev の短縮形です。たとえば npm install -D eslint のように開発補助ツールを入れるときに使います。",
+    "categoryKey": "CAT-072"
+  },
+  "SEC02-006": {
+    "category": "グローバルインストール",
+    "question": "CLIツールをPC全体で使えるようにグローバルインストールするコマンドはどれですか？",
+    "choices": {
+      "A": "npm install -D <package>",
+      "B": "npm install -g <package>",
+      "C": "npm run <package>",
+      "D": "npm ci <package>"
+    },
+    "explanation": "npm install -g <package> はパッケージをグローバルにインストールします。プロジェクトごとの依存ではなく、端末全体で使うCLIツール向けです。たとえば npm install -g vercel のようにCLIを入れる場面で使います。-g は --global の短縮形です。",
+    "categoryKey": "CAT-009"
+  },
+  "SEC02-007": {
+    "category": "ロックファイル",
+    "question": "CIや本番ビルドで package-lock.json に従って依存関係を再現性高くインストールするコマンドはどれですか？",
+    "choices": {
+      "A": "npm ci",
+      "B": "npm init",
+      "C": "npm outdated",
+      "D": "npm uninstall"
+    },
+    "explanation": "npm ci は package-lock.json をもとに依存関係をクリーンにインストールします。開発中の追加作業より、CIや本番ビルドの再現性を重視する場面で使います。GitHub Actions などの自動実行環境で npm ci を使う形が典型です。ci は clean install に由来します。",
+    "categoryKey": "CAT-040"
+  },
+  "SEC02-008": {
+    "category": "削除",
+    "question": "不要になったパッケージをプロジェクトから削除するコマンドはどれですか？",
+    "choices": {
+      "A": "npm update <package>",
+      "B": "npm uninstall <package>",
+      "C": "npm list <package>",
+      "D": "npm run <package>"
+    },
+    "explanation": "npm uninstall <package> は指定したパッケージを削除し、package.json からも依存関係を外します。使わなくなったライブラリを整理するときに使います。削除したい名前をそのまま付けて npm uninstall lodash のように実行します。",
+    "categoryKey": "CAT-048"
+  },
+  "SEC02-009": {
+    "category": "更新",
+    "question": "package.json の範囲内でインストール済みパッケージを更新するコマンドはどれですか？",
+    "choices": {
+      "A": "npm update",
+      "B": "npm init",
+      "C": "npm run",
+      "D": "npm ci"
+    },
+    "explanation": "npm update は package.json で許可されたバージョン範囲内でパッケージを更新します。大きなバージョン更新を必ず行うコマンドではありません。依存関係をまとめて最新寄りにしたいときに npm update を使います。",
+    "categoryKey": "CAT-056"
+  },
+  "SEC02-010": {
+    "category": "更新確認",
+    "question": "更新可能なパッケージと現在のバージョンを確認するコマンドはどれですか？",
+    "choices": {
+      "A": "npm outdated",
+      "B": "npm uninstall",
+      "C": "npm run dev",
+      "D": "npm init -y"
+    },
+    "explanation": "npm outdated は現在入っているバージョン、許可範囲内の最新、公開されている最新を確認できます。更新前に影響を把握したいときに使います。いきなり更新せず、まず npm outdated で候補を眺める使い方が安全です。",
+    "categoryKey": "CAT-057"
+  },
+  "SEC02-011": {
+    "category": "依存関係確認",
+    "question": "インストール済みパッケージの依存関係ツリーを確認するコマンドはどれですか？",
+    "choices": {
+      "A": "npm list",
+      "B": "npm ci",
+      "C": "npm init",
+      "D": "npm uninstall"
+    },
+    "explanation": "npm list はインストール済みパッケージの依存関係を表示します。特定パッケージの導入状況や依存関係の確認に使います。依存ツリーを見たいときは npm list、個別確認なら npm list react のようにも使えます。",
+    "categoryKey": "CAT-043"
+  },
+  "SEC02-012": {
+    "category": "スクリプト実行",
+    "question": "package.json に定義された任意のスクリプトを実行するときの基本形はどれですか？",
+    "choices": {
+      "A": "npm run <script>",
+      "B": "npm add <script>",
+      "C": "npm clone <script>",
+      "D": "npm branch <script>"
+    },
+    "explanation": "npm run <script> は package.json の scripts に定義されたコマンドを実行します。例えば npm run dev や npm run build のように使います。まず package.json の scripts を見て、実行したい名前を npm run の後ろに付けます。",
+    "categoryKey": "CAT-014"
+  },
+  "SEC02-013": {
+    "category": "スクリプト確認",
+    "question": "package.json に定義されている実行可能な scripts を確認したいときに使えるコマンドはどれですか？",
+    "choices": {
+      "A": "npm run",
+      "B": "npm ci",
+      "C": "npm outdated",
+      "D": "npm uninstall"
+    },
+    "explanation": "npm run をスクリプト名なしで実行すると、利用可能な scripts を確認できます。どんな npm run コマンドが用意されているか調べたいときに便利です。初めて触るプロジェクトで npm run とだけ打って確認することがあります。",
+    "categoryKey": "CAT-015"
+  },
+  "SEC02-014": {
+    "category": "一時実行",
+    "question": "パッケージをグローバルインストールせず、一時的にCLIツールを実行するときによく使うコマンドはどれですか？",
+    "choices": {
+      "A": "npx <command>",
+      "B": "npm ci <command>",
+      "C": "npm list <command>",
+      "D": "pip freeze <command>"
+    },
+    "explanation": "npx <command> はパッケージに含まれるCLIを一時的に実行できます。create-next-app のような初回だけ使うツールでよく見かけます。たとえば npx create-next-app@latest my-app のように1回限りの実行で便利です。npx は npm package executor に由来します。",
+    "categoryKey": "CAT-042"
+  },
+  "SEC02-015": {
+    "category": "Yarn",
+    "question": "Yarnで新しいパッケージを追加するコマンドはどれですか？",
+    "choices": {
+      "A": "yarn add <package>",
+      "B": "yarn remove <package>",
+      "C": "yarn run <package>",
+      "D": "yarn list <package>"
+    },
+    "explanation": "yarn add <package> はYarnで依存パッケージを追加します。npm install <package> に近い役割です。Yarn採用プロジェクトでは yarn add zod のように追加します。",
+    "categoryKey": "CAT-005"
+  },
+  "SEC02-016": {
+    "category": "Yarn",
+    "question": "Yarnで不要なパッケージを削除するコマンドはどれですか？",
+    "choices": {
+      "A": "yarn add <package>",
+      "B": "yarn remove <package>",
+      "C": "yarn init <package>",
+      "D": "yarn ci <package>"
+    },
+    "explanation": "yarn remove <package> はYarnで指定したパッケージを削除します。npm uninstall <package> に近い役割です。不要になった依存を外すときは yarn remove zod のように使います。",
+    "categoryKey": "CAT-005"
+  },
+  "SEC02-017": {
+    "category": "pnpm",
+    "question": "pnpmで依存パッケージをインストールする基本コマンドはどれですか？",
+    "choices": {
+      "A": "pnpm install",
+      "B": "pnpm commit",
+      "C": "pnpm deploy",
+      "D": "pnpm branch"
+    },
+    "explanation": "pnpm install はpnpmで依存パッケージをインストールします。npm install に近い役割ですが、ディスク容量を節約しやすい仕組みを持っています。pnpm管理のリポジトリを取得したら、最初に pnpm install を実行します。pnpm は performant npm に由来します。",
+    "categoryKey": "CAT-006"
+  },
+  "SEC02-018": {
+    "category": "Python",
+    "question": "Pythonプロジェクトでパッケージをインストールするときによく使うコマンドはどれですか？",
+    "choices": {
+      "A": "pip install <package>",
+      "B": "pip run <package>",
+      "C": "pip branch <package>",
+      "D": "pip build <package>"
+    },
+    "explanation": "pip install <package> はPythonのパッケージをインストールします。Node.jsのnpmとは別のエコシステムで使うパッケージ管理コマンドです。たとえば pip install requests のように必要なライブラリ名を指定します。pip は Pip Installs Packages に由来します。",
+    "categoryKey": "CAT-004"
+  }
+}

@@ -7,6 +7,7 @@ import { useEffect, useMemo, useState } from "react";
 import { CheckCircle2, CircleAlert, CircleCheckBig, Info, XCircle } from "lucide-react";
 import { toast } from "sonner";
 
+import { getTranslator } from "@/lib/i18n";
 import { AppHeader } from "@/components/app-header";
 import { Button } from "@/components/ui/button";
 import {
@@ -25,14 +26,15 @@ import {
 import { completeAttempt, saveAnswer, startAttempt } from "@/lib/client/api";
 import { getResumeQuestionIndex } from "@/lib/shared/resume";
 import { cn } from "@/lib/utils";
-import type { ChoiceId, Question, Section, SectionAttempt } from "@/types";
+import type { ChoiceId, Locale, Question, Section, SectionAttempt } from "@/types";
 
 type QuizViewProps = {
+  locale: Locale;
   section: Section;
   questions: Question[];
 };
 
-export function QuizView({ section, questions }: QuizViewProps) {
+export function QuizView({ locale, section, questions }: QuizViewProps) {
   const { isLoaded, userId } = useAuth();
   const router = useRouter();
   const [attempt, setAttempt] = useState<SectionAttempt | null>(null);
@@ -42,6 +44,7 @@ export function QuizView({ section, questions }: QuizViewProps) {
   const [startError, setStartError] = useState("");
 
   const isSignedIn = isLoaded && Boolean(userId);
+  const t = getTranslator(locale);
 
   const currentQuestion = questions[currentIndex];
   const isLastQuestion = currentIndex === questions.length - 1;
@@ -49,6 +52,8 @@ export function QuizView({ section, questions }: QuizViewProps) {
   const progressValue = ((currentIndex + (selectedChoiceId ? 1 : 0)) / questions.length) * 100;
 
   useEffect(() => {
+    const translate = getTranslator(locale);
+
     if (!isLoaded) {
       return;
     }
@@ -86,7 +91,7 @@ export function QuizView({ section, questions }: QuizViewProps) {
                 router.push(`/section/${section.id}/result?attemptId=${data.id}`);
               })
               .catch(() => {
-                setStartError("結果を保存できませんでした");
+                setStartError(translate("quiz.errors.startSaveFailed"));
               });
             return;
           }
@@ -97,14 +102,14 @@ export function QuizView({ section, questions }: QuizViewProps) {
       })
       .catch(() => {
         if (active) {
-          setStartError("学習を開始できませんでした");
+          setStartError(translate("quiz.errors.startFailed"));
         }
       });
 
     return () => {
       active = false;
     };
-  }, [isLoaded, isSignedIn, questions, router, section.id]);
+  }, [isLoaded, isSignedIn, locale, questions, router, section.id]);
 
   const correctChoiceText = useMemo(() => {
     return currentQuestion?.choices.find((choice) => choice.id === currentQuestion.answer)?.text ?? "";
@@ -140,7 +145,7 @@ export function QuizView({ section, questions }: QuizViewProps) {
         selectedChoiceId: choiceId,
       });
     } catch {
-      toast.warning("進捗を保存できませんでした。学習は続けられます");
+      toast.warning(t("quiz.errors.progressSaveFailed"));
     } finally {
       setIsSaving(false);
     }
@@ -166,23 +171,23 @@ export function QuizView({ section, questions }: QuizViewProps) {
       await completeAttempt(attempt.id);
       router.push(`/section/${section.id}/result?attemptId=${attempt.id}`);
     } catch {
-      toast.error("結果を保存できませんでした");
+      toast.error(t("quiz.errors.resultSaveFailed"));
     }
   }
 
   if (questions.length === 0) {
     return (
       <div className="min-h-screen bg-zinc-50">
-        <AppHeader />
+        <AppHeader locale={locale} />
         <main className="mx-auto max-w-3xl px-4 py-10">
           <Card className="rounded-lg">
             <CardHeader>
-              <CardTitle>問題データがありません</CardTitle>
-              <CardDescription>別のセクションを選択してください。</CardDescription>
+              <CardTitle>{t("quiz.empty.title")}</CardTitle>
+              <CardDescription>{t("quiz.empty.description")}</CardDescription>
             </CardHeader>
             <CardFooter>
               <Button asChild>
-                <Link href="/">ホームへ戻る</Link>
+                <Link href="/">{t("app.common.backHome")}</Link>
               </Button>
             </CardFooter>
           </Card>
@@ -193,7 +198,7 @@ export function QuizView({ section, questions }: QuizViewProps) {
 
   return (
     <div className="min-h-screen bg-zinc-50 text-zinc-950">
-      <AppHeader />
+      <AppHeader locale={locale} />
       <main className="mx-auto flex w-full max-w-4xl flex-col gap-6 px-4 py-8">
         <div className="flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
           <div>
@@ -205,7 +210,10 @@ export function QuizView({ section, questions }: QuizViewProps) {
         <Card className="rounded-2xl border-zinc-200/80 bg-white/90 shadow-sm">
           <CardHeader>
             <CardTitle>
-              {currentIndex + 1} / {questions.length} 問
+              {t("quiz.header.progress", {
+                current: currentIndex + 1,
+                total: questions.length,
+              })}
             </CardTitle>
             <CardDescription>{currentQuestion.category}</CardDescription>
           </CardHeader>
@@ -267,22 +275,29 @@ export function QuizView({ section, questions }: QuizViewProps) {
                     <XCircle className="size-5 text-red-600" />
                   )}
                   <p className={cn("font-semibold", isCorrect ? "text-emerald-700" : "text-red-700")}>
-                    {isCorrect ? "正解！" : "不正解"}
+                    {isCorrect ? t("quiz.feedback.correct") : t("quiz.feedback.incorrect")}
                   </p>
                 </div>
                 {!isCorrect ? (
                   <p className="mt-3 flex items-start gap-2 text-sm text-zinc-600">
                     <Info className="mt-0.5 size-4 shrink-0 text-zinc-500" />
-                    正解は {currentQuestion.answer}: {correctChoiceText}
+                    {t("quiz.feedback.correctChoice", {
+                      choiceId: currentQuestion.answer,
+                      choiceText: correctChoiceText,
+                    })}
                   </p>
                 ) : null}
                 <div className="mt-4 grid gap-3 sm:grid-cols-2">
                   <div className="rounded-xl border border-zinc-200 bg-white p-3">
-                    <p className="text-xs font-medium uppercase tracking-[0.2em] text-zinc-500">あなたの選択</p>
+                    <p className="text-xs font-medium uppercase tracking-[0.2em] text-zinc-500">
+                      {t("quiz.feedback.yourChoice")}
+                    </p>
                     <p className="mt-1 text-base font-semibold text-zinc-900">{selectedChoiceId}</p>
                   </div>
                   <div className="rounded-xl border border-emerald-200 bg-emerald-50 p-3">
-                    <p className="text-xs font-medium uppercase tracking-[0.2em] text-emerald-700">正解</p>
+                    <p className="text-xs font-medium uppercase tracking-[0.2em] text-emerald-700">
+                      {t("quiz.feedback.answer")}
+                    </p>
                     <p className="mt-1 text-base font-semibold text-emerald-900">
                       {currentQuestion.answer}: {correctChoiceText}
                     </p>
@@ -298,10 +313,14 @@ export function QuizView({ section, questions }: QuizViewProps) {
           <CardFooter className="border-t bg-zinc-50/90 py-4 backdrop-blur">
             <div className="flex w-full flex-col gap-3 sm:flex-row sm:justify-end">
               <Button asChild className="w-full sm:w-auto" variant="outline">
-                <Link href="/">ホームへ戻る</Link>
+                <Link href="/">{t("app.common.backHome")}</Link>
               </Button>
               <Button className="w-full sm:w-auto" disabled={!selectedChoiceId || isSaving} onClick={handleNext}>
-                {isSaving ? "保存中..." : isLastQuestion ? "結果を見る" : "次の問題へ"}
+                {isSaving
+                  ? t("quiz.actions.saving")
+                  : isLastQuestion
+                    ? t("quiz.actions.viewResult")
+                    : t("quiz.actions.next")}
               </Button>
             </div>
           </CardFooter>

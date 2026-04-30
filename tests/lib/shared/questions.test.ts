@@ -10,8 +10,10 @@ import { sections } from "../../../data/sections";
 import {
   getQuestionById,
   getQuestionsBySectionId,
+  getQuestionsForLocale,
   getSectionById,
   getSections,
+  getSectionsForLocale,
   questions,
 } from "../../../lib/shared/questions";
 import { validateQuestionData } from "../../../lib/shared/validation";
@@ -53,5 +55,10 @@ describe("question catalogue", () => {
     expect(sec04Questions).toEqual(getQuestionsBySectionId("SEC-04"));
     expect(sec05Questions).toEqual(getQuestionsBySectionId("SEC-05"));
     expect(sec06Questions).toEqual(getQuestionsBySectionId("SEC-06"));
+  });
+
+  it("falls back to the Japanese catalog for en until translations are added", () => {
+    expect(getSectionsForLocale("en")).toEqual(getSectionsForLocale("ja"));
+    expect(getQuestionsForLocale("en")).toEqual(getQuestionsForLocale("ja"));
   });
 });

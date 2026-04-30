@@ -22,6 +22,7 @@ export async function POST(request: Request) {
     }
 
     const answer = await saveAnswer({
+      userId: account.userId,
       accountId: account.id,
       attemptId: body.attemptId,
       sectionId: body.sectionId,

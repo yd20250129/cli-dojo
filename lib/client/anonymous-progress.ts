@@ -6,6 +6,7 @@ import {
   getSections,
 } from "@/lib/shared/questions";
 import type {
+  AnonymousProgressState,
   ChoiceId,
   IncorrectAnswer,
   ProgressSummary,
@@ -18,8 +19,6 @@ type AnonymousSectionState = {
   answers: Record<string, ChoiceId>;
   latestAnsweredAt: string | null;
 };
-
-type AnonymousProgressState = Partial<Record<SectionId, AnonymousSectionState>>;
 
 const UPDATE_EVENT = "cli-dojo:anonymous-progress-updated";
 const STORAGE_KEY = "cli-dojo:anonymous-progress";
@@ -49,6 +48,10 @@ function readState(): AnonymousProgressState {
   } catch {
     return {};
   }
+}
+
+export function getAnonymousProgressState() {
+  return readState();
 }
 
 function readSerializedState() {
@@ -114,6 +117,10 @@ export function clearAnonymousSectionProgress(sectionId: SectionId) {
   const state = readState();
   delete state[sectionId];
   writeState(state);
+}
+
+export function clearAnonymousProgress() {
+  writeState({});
 }
 
 function buildIncorrectAnswers(sectionId: SectionId, answers: Record<string, ChoiceId>) {

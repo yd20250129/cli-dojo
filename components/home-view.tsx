@@ -5,6 +5,7 @@ import Link from "next/link";
 import { useEffect, useMemo, useState, useSyncExternalStore } from "react";
 import { ArrowRight, CheckCircle2, CircleGauge, Sparkles } from "lucide-react";
 
+import { getTranslator } from "@/lib/i18n";
 import { AppHeader } from "@/components/app-header";
 import { Button } from "@/components/ui/button";
 import {
@@ -21,9 +22,10 @@ import {
   subscribeAnonymousProgress,
 } from "@/lib/client/anonymous-progress";
 import { fetchProgress } from "@/lib/client/api";
-import type { ProgressSummary, Section } from "@/types";
+import type { Locale, ProgressSummary, Section } from "@/types";
 
 type HomeViewProps = {
+  locale: Locale;
   sections: Section[];
 };
 
@@ -31,13 +33,16 @@ function percent(value: number) {
   return Math.round(value * 100);
 }
 
-export function HomeView({ sections }: HomeViewProps) {
+export function HomeView({ locale, sections }: HomeViewProps) {
   const { isLoaded, userId } = useAuth();
   const [progress, setProgress] = useState<ProgressSummary | null>(null);
   const [error, setError] = useState("");
   const isSignedIn = isLoaded && Boolean(userId);
+  const t = getTranslator(locale);
 
   useEffect(() => {
+    const translate = getTranslator(locale);
+
     if (!isSignedIn) {
       return;
     }
@@ -53,14 +58,14 @@ export function HomeView({ sections }: HomeViewProps) {
       })
       .catch(() => {
         if (active) {
-          setError("進捗を読み込めませんでした");
+          setError(translate("home.errors.progressFetchFailed"));
         }
       });
 
     return () => {
       active = false;
     };
-  }, [isLoaded, isSignedIn]);
+  }, [isLoaded, isSignedIn, locale]);
 
   const anonymousProgress = useSyncExternalStore(
     subscribeAnonymousProgress,
@@ -81,51 +86,58 @@ export function HomeView({ sections }: HomeViewProps) {
   return (
     <div className="relative min-h-screen bg-zinc-50 text-zinc-950">
       <div className="pointer-events-none absolute inset-x-0 top-0 -z-10 h-72 bg-[radial-gradient(circle_at_top_left,_rgba(16,185,129,0.18),_transparent_35%),radial-gradient(circle_at_top_right,_rgba(39,39,42,0.08),_transparent_28%)]" />
-      <AppHeader />
+      <AppHeader locale={locale} />
       <main className="mx-auto flex w-full max-w-6xl flex-col gap-8 px-4 py-8 sm:py-10">
         <section className="grid gap-5 lg:grid-cols-[1.2fr_0.8fr]">
           <div className="flex h-full flex-col justify-center space-y-6 lg:pr-8">
             <div className="flex flex-wrap items-center gap-2">
               <span className="inline-flex items-center gap-1 rounded-full border border-emerald-200 bg-emerald-50 px-3 py-1 text-xs font-medium text-emerald-800">
                 <Sparkles className="size-3.5" />
-                Command Learner
+                {t("home.badges.commandLearner")}
               </span>
               <span className="inline-flex items-center gap-1 rounded-full border border-zinc-200 bg-white px-3 py-1 text-xs font-medium text-zinc-600">
                 <CheckCircle2 className="size-3.5" />
-                学習記録対応
+                {t("home.badges.recordSupport")}
               </span>
               <span className="inline-flex items-center gap-1 rounded-full border border-zinc-200 bg-white px-3 py-1 text-xs font-medium text-zinc-600">
                 <CircleGauge className="size-3.5" />
-                6セクション
+                {t("home.badges.sectionCount")}
               </span>
             </div>
             <h1 className="max-w-3xl text-[32px] font-semibold leading-tight text-zinc-950 sm:text-5xl">
-              CLIコマンドを<br />一問一答で反復する。
+              {t("home.hero.title")
+                .split(/\\n|\n/)
+                .map((line, index) => (
+                  <span key={index}>
+                    {line}
+                    {index === 0 ? <br /> : null}
+                  </span>
+                ))}
             </h1>
             <p className="max-w-2xl text-base leading-7 text-zinc-600 sm:text-lg">
-              ターミナル、npm、Git、開発サーバー、テスト、デプロイのコマンドを4択で確認します。
+              {t("home.hero.description")}
             </p>
           </div>
           <Card className="self-start rounded-2xl border-zinc-200/80 bg-white/90 shadow-sm backdrop-blur">
             <CardHeader>
-              <CardTitle>学習記録サマリー</CardTitle>
+              <CardTitle>{t("home.summary.title")}</CardTitle>
               <p className="text-sm text-zinc-500">
                 {answered > 0
-                  ? `${answered} / ${totalQuestions} 問 回答済み`
+                  ? t("home.summary.answered", { answered, total: totalQuestions })
                   : isSignedIn
-                    ? "まだ回答はありません"
-                    : "未ログインでも、このセッション内の学習記録を表示します"}
+                    ? t("home.summary.emptySignedIn")
+                    : t("home.summary.emptyAnonymous")}
               </p>
             </CardHeader>
             <CardContent className="space-y-4">
               <Progress value={percent(visibleProgress?.overallProgressRate ?? 0)} />
               <div className="grid grid-cols-2 gap-3">
                 <div className="rounded-xl border border-zinc-200 bg-zinc-50 p-3">
-                  <p className="text-sm text-zinc-500">進捗率</p>
+                  <p className="text-sm text-zinc-500">{t("home.summary.progressRate")}</p>
                   <p className="text-2xl font-semibold">{percent(visibleProgress?.overallProgressRate ?? 0)}%</p>
                 </div>
                 <div className="rounded-xl border border-zinc-200 bg-zinc-50 p-3">
-                  <p className="text-sm text-zinc-500">正答率</p>
+                  <p className="text-sm text-zinc-500">{t("home.summary.correctRate")}</p>
                   <p className="text-2xl font-semibold">{percent(visibleProgress?.overallCorrectRate ?? 0)}%</p>
                 </div>
               </div>
@@ -134,11 +146,11 @@ export function HomeView({ sections }: HomeViewProps) {
             <CardFooter>
               {isSignedIn ? (
                 <Button asChild variant="outline" className="w-full">
-                  <Link href="/progress">詳しく見る</Link>
+                  <Link href="/progress">{t("home.summary.details")}</Link>
                 </Button>
               ) : (
                 <Button asChild variant="outline" className="w-full">
-                  <Link href="/sign-in">ログインして学習記録を確認</Link>
+                  <Link href="/sign-in">{t("home.summary.signInPrompt")}</Link>
                 </Button>
               )}
             </CardFooter>
@@ -164,16 +176,21 @@ export function HomeView({ sections }: HomeViewProps) {
                 <CardContent className="mt-auto space-y-3">
                   <div className="flex items-center justify-between text-sm text-zinc-600">
                     <span>
-                      {answeredCount} / {section.questionCount} 問
+                      {t("home.sectionCard.answered", {
+                        answered: answeredCount,
+                        total: section.questionCount,
+                      })}
                     </span>
-                    <span>正答率 {correctRate}%</span>
+                    <span>{t("home.sectionCard.correctRate", { rate: correctRate })}</span>
                   </div>
                   <Progress value={(answeredCount / section.questionCount) * 100} />
                 </CardContent>
                 <CardFooter>
                   <Button asChild className="w-full">
                     <Link href={`/section/${section.id}`}>
-                      {answeredCount > 0 && !completed ? "続きから" : "学習を始める"}
+                      {answeredCount > 0 && !completed
+                        ? t("home.sectionCard.resume")
+                        : t("home.sectionCard.start")}
                       <ArrowRight className="size-4" />
                     </Link>
                   </Button>

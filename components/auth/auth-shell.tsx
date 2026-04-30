@@ -1,22 +1,27 @@
 import Link from "next/link";
 import type { ReactNode } from "react";
 
+import { getTranslator } from "@/lib/i18n";
 import { AUTH_METHODS } from "@/lib/shared/auth-methods";
+import type { Locale } from "@/types";
 
 type AuthShellProps = {
   children: ReactNode;
   title: string;
   description: string;
   footer: ReactNode;
+  locale: Locale;
 };
 
-export function AuthShell({ children, title, description, footer }: AuthShellProps) {
+export function AuthShell({ children, title, description, footer, locale }: AuthShellProps) {
+  const t = getTranslator(locale);
+
   return (
     <main className="min-h-screen bg-zinc-50 px-4 py-10 text-zinc-950">
       <div className="mx-auto grid w-full max-w-6xl gap-8 lg:grid-cols-[0.9fr_1.1fr] lg:items-center">
         <section className="space-y-6">
           <div className="space-y-3">
-            <p className="text-sm font-medium text-zinc-500">CLI Dojo Authentication</p>
+            <p className="text-sm font-medium text-zinc-500">{t("auth.eyebrow")}</p>
             <h1 className="text-3xl font-semibold leading-tight sm:text-4xl">{title}</h1>
             <div className="flex flex-wrap gap-2">
               {AUTH_METHODS.map((provider) => (
@@ -32,7 +37,7 @@ export function AuthShell({ children, title, description, footer }: AuthShellPro
           </div>
           <div className="pt-4 text-sm text-zinc-600">
             <Link className="font-medium text-zinc-950 underline underline-offset-4" href="/">
-              ホームへ戻る
+              {t("auth.backHome")}
             </Link>
           </div>
         </section>

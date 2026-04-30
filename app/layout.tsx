@@ -1,6 +1,8 @@
 import { ClerkProvider } from "@clerk/nextjs";
 import type { Metadata } from "next";
 import { M_PLUS_Rounded_1c, JetBrains_Mono } from "next/font/google";
+import { getTranslator } from "@/lib/i18n";
+import { resolveRequestLocale } from "@/lib/i18n/request";
 import { Toaster } from "@/components/ui/sonner";
 import "./globals.css";
 
@@ -16,22 +18,29 @@ const monoFont = JetBrains_Mono({
   subsets: ["latin"],
 });
 
-export const metadata: Metadata = {
-  title: "CLI Dojo",
-  description: "CLIコマンドをカテゴリ別に学べる4択学習アプリ",
-};
+export async function generateMetadata(): Promise<Metadata> {
+  const locale = await resolveRequestLocale();
+  const t = getTranslator(locale);
 
-export default function RootLayout({
+  return {
+    title: t("app.metadata.title"),
+    description: t("app.metadata.description"),
+  };
+}
+
+export default async function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const locale = await resolveRequestLocale();
+
   return (
     <html
-      lang="ja"
-        className={`${roundedSans.variable} ${monoFont.variable} font-sans h-full antialiased`}
+      lang={locale}
+      className={`${roundedSans.variable} ${monoFont.variable} font-sans h-full antialiased`}
     >
-      <body className="min-h-full flex flex-col">
+      <body className="flex min-h-full flex-col">
         <ClerkProvider
           appearance={{
             options: {
