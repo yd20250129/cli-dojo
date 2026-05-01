@@ -73,8 +73,19 @@ export function HomeView({ locale, sections }: HomeViewProps) {
     () => null,
   );
 
-  const visibleProgress = isSignedIn ? progress : isLoaded ? anonymousProgress : null;
-  const visibleError = isSignedIn ? error : "";
+  const hasAnonymousProgress = Boolean(
+    anonymousProgress && anonymousProgress.totalAnsweredCount > 0,
+  );
+  const hasAccountProgress = Boolean(progress && progress.totalAnsweredCount > 0);
+  const usesAnonymousFallback = isSignedIn && hasAnonymousProgress && !hasAccountProgress;
+  const visibleProgress = isSignedIn
+    ? usesAnonymousFallback
+      ? anonymousProgress
+      : progress
+    : isLoaded
+      ? anonymousProgress
+      : null;
+  const visibleError = isSignedIn && !usesAnonymousFallback ? error : "";
 
   const progressBySection = useMemo(() => {
     return new Map(visibleProgress?.sections.map((section) => [section.sectionId, section]));
