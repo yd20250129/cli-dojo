@@ -1,0 +1,266 @@
+{
+  "SEC06-001": {
+    "category": "コンテナ管理",
+    "question": "Dockerfile からコンテナイメージを作成するコマンドはどれですか？",
+    "choices": {
+      "A": "docker run",
+      "B": "docker compose up",
+      "C": "docker build",
+      "D": "git push"
+    },
+    "explanation": "docker build は Dockerfile をもとにコンテナイメージを作成します。アプリを同じ環境で動かすための土台を作るコマンドです。Dockerfile を書いたあと、まず build して形にする流れが基本です。"
+  },
+  "SEC06-002": {
+    "category": "コンテナ管理",
+    "question": "Dockerイメージに名前とタグを付けてビルドする基本形はどれですか？",
+    "choices": {
+      "A": "docker build -t app:latest .",
+      "B": "docker run -t app:latest .",
+      "C": "docker ps -t app:latest .",
+      "D": "docker logs -t app:latest ."
+    },
+    "explanation": "docker build -t app:latest . は現在のディレクトリをビルドコンテキストにして、app:latest という名前のイメージを作ります。後で run しやすいよう、意味のある名前を付けてビルドするのが実務的です。-t は --tag の短縮形です。"
+  },
+  "SEC06-003": {
+    "category": "コンテナ管理",
+    "question": "ローカルにあるDockerイメージの一覧を確認するコマンドはどれですか？",
+    "choices": {
+      "A": "docker images",
+      "B": "docker ps",
+      "C": "docker logs",
+      "D": "docker stop"
+    },
+    "explanation": "docker images はローカルに保存されているDockerイメージの一覧を表示します。ビルドしたイメージ名やタグを確認したいときに使います。build 後に名前やタグが正しいか見直す用途でよく使います。"
+  },
+  "SEC06-004": {
+    "category": "コンテナ管理",
+    "question": "Dockerイメージからコンテナを起動するコマンドはどれですか？",
+    "choices": {
+      "A": "docker build",
+      "B": "docker run",
+      "C": "docker images",
+      "D": "docker compose down"
+    },
+    "explanation": "docker run は指定したDockerイメージから新しいコンテナを起動します。イメージを作る docker build と、コンテナを動かす docker run は役割が違います。build の次に実際の動作確認として run へ進みます。"
+  },
+  "SEC06-005": {
+    "category": "コンテナ管理",
+    "question": "コンテナのポートをローカルのポートへ割り当てて起動する基本形はどれですか？",
+    "choices": {
+      "A": "docker run -p 3000:3000 app",
+      "B": "docker build -p 3000:3000 app",
+      "C": "docker ps -p 3000:3000 app",
+      "D": "docker logs -p 3000:3000 app"
+    },
+    "explanation": "docker run -p 3000:3000 app はローカルの3000番ポートをコンテナの3000番ポートへつなげて起動します。ブラウザで確認したいWebアプリでは、このポート公開を付けて起動するのが定番です。-p は --publish の短縮形です。"
+  },
+  "SEC06-006": {
+    "category": "コンテナ管理",
+    "question": "現在実行中のDockerコンテナを確認するコマンドはどれですか？",
+    "choices": {
+      "A": "docker ps",
+      "B": "docker images",
+      "C": "docker build",
+      "D": "docker compose up"
+    },
+    "explanation": "docker ps は実行中のコンテナ一覧を表示します。コンテナID、名前、ポート、起動状態を確認したいときに使います。起動したはずのコンテナが見当たらないときに最初に確認する候補です。ps は process status に由来します。"
+  },
+  "SEC06-007": {
+    "category": "コンテナ管理",
+    "question": "停止済みも含めてDockerコンテナ一覧を確認するコマンドはどれですか？",
+    "choices": {
+      "A": "docker ps -a",
+      "B": "docker images -a",
+      "C": "docker logs -a",
+      "D": "docker build -a"
+    },
+    "explanation": "docker ps -a は停止済みも含めたコンテナ一覧を表示します。起動に失敗したコンテナや、以前動かしたコンテナを探すときに使います。`ps` に出ないときは `ps -a` まで見ると状況を追いやすいです。-a は --all の短縮形です。"
+  },
+  "SEC06-008": {
+    "category": "コンテナ管理",
+    "question": "Dockerコンテナのログを確認するコマンドはどれですか？",
+    "choices": {
+      "A": "docker logs <container>",
+      "B": "docker build <container>",
+      "C": "docker images <container>",
+      "D": "docker stop <container>"
+    },
+    "explanation": "docker logs <container> は指定したコンテナの標準出力や標準エラーのログを表示します。コンテナ内のアプリがなぜ動かないか調べるときに使います。起動直後に落ちた原因を追うときの基本コマンドです。"
+  },
+  "SEC06-009": {
+    "category": "コンテナ管理",
+    "question": "実行中のDockerコンテナを停止するコマンドはどれですか？",
+    "choices": {
+      "A": "docker stop <container>",
+      "B": "docker build <container>",
+      "C": "docker images <container>",
+      "D": "docker compose logs <container>"
+    },
+    "explanation": "docker stop <container> は実行中のコンテナを停止します。停止対象にはコンテナIDまたはコンテナ名を指定できます。ポート競合や再起動前の片付けで stop を使います。"
+  },
+  "SEC06-010": {
+    "category": "コンテナ管理",
+    "question": "実行中のDockerコンテナ内で対話的にシェルを起動する基本形はどれですか？",
+    "choices": {
+      "A": "docker exec -it <container> sh",
+      "B": "docker build -it <container> sh",
+      "C": "docker ps -it <container> sh",
+      "D": "docker logs -it <container> sh"
+    },
+    "explanation": "docker exec -it <container> sh は実行中のコンテナ内でシェルを開きます。コンテナ内のファイルや環境変数を直接確認したいときに使います。外から見えない設定を中で調べたいときに有効です。exec は execute の略です。"
+  },
+  "SEC06-011": {
+    "category": "Compose操作",
+    "question": "compose.yaml に定義された複数サービスをまとめて起動するコマンドはどれですか？",
+    "choices": {
+      "A": "docker compose up",
+      "B": "docker build up",
+      "C": "docker images up",
+      "D": "git compose up"
+    },
+    "explanation": "docker compose up は compose.yaml に定義された複数のサービスをまとめて起動します。アプリ、DB、Redisなどを一緒に動かすローカル開発でよく使います。複数コマンドを手で分けず、一括起動したいときの入口になります。"
+  },
+  "SEC06-012": {
+    "category": "Compose操作",
+    "question": "Docker Composeのサービスをバックグラウンドで起動するコマンドはどれですか？",
+    "choices": {
+      "A": "docker compose up -d",
+      "B": "docker compose down -d",
+      "C": "docker compose logs -d",
+      "D": "docker compose build -d"
+    },
+    "explanation": "docker compose up -d はサービスをバックグラウンドで起動します。ターミナルを占有せずにコンテナを動かしたいときに使います。起動しっぱなしで別作業を続けたいときに便利です。-d は --detach の短縮形です。"
+  },
+  "SEC06-013": {
+    "category": "Compose操作",
+    "question": "Docker Composeで起動したサービスを停止し、関連コンテナを削除するコマンドはどれですか？",
+    "choices": {
+      "A": "docker compose stop",
+      "B": "docker compose logs",
+      "C": "docker compose down",
+      "D": "docker compose ps"
+    },
+    "explanation": "docker compose down は Compose で起動したサービスを停止し、関連するコンテナやネットワークを削除します。開発環境を一度片付けたいときに使います。作業を終えたあとにまとめて停止したいときの定番です。"
+  },
+  "SEC06-014": {
+    "category": "Compose操作",
+    "question": "Docker Composeで管理しているサービスのログを確認するコマンドはどれですか？",
+    "choices": {
+      "A": "docker compose logs",
+      "B": "docker compose build",
+      "C": "docker compose images",
+      "D": "docker compose stop"
+    },
+    "explanation": "docker compose logs は Compose で起動しているサービスのログを表示します。複数サービスのどこで問題が起きているか確認したいときに使います。アプリとDBの両方を見たいときに1か所で追えるのが利点です。"
+  },
+  "SEC06-015": {
+    "category": "クラウドデプロイ",
+    "question": "Vercelへプロジェクトをデプロイするときに使う代表的なCLIコマンドはどれですか？",
+    "choices": {
+      "A": "vercel",
+      "B": "npm test",
+      "C": "git branch",
+      "D": "cat"
+    },
+    "explanation": "vercel コマンドはVercel CLIからプロジェクトをデプロイするために使います。初回はプロジェクトのリンクや設定確認が行われます。まず preview 環境へ出して動作を確認したいときの入口になります。"
+  },
+  "SEC06-016": {
+    "category": "クラウドデプロイ",
+    "question": "Vercelへ本番デプロイするコマンドはどれですか？",
+    "choices": {
+      "A": "vercel --prod",
+      "B": "vercel --test",
+      "C": "vercel --local",
+      "D": "vercel --branch"
+    },
+    "explanation": "vercel --prod はVercelのProduction環境へデプロイします。通常の vercel はPreviewデプロイとして扱われることがあります。確認済みの変更を本番へ反映したい段階で使います。prod は production の略です。"
+  },
+  "SEC06-017": {
+    "category": "クラウドデプロイ",
+    "question": "Vercelに登録した環境変数をローカルへ取得するコマンドはどれですか？",
+    "choices": {
+      "A": "vercel env pull",
+      "B": "vercel logs pull",
+      "C": "vercel build pull",
+      "D": "vercel deploy pull"
+    },
+    "explanation": "vercel env pull はVercelに登録されている環境変数をローカルの .env ファイルへ取得します。ローカル開発とデプロイ環境の設定差を減らしたいときに使います。初回セットアップで環境変数をそろえる場面に向いています。env は environment の略です。"
+  },
+  "SEC06-018": {
+    "category": "クラウドデプロイ",
+    "question": "Vercel上のデプロイや関数のログを確認するコマンドはどれですか？",
+    "choices": {
+      "A": "vercel logs",
+      "B": "vercel build",
+      "C": "vercel env",
+      "D": "vercel switch"
+    },
+    "explanation": "vercel logs はVercel上のログ確認に使います。デプロイ後にサーバー側のエラーや関数の出力を調べたいときに役立ちます。本番では見えない失敗原因を追うときにまず確認します。"
+  },
+  "SEC06-019": {
+    "category": "クラウドデプロイ",
+    "question": "Railwayへ現在のプロジェクトをデプロイする代表的なCLIコマンドはどれですか？",
+    "choices": {
+      "A": "railway up",
+      "B": "railway test",
+      "C": "railway branch",
+      "D": "railway compose"
+    },
+    "explanation": "railway up はRailway CLIからプロジェクトをデプロイするために使います。Vercel以外のクラウドデプロイ例として覚えておくと選択肢が広がります。Railway利用時はこのコマンドがデプロイの起点になります。"
+  },
+  "SEC06-020": {
+    "category": "クラウドデプロイ",
+    "question": "Railway上で動いているアプリのログを確認するコマンドはどれですか？",
+    "choices": {
+      "A": "railway logs",
+      "B": "railway build",
+      "C": "railway env pull",
+      "D": "railway stop logs"
+    },
+    "explanation": "railway logs はRailway上のアプリログを確認するために使います。デプロイ後の起動失敗や実行時エラーを調べるときに役立ちます。公開後に動かないときの切り分けで最初に見る候補です。"
+  },
+  "SEC06-021": {
+    "category": "CI/CD",
+    "question": "GitHub連携されたプロジェクトで、リモートへ変更を送りCI/CDを起動するきっかけになりやすいコマンドはどれですか？",
+    "choices": {
+      "A": "git push",
+      "B": "git status",
+      "C": "git log",
+      "D": "git restore"
+    },
+    "explanation": "git push はローカルのコミットをリモートリポジトリへ送ります。GitHub ActionsやVercel Git Integrationでは、push がCI/CDやデプロイの起点になることがあります。ローカル確認後に自動処理を走らせる入口として理解すると分かりやすいです。"
+  },
+  "SEC06-022": {
+    "category": "CI/CD",
+    "question": "GitHub Actionsのワークフロー実行履歴を確認するGitHub CLIコマンドはどれですか？",
+    "choices": {
+      "A": "gh run list",
+      "B": "gh repo list",
+      "C": "gh pr create",
+      "D": "gh issue list"
+    },
+    "explanation": "gh run list はGitHub Actionsの実行履歴を一覧表示します。CIが成功したか、どの実行が失敗したかを確認したいときに使います。push 後に最新の実行結果を確認する最初の一手として便利です。gh は GitHub CLI のコマンド名です。"
+  },
+  "SEC06-023": {
+    "category": "CI/CD",
+    "question": "GitHub Actionsの実行状況をターミナルで監視するコマンドはどれですか？",
+    "choices": {
+      "A": "gh run watch",
+      "B": "gh run build",
+      "C": "gh workflow deploy",
+      "D": "gh repo watch"
+    },
+    "explanation": "gh run watch はGitHub Actionsの実行状況を監視します。push後にCIの完了を待ちながら結果を確認したいときに便利です。ブラウザを開かず端末のまま進捗を追いたいときに向いています。"
+  },
+  "SEC06-024": {
+    "category": "CI/CD",
+    "question": "GitHub Actionsの実行ログをターミナルで確認するコマンドはどれですか？",
+    "choices": {
+      "A": "gh run view --log",
+      "B": "gh run list --log",
+      "C": "gh repo view --log",
+      "D": "gh pr view --log"
+    },
+    "explanation": "gh run view --log はGitHub Actionsの実行ログを表示します。CI失敗時にどのステップで何が起きたかを追うために使います。list や watch で失敗を見つけたあと、原因調査で続けて使うイメージです。"
+  }
+}

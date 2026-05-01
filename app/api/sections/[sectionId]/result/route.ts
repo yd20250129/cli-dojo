@@ -17,7 +17,11 @@ export async function GET(
 
     const url = new URL(request.url);
     const attemptId = url.searchParams.get("attemptId") ?? undefined;
-    const result = await getSectionResult({ accountId: account.id, sectionId, attemptId });
+    const result = await getSectionResult({
+      userId: account.userId,
+      sectionId,
+      attemptId,
+    });
 
     return Response.json({ data: result });
   } catch (error) {

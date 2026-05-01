@@ -5,7 +5,9 @@ import { sec03Questions } from "@/data/questions/sec03";
 import { sec04Questions } from "@/data/questions/sec04";
 import { sec05Questions } from "@/data/questions/sec05";
 import { sec06Questions } from "@/data/questions/sec06";
-import type { Question, SectionId } from "@/types";
+import type { Locale, Question, Section, SectionId } from "@/types";
+
+export const defaultLocale: Locale = "ja";
 
 export const questions = [
   ...sec01Questions,
@@ -15,6 +17,28 @@ export const questions = [
   ...sec05Questions,
   ...sec06Questions,
 ] satisfies Question[];
+
+function unsupportedLocale(locale: Locale): never {
+  throw new Error(`Question catalog for locale "${locale}" is not configured`);
+}
+
+export function getSectionsForLocale(locale: Locale): Section[] {
+  switch (locale) {
+    case "ja":
+      return getSections();
+    case "en":
+      return unsupportedLocale(locale);
+  }
+}
+
+export function getQuestionsForLocale(locale: Locale): Question[] {
+  switch (locale) {
+    case "ja":
+      return [...questions];
+    case "en":
+      return unsupportedLocale(locale);
+  }
+}
 
 export function getSections() {
   return [...sections].sort((a, b) => a.order - b.order);

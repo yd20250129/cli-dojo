@@ -1,0 +1,244 @@
+{
+  "SEC04-001": {
+    "category": "初期化",
+    "question": "現在のディレクトリを新しいGitリポジトリとして初期化するコマンドはどれですか？",
+    "choices": {
+      "A": "git init",
+      "B": "git clone",
+      "C": "git pull",
+      "D": "git merge"
+    },
+    "explanation": "git init は現在のディレクトリにGitリポジトリを作成します。既存のフォルダでバージョン管理を始めたいときに使います。新しく作った作業フォルダで最初に git init と打つ場面が典型です。init は initialize の略です。"
+  },
+  "SEC04-002": {
+    "category": "複製",
+    "question": "GitHubなどにあるリモートリポジトリを手元に複製するコマンドはどれですか？",
+    "choices": {
+      "A": "git add",
+      "B": "git clone",
+      "C": "git commit",
+      "D": "git status"
+    },
+    "explanation": "git clone はリモートリポジトリをローカルに複製します。チームの既存プロジェクトを手元に用意するときによく使います。参加したばかりのプロジェクトを取得するときは git clone <url> の形で始めます。"
+  },
+  "SEC04-003": {
+    "category": "状態確認",
+    "question": "変更済みファイル、ステージ済みファイル、現在のブランチ状態を確認するコマンドはどれですか？",
+    "choices": {
+      "A": "git status",
+      "B": "git push",
+      "C": "git log",
+      "D": "git stash"
+    },
+    "explanation": "git status は作業ツリーとステージングエリアの状態を表示します。Git操作で迷ったときにまず確認する基本コマンドです。add や commit の前後で git status を挟む癖を付けると安全です。"
+  },
+  "SEC04-004": {
+    "category": "差分確認",
+    "question": "まだステージしていない変更内容の差分を確認するコマンドはどれですか？",
+    "choices": {
+      "A": "git diff",
+      "B": "git branch",
+      "C": "git remote",
+      "D": "git pull"
+    },
+    "explanation": "git diff は作業中の変更差分を表示します。コミット前に何を変えたか確認するためによく使います。git add する前に git diff で変更内容を見直す流れが基本です。diff は difference に由来します。"
+  },
+  "SEC04-005": {
+    "category": "差分確認",
+    "question": "git add 済みの変更内容を確認するコマンドはどれですか？",
+    "choices": {
+      "A": "git diff --staged",
+      "B": "git merge --staged",
+      "C": "git push --staged",
+      "D": "git clone --staged"
+    },
+    "explanation": "git diff --staged はステージングエリアに追加済みの変更差分を表示します。コミットに含める内容を確認したいときに使います。git add のあと、commit 前に最終確認として打つのが分かりやすい使い方です。"
+  },
+  "SEC04-006": {
+    "category": "ステージング",
+    "question": "ローカルのファイル変更をステージングエリアに追加するコマンドはどれですか？",
+    "choices": {
+      "A": "git commit",
+      "B": "git add",
+      "C": "git push",
+      "D": "git init"
+    },
+    "explanation": "git add はファイルの変更をステージングエリアに追加します。次のcommitに含めたい変更を選ぶためのコマンドです。個別ファイルなら git add app.ts のように対象を絞って使います。"
+  },
+  "SEC04-007": {
+    "category": "ステージング",
+    "question": "現在のディレクトリ配下の変更をまとめてステージするコマンドはどれですか？",
+    "choices": {
+      "A": "git add .",
+      "B": "git status .",
+      "C": "git clone .",
+      "D": "git pull ."
+    },
+    "explanation": "git add . は現在のディレクトリ配下の変更をまとめてステージします。便利ですが、不要な変更まで含めないように git status や git diff で確認してから使います。変更範囲が明確なときだけまとめて使う意識が大事です。"
+  },
+  "SEC04-008": {
+    "category": "コミット",
+    "question": "ステージング済みの変更をローカルリポジトリに記録するコマンドはどれですか？",
+    "choices": {
+      "A": "git pull",
+      "B": "git branch",
+      "C": "git commit",
+      "D": "git clone"
+    },
+    "explanation": "git commit は git add でステージングした変更をローカルリポジトリに記録します。作業の区切りごとに意味のある単位でcommitします。1つの変更目的がまとまった時点で commit する使い方が基本です。"
+  },
+  "SEC04-009": {
+    "category": "コミット",
+    "question": "コミットメッセージをコマンド内で指定してコミットする基本形はどれですか？",
+    "choices": {
+      "A": "git commit -m \"message\"",
+      "B": "git push -m \"message\"",
+      "C": "git branch -m \"message\"",
+      "D": "git pull -m \"message\""
+    },
+    "explanation": "git commit -m \"message\" はメッセージを指定してコミットします。-m は --message の短縮形です。たとえば git commit -m \"Add login form\" のように要点を短く書きます。"
+  },
+  "SEC04-010": {
+    "category": "履歴確認",
+    "question": "過去のコミット履歴を確認するコマンドはどれですか？",
+    "choices": {
+      "A": "git log",
+      "B": "git add",
+      "C": "git remote",
+      "D": "git fetch"
+    },
+    "explanation": "git log はコミット履歴を表示します。いつ、誰が、どんなメッセージで変更を記録したか確認できます。過去の変更の流れを追いたいときにまず git log を開きます。"
+  },
+  "SEC04-011": {
+    "category": "履歴確認",
+    "question": "コミット履歴を1行ずつ短く表示するコマンドはどれですか？",
+    "choices": {
+      "A": "git log --oneline",
+      "B": "git status --oneline",
+      "C": "git clone --oneline",
+      "D": "git merge --oneline"
+    },
+    "explanation": "git log --oneline はコミット履歴を短く一覧表示します。履歴全体をざっと確認したいときに便利です。まず全体像だけ見たいときは長い log よりこちらが扱いやすいです。"
+  },
+  "SEC04-012": {
+    "category": "ブランチ確認",
+    "question": "ローカルブランチの一覧と現在のブランチを確認するコマンドはどれですか？",
+    "choices": {
+      "A": "git branch",
+      "B": "git commit",
+      "C": "git push",
+      "D": "git stash"
+    },
+    "explanation": "git branch はローカルブランチの一覧を表示します。現在作業しているブランチも確認できます。push 前に今どのブランチにいるか確かめる用途でもよく使います。"
+  },
+  "SEC04-013": {
+    "category": "ブランチ作成",
+    "question": "新しいブランチを作成し、そのブランチへ移動するコマンドはどれですか？",
+    "choices": {
+      "A": "git switch -c <branch>",
+      "B": "git commit -c <branch>",
+      "C": "git pull -c <branch>",
+      "D": "git remote -c <branch>"
+    },
+    "explanation": "git switch -c <branch> は新しいブランチを作成して、そのブランチへ移動します。-c は create の意味で使われます。新機能に着手するときに git switch -c feature/header のように切ります。"
+  },
+  "SEC04-014": {
+    "category": "ブランチ移動",
+    "question": "既存のブランチへ移動するコマンドはどれですか？",
+    "choices": {
+      "A": "git switch <branch>",
+      "B": "git add <branch>",
+      "C": "git fetch <branch>",
+      "D": "git log <branch>"
+    },
+    "explanation": "git switch <branch> は既存のブランチへ移動します。古い資料では git checkout <branch> が使われていることもあります。レビューや別作業で main へ戻るときに git switch main のように使います。"
+  },
+  "SEC04-015": {
+    "category": "マージ",
+    "question": "別ブランチの変更を現在のブランチへ取り込むコマンドはどれですか？",
+    "choices": {
+      "A": "git merge <branch>",
+      "B": "git init <branch>",
+      "C": "git status <branch>",
+      "D": "git remote <branch>"
+    },
+    "explanation": "git merge <branch> は指定したブランチの変更を現在のブランチに統合します。作業ブランチの変更をmainへ取り込む場面などで使います。取り込み先のブランチへ移動してから git merge feature-a のように実行します。"
+  },
+  "SEC04-016": {
+    "category": "リモート確認",
+    "question": "登録されているリモートリポジトリのURLを確認するコマンドはどれですか？",
+    "choices": {
+      "A": "git remote -v",
+      "B": "git branch -v",
+      "C": "git commit -v",
+      "D": "git stash -v"
+    },
+    "explanation": "git remote -v はリモートリポジトリ名とURLを表示します。origin がどのGitHubリポジトリを指しているか確認するときに使います。push 先が不安なときに git remote -v で先に確認します。remote は遠隔の保存先を意味します。"
+  },
+  "SEC04-017": {
+    "category": "取得",
+    "question": "リモートの最新情報を取得するが、自分の作業ブランチにはまだ統合しないコマンドはどれですか？",
+    "choices": {
+      "A": "git fetch",
+      "B": "git push",
+      "C": "git add",
+      "D": "git commit"
+    },
+    "explanation": "git fetch はリモートのブランチやコミット情報を取得します。取得するだけで、作業中のブランチには自動で統合しません。まず最新状況だけ取り込みたいときに安全側の操作として使います。"
+  },
+  "SEC04-018": {
+    "category": "同期",
+    "question": "リモートの変更を取得し、現在のブランチへ統合するコマンドはどれですか？",
+    "choices": {
+      "A": "git pull",
+      "B": "git status",
+      "C": "git diff",
+      "D": "git init"
+    },
+    "explanation": "git pull はリモートの変更を取得して現在のブランチへ統合します。内部的には fetch と統合処理を組み合わせた操作です。作業開始前に main で git pull して最新化する流れがよくあります。"
+  },
+  "SEC04-019": {
+    "category": "同期",
+    "question": "ローカルのコミットをリモートリポジトリへ送信するコマンドはどれですか？",
+    "choices": {
+      "A": "git push",
+      "B": "git clone",
+      "C": "git log",
+      "D": "git switch"
+    },
+    "explanation": "git push はローカルのコミットをリモートリポジトリへ送信します。GitHubへ変更を反映するときによく使います。commit 後に共有したい段階で git push origin branch-name のように実行します。"
+  },
+  "SEC04-020": {
+    "category": "退避",
+    "question": "まだコミットしたくない作業中の変更を一時退避するコマンドはどれですか？",
+    "choices": {
+      "A": "git stash",
+      "B": "git remote",
+      "C": "git clone",
+      "D": "git init"
+    },
+    "explanation": "git stash は作業中の変更を一時的に退避します。急いで別ブランチへ移動したいが、まだcommitしたくないときに使います。割り込み対応で作業をいったん片付けたいときに便利です。"
+  },
+  "SEC04-021": {
+    "category": "取り消し",
+    "question": "作業ツリー上のファイル変更を元に戻すコマンドはどれですか？",
+    "choices": {
+      "A": "git restore <file>",
+      "B": "git push <file>",
+      "C": "git branch <file>",
+      "D": "git fetch <file>"
+    },
+    "explanation": "git restore <file> は作業ツリー上の変更を元に戻します。未コミットの変更が消えるため、対象ファイルを確認してから使います。1ファイルだけやり直したいときに git restore app.ts のように使います。"
+  },
+  "SEC04-022": {
+    "category": "ステージ解除",
+    "question": "git add したファイルをステージングエリアから外すコマンドはどれですか？",
+    "choices": {
+      "A": "git restore --staged <file>",
+      "B": "git push --staged <file>",
+      "C": "git clone --staged <file>",
+      "D": "git branch --staged <file>"
+    },
+    "explanation": "git restore --staged <file> はステージングエリアから指定ファイルを外します。作業ファイル自体の変更は残したまま、次のcommit対象から外したいときに使います。add しすぎたときの戻し操作として覚えると扱いやすいです。"
+  }
+}

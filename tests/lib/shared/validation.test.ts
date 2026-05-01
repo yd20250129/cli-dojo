@@ -62,7 +62,7 @@ describe("validation helpers", () => {
     const questions: Question[] = [
       {
         id: "SEC01-001",
-        sectionId: "SEC-99",
+        sectionId: "SEC-99" as unknown as Question["sectionId"],
         category: "ファイル操作",
         command: "ls",
         question: "現在のディレクトリにあるファイルやフォルダを一覧表示するコマンドはどれですか？",

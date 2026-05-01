@@ -1,9 +1,26 @@
-import { auth } from "@clerk/nextjs/server";
+import { auth, currentUser } from "@clerk/nextjs/server";
 
 import { AppError } from "@/lib/server/api-errors";
-import { getOrCreateAccount } from "@/lib/server/accounts-repository";
+import { getCurrentUserSafely } from "@/lib/server/clerk";
 import { migrateLegacyProgressIfNeeded } from "@/lib/server/progress-repository";
+import { getOrCreateAuthenticatedUser } from "@/lib/server/users-repository";
 import { isLearnerId } from "@/lib/shared/validation";
+
+function getVerifiedPrimaryEmail(
+  user: Awaited<ReturnType<typeof currentUser>>,
+): string | null {
+  if (!user?.primaryEmailAddressId) {
+    return null;
+  }
+
+  const primaryEmail = user.emailAddresses.find(
+    (email) => email.id === user.primaryEmailAddressId,
+  );
+
+  return primaryEmail?.verification?.status === "verified"
+    ? primaryEmail.emailAddress
+    : null;
+}
 
 export async function getAuthenticatedAccount(request?: Request) {
   const { userId } = await auth();
@@ -12,15 +29,24 @@ export async function getAuthenticatedAccount(request?: Request) {
     throw new AppError("UNAUTHORIZED", 401);
   }
 
-  const account = await getOrCreateAccount(userId);
+  const clerkUser = await getCurrentUserSafely();
+
+  if (!clerkUser) {
+    throw new AppError("UNAUTHORIZED", 401);
+  }
+
+  const user = await getOrCreateAuthenticatedUser({
+    clerkUserId: userId,
+    verifiedEmail: getVerifiedPrimaryEmail(clerkUser),
+  });
   const legacyLearnerId = request?.headers.get("X-Legacy-Learner-Id");
 
   if (legacyLearnerId && isLearnerId(legacyLearnerId)) {
     await migrateLegacyProgressIfNeeded({
-      accountId: account.id,
+      userId: user.userId,
       legacyLearnerId,
     });
   }
 
-  return account;
+  return user;
 }

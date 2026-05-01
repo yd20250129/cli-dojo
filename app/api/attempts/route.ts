@@ -17,8 +17,14 @@ export async function POST(request: Request) {
     }
 
     const attempt = body.retry
-      ? await createRetryAttempt({ accountId: account.id, sectionId: body.sectionId })
-      : await getOrCreateCurrentAttempt({ accountId: account.id, sectionId: body.sectionId });
+      ? await createRetryAttempt({
+          userId: account.userId,
+          sectionId: body.sectionId,
+        })
+      : await getOrCreateCurrentAttempt({
+          userId: account.userId,
+          sectionId: body.sectionId,
+        });
 
     return Response.json({ data: attempt });
   } catch (error) {

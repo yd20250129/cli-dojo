@@ -5,7 +5,7 @@ import { getProgressSummary } from "@/lib/server/progress-repository";
 export async function GET(request: Request) {
   try {
     const account = await getAuthenticatedAccount(request);
-    const progress = await getProgressSummary(account.id);
+    const progress = await getProgressSummary(account.userId);
 
     return Response.json({ data: progress });
   } catch (error) {
