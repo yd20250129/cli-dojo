@@ -10,6 +10,7 @@ import {
   localeCookieName,
 } from "@/lib/i18n/config";
 import { getOrCreateAccount } from "@/lib/server/accounts-repository";
+import { getCurrentUserSafely } from "@/lib/server/clerk";
 import type { Locale, UserPreferences } from "@/types";
 
 function getVerifiedPrimaryEmail(
@@ -40,7 +41,15 @@ export async function resolveRequestPreferences(): Promise<UserPreferences> {
     };
   }
 
-  const user = await currentUser();
+  const user = await getCurrentUserSafely();
+
+  if (!user) {
+    return {
+      ...defaultUserPreferences,
+      locale: cookieLocale && isLocale(cookieLocale) ? cookieLocale : defaultUserPreferences.locale,
+    };
+  }
+
   const account = await getOrCreateAccount({
     clerkUserId: userId,
     verifiedEmail: getVerifiedPrimaryEmail(user),

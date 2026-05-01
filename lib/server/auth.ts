@@ -2,6 +2,7 @@ import { auth, currentUser } from "@clerk/nextjs/server";
 
 import { AppError } from "@/lib/server/api-errors";
 import { getOrCreateAccount } from "@/lib/server/accounts-repository";
+import { getCurrentUserSafely } from "@/lib/server/clerk";
 import { migrateLegacyProgressIfNeeded } from "@/lib/server/progress-repository";
 import { isLearnerId } from "@/lib/shared/validation";
 
@@ -28,7 +29,12 @@ export async function getAuthenticatedAccount(request?: Request) {
     throw new AppError("UNAUTHORIZED", 401);
   }
 
-  const user = await currentUser();
+  const user = await getCurrentUserSafely();
+
+  if (!user) {
+    throw new AppError("UNAUTHORIZED", 401);
+  }
+
   const account = await getOrCreateAccount({
     clerkUserId: userId,
     verifiedEmail: getVerifiedPrimaryEmail(user),
