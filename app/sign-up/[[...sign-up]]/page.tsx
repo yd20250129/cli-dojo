@@ -24,8 +24,8 @@ export default async function SignUpPage() {
       title={t("auth.signUp.title")}
     >
       <SignUp
-        fallbackRedirectUrl="/sign-up/complete"
-        forceRedirectUrl="/sign-up/complete"
+        fallbackRedirectUrl="/auth/sign-up-complete"
+        forceRedirectUrl="/auth/sign-up-complete"
         path="/sign-up"
         routing="path"
         signInUrl="/sign-in"

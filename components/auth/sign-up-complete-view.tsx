@@ -60,7 +60,7 @@ export function SignUpCompleteView({ locale }: SignUpCompleteViewProps) {
 
     if (completedMigrationUserId === userId) {
       clearAnonymousProgress();
-      router.replace("/progress");
+      router.replace("/");
       return;
     }
 
@@ -89,7 +89,7 @@ export function SignUpCompleteView({ locale }: SignUpCompleteViewProps) {
         if (result.migrated || result.reason === "account_progress_exists") {
           completedMigrationUserId = userId;
           clearAnonymousProgress();
-          router.replace("/progress");
+          router.replace("/");
           return;
         }
 
