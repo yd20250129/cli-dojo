@@ -85,8 +85,8 @@ Target behavior:
 - Clerk is the authentication provider.
 - Email is enabled in Clerk sign-in methods.
 - GitHub and Google are the supported Clerk social connections.
-- Public routes: `/`, `/sign-in`, `/sign-up`.
-- Authenticated routes: `/section/[sectionId]`, `/section/[sectionId]/result`, `/progress`.
+- Public routes: `/`, `/section/[sectionId]`, `/section/[sectionId]/result`, `/sign-in`, `/sign-up`.
+- Authenticated route: `/progress`.
 - Progress APIs require an authenticated Clerk user.
 - The server derives ownership from Clerk `userId`; clients must not send ownership IDs for authorization.
 - Neon progress records are owned by an app account mapped to Clerk `userId`.
