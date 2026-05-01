@@ -51,6 +51,12 @@ function normalizeEmail(email: string | null | undefined) {
   return value ? value : null;
 }
 
+export function resolveVerifiedEmailLinkCandidate(
+  rows: Array<{ user_id: string | number }>,
+) {
+  return rows.length === 1 ? String(rows[0].user_id) : null;
+}
+
 async function getAccountByClerkUserId(clerkUserId: string) {
   const sql = getSql();
   const rows = await sql`
@@ -131,7 +137,9 @@ async function findLinkedUserIdByVerifiedEmail(email: string) {
     LIMIT 2
   `;
 
-  return rows.length === 1 ? String(rows[0].user_id) : null;
+  return resolveVerifiedEmailLinkCandidate(
+    rows as Array<{ user_id: string | number }>,
+  );
 }
 
 async function createAccount(params: {

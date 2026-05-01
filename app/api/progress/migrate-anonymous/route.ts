@@ -21,7 +21,6 @@ export async function POST(request: Request) {
 
       const result = await migrateLegacyProgressIfNeeded({
         userId: account.userId,
-        accountId: account.id,
         legacyLearnerId: body.learnerId,
       });
 
@@ -34,7 +33,6 @@ export async function POST(request: Request) {
 
     const result = await migrateAnonymousProgressIfNeeded({
       userId: account.userId,
-      accountId: account.id,
       anonymousProgress: parseAnonymousProgressState(body.anonymousProgress),
     });
 

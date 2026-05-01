@@ -19,12 +19,10 @@ export async function POST(request: Request) {
     const attempt = body.retry
       ? await createRetryAttempt({
           userId: account.userId,
-          accountId: account.id,
           sectionId: body.sectionId,
         })
       : await getOrCreateCurrentAttempt({
           userId: account.userId,
-          accountId: account.id,
           sectionId: body.sectionId,
         });
 

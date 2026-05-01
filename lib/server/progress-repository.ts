@@ -93,7 +93,6 @@ function isUniqueViolation(error: unknown) {
 
 export async function getOrCreateCurrentAttempt(params: {
   userId: string;
-  accountId: string;
   sectionId: SectionId;
 }): Promise<CurrentSectionAttempt> {
   const sql = getSql();
@@ -123,14 +122,12 @@ export async function getOrCreateCurrentAttempt(params: {
 
 export async function createRetryAttempt(params: {
   userId: string;
-  accountId: string;
   sectionId: SectionId;
 }): Promise<CurrentSectionAttempt> {
   const sql = getSql();
   const totalQuestions = getTotalQuestions(params.sectionId);
   const rows = await sql`
     INSERT INTO section_attempts (
-      account_id,
       user_id,
       learner_id,
       section_id,
@@ -140,7 +137,6 @@ export async function createRetryAttempt(params: {
       total_questions
     )
     VALUES (
-      ${params.accountId},
       ${params.userId},
       null,
       ${params.sectionId},
@@ -181,7 +177,6 @@ async function getAnsweredQuestionIds(params: {
 
 export async function saveAnswer(params: {
   userId: string;
-  accountId: string;
   attemptId: string;
   sectionId: SectionId;
   questionId: string;
@@ -211,7 +206,6 @@ export async function saveAnswer(params: {
     const rows = await sql`
       INSERT INTO answer_records (
         attempt_id,
-        account_id,
         user_id,
         learner_id,
         section_id,
@@ -222,7 +216,6 @@ export async function saveAnswer(params: {
       )
       VALUES (
         ${params.attemptId},
-        ${params.accountId},
         ${params.userId},
         null,
         ${params.sectionId},
@@ -458,7 +451,6 @@ function getAnonymousAnswerEntries(
 
 export async function migrateAnonymousProgressIfNeeded(params: {
   userId: string;
-  accountId: string;
   anonymousProgress: AnonymousProgressState;
 }): Promise<MigrateProgressResult> {
   const sections = getSections();
@@ -491,14 +483,12 @@ export async function migrateAnonymousProgressIfNeeded(params: {
 
     const attempt = await createRetryAttempt({
       userId: params.userId,
-      accountId: params.accountId,
       sectionId,
     });
 
     for (const answer of answers) {
       await saveAnswer({
         userId: params.userId,
-        accountId: params.accountId,
         attemptId: attempt.id,
         sectionId,
         questionId: answer.questionId,
@@ -519,7 +509,6 @@ export async function migrateAnonymousProgressIfNeeded(params: {
 
 export async function migrateLegacyProgressIfNeeded(params: {
   userId: string;
-  accountId: string;
   legacyLearnerId: string;
 }): Promise<MigrateProgressResult> {
   const sql = getSql();
@@ -549,7 +538,6 @@ export async function migrateLegacyProgressIfNeeded(params: {
   await sql`
     UPDATE section_attempts
     SET
-      account_id = ${params.accountId},
       user_id = ${params.userId}
     WHERE learner_id = ${params.legacyLearnerId}
       AND user_id IS NULL
@@ -558,7 +546,6 @@ export async function migrateLegacyProgressIfNeeded(params: {
   await sql`
     UPDATE answer_records
     SET
-      account_id = ${params.accountId},
       user_id = ${params.userId}
     WHERE learner_id = ${params.legacyLearnerId}
       AND user_id IS NULL

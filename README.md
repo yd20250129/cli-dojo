@@ -95,6 +95,7 @@ Target behavior:
 - Progress APIs require an authenticated Clerk user.
 - The server derives ownership from Clerk identity resolution; clients must not send ownership IDs for authorization.
 - Neon progress records are owned by app-level `users.id`, while Clerk `userId` is treated as an external identity.
+- In `dev`, sign-in / sign-up auto-links to an existing `users.id` only when the Clerk verified primary email matches exactly one existing verified email candidate.
 - Existing anonymous `localStorage` learner progress may be migrated once after sign-in, then the account record becomes the source of truth.
 - Unauthenticated quiz answers are stored only in `sessionStorage` and reflected only on the home page summary/cards and anonymous result view.
 
@@ -145,6 +146,7 @@ Current ownership model:
 - `answer_records.user_id` references `users.id`.
 - `account_id` columns remain temporarily for compatibility during the ownership-key transition.
 - Legacy `learner_id` columns remain only long enough to migrate anonymous progress.
+- If a verified email maps to multiple existing `user_id` candidates, auto-link is skipped and manual merge is required.
 
 Question data is not stored in Neon. It is stored in TypeScript files:
 

@@ -37,6 +37,15 @@ export type Account = UserPreferences & {
   updatedAt: string;
 };
 
+export type AuthenticatedUser = UserPreferences & {
+  userId: string;
+  clerkUserId: string;
+  canonicalEmail: string | null;
+  canonicalEmailVerified: boolean;
+  createdAt: string;
+  updatedAt: string;
+};
+
 export type Section = {
   id: SectionId;
   name: string;

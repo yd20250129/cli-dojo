@@ -9,8 +9,8 @@ import {
   isRegion,
   localeCookieName,
 } from "@/lib/i18n/config";
-import { getOrCreateAccount } from "@/lib/server/accounts-repository";
 import { getCurrentUserSafely } from "@/lib/server/clerk";
+import { getOrCreateAuthenticatedUser } from "@/lib/server/users-repository";
 import type { Locale, UserPreferences } from "@/types";
 
 function getVerifiedPrimaryEmail(
@@ -50,20 +50,24 @@ export async function resolveRequestPreferences(): Promise<UserPreferences> {
     };
   }
 
-  const account = await getOrCreateAccount({
+  const userProfile = await getOrCreateAuthenticatedUser({
     clerkUserId: userId,
     verifiedEmail: getVerifiedPrimaryEmail(user),
   });
 
   return {
-    locale: isLocale(account.locale)
-      ? account.locale
+    locale: isLocale(userProfile.locale)
+      ? userProfile.locale
       : cookieLocale && isLocale(cookieLocale)
         ? cookieLocale
         : defaultUserPreferences.locale,
-    region: isRegion(account.region) ? account.region : defaultUserPreferences.region,
-    timezone: account.timezone || defaultUserPreferences.timezone,
-    currency: isCurrency(account.currency) ? account.currency : defaultUserPreferences.currency,
+    region: isRegion(userProfile.region)
+      ? userProfile.region
+      : defaultUserPreferences.region,
+    timezone: userProfile.timezone || defaultUserPreferences.timezone,
+    currency: isCurrency(userProfile.currency)
+      ? userProfile.currency
+      : defaultUserPreferences.currency,
   };
 }
 
