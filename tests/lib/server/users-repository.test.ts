@@ -1,8 +1,8 @@
 import { describe, expect, it } from "vitest";
 
-import { resolveVerifiedEmailLinkCandidate } from "@/lib/server/accounts-repository";
+import { resolveVerifiedEmailLinkCandidate } from "@/lib/server/users-repository";
 
-describe("resolveVerifiedEmailLinkCandidate", () => {
+describe("users repository identity linking", () => {
   it("returns the user id when exactly one verified email match exists", () => {
     expect(resolveVerifiedEmailLinkCandidate([{ user_id: "user-1" }])).toBe("user-1");
   });

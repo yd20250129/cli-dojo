@@ -18,14 +18,6 @@ export type AnonymousSectionProgress = {
 
 export type AnonymousProgressState = Partial<Record<SectionId, AnonymousSectionProgress>>;
 
-export type Account = {
-  id: string;
-  userId: string;
-  clerkUserId: string;
-  createdAt: string;
-  updatedAt: string;
-};
-
 export type AuthenticatedUser = {
   userId: string;
   clerkUserId: string;
@@ -92,7 +84,6 @@ export type Question = {
 export type SectionAttempt = {
   id: string;
   userId: string | null;
-  accountId: string | null;
   sectionId: SectionId;
   attemptNo: number;
   status: AttemptStatus;
@@ -110,7 +101,6 @@ export type AnswerRecord = {
   id: string;
   attemptId: string;
   userId: string | null;
-  accountId: string | null;
   sectionId: SectionId;
   questionId: string;
   selectedChoiceId: ChoiceId;
@@ -125,7 +115,6 @@ export type ApiSuccess<T> = {
 
 export type AppErrorCode =
   | "UNAUTHORIZED"
-  | "INVALID_LEARNER_ID"
   | "INVALID_SECTION"
   | "QUESTION_NOT_FOUND"
   | "QUESTION_DATA_INVALID"
@@ -162,7 +151,6 @@ export type MigrateAnonymousProgressRequest = {
 export type MigrateProgressResultReason =
   | "migrated"
   | "account_progress_exists"
-  | "no_legacy_progress"
   | "no_anonymous_progress";
 
 export type MigrateProgressResult = {
