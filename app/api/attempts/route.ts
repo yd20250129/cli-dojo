@@ -1,5 +1,5 @@
 import { AppError, errorResponse, requireJsonObject } from "@/lib/server/api-errors";
-import { getAuthenticatedAccount } from "@/lib/server/auth";
+import { getAuthenticatedUser } from "@/lib/server/auth";
 import {
   createRetryAttempt,
   getOrCreateCurrentAttempt,
@@ -9,7 +9,7 @@ import type { CreateAttemptRequest } from "@/types";
 
 export async function POST(request: Request) {
   try {
-    const account = await getAuthenticatedAccount(request);
+    const user = await getAuthenticatedUser();
     const body = requireJsonObject(await request.json()) as Partial<CreateAttemptRequest>;
 
     if (!body.sectionId || !isSectionId(body.sectionId)) {
@@ -18,11 +18,11 @@ export async function POST(request: Request) {
 
     const attempt = body.retry
       ? await createRetryAttempt({
-          userId: account.userId,
+          userId: user.userId,
           sectionId: body.sectionId,
         })
       : await getOrCreateCurrentAttempt({
-          userId: account.userId,
+          userId: user.userId,
           sectionId: body.sectionId,
         });
 

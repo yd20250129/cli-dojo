@@ -22,10 +22,6 @@ export function isChoiceId(value: string): value is ChoiceId {
   return choiceIds.includes(value as ChoiceId);
 }
 
-export function isLearnerId(value: string): boolean {
-  return /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i.test(value);
-}
-
 function isAnonymousSectionProgress(
   value: unknown,
 ): value is { answers?: unknown; latestAnsweredAt?: unknown } {

@@ -8,11 +8,11 @@ The app uses static TypeScript question data and stores learning progress in Neo
 
 - 6 learning sections
 - 118 questions across all sections
-- Account authentication with Clerk is implemented in `dev`
+- Clerk authentication is implemented in `dev`
 - Progress saved to Neon per authenticated app user
 - Auth methods: Email, GitHub, Google
 - In-progress sections resume from the next unanswered question
-- Anonymous `localStorage` learner IDs are legacy MVP data and should only be used for migration
+- Anonymous progress is stored only in `sessionStorage`
 - No ORM in MVP
 
 ## Stack
@@ -96,13 +96,8 @@ Target behavior:
 - The server derives ownership from Clerk identity resolution; clients must not send ownership IDs for authorization.
 - Neon progress records are owned by app-level `users.id`, while Clerk `userId` is treated as an external identity.
 - In `dev`, sign-in / sign-up auto-links to an existing `users.id` only when the Clerk verified primary email matches exactly one existing verified email candidate.
-- Existing anonymous `localStorage` learner progress may be migrated once after sign-in, then the account record becomes the source of truth.
+- Existing anonymous `sessionStorage` progress may be migrated once after sign-in, then the account record becomes the source of truth.
 - Unauthenticated quiz answers are stored only in `sessionStorage` and reflected only on the home page summary/cards and anonymous result view.
-
-Legacy MVP behavior:
-
-- `localStorage` key `cli-dojo:learner-id` is kept only for legacy progress migration.
-- `X-Learner-Id` is only sent to support legacy progress migration on sign-in.
 
 Anonymous session behavior:
 
@@ -121,6 +116,10 @@ db/migrations/003_clear_reordered_section_progress.sql
 db/migrations/004_add_accounts_and_authenticated_progress.sql
 db/migrations/005_add_account_preferences.sql
 db/migrations/006_add_users_and_user_identities.sql
+db/migrations/007_add_canonical_user_profile_fields.sql
+db/migrations/008_stop_writing_account_compatibility_fields.sql
+db/migrations/009_drop_account_compatibility_columns.sql
+db/migrations/010_drop_legacy_learner_support.sql
 ```
 
 Manual operation helper:
@@ -133,7 +132,6 @@ Current Neon tables:
 
 - `users`
 - `user_identities`
-- `accounts`
 - `section_attempts`
 - `answer_records`
 
@@ -141,11 +139,9 @@ Current ownership model:
 
 - `users.id` is the source of truth for learning progress ownership.
 - `user_identities` stores external auth identities such as Clerk `userId`.
-- `accounts.user_id` references `users.id`.
 - `section_attempts.user_id` references `users.id`.
 - `answer_records.user_id` references `users.id`.
-- `account_id` columns remain temporarily for compatibility during the ownership-key transition.
-- Legacy `learner_id` columns remain only long enough to migrate anonymous progress.
+- `accounts` / `account_id` / `learner_id` are already removed from the shared DB.
 - If a verified email maps to multiple existing `user_id` candidates, auto-link is skipped and manual merge is required.
 
 Question data is not stored in Neon. It is stored in TypeScript files:

@@ -2,9 +2,7 @@ import { auth, currentUser } from "@clerk/nextjs/server";
 
 import { AppError } from "@/lib/server/api-errors";
 import { getCurrentUserSafely } from "@/lib/server/clerk";
-import { migrateLegacyProgressIfNeeded } from "@/lib/server/progress-repository";
 import { getOrCreateAuthenticatedUser } from "@/lib/server/users-repository";
-import { isLearnerId } from "@/lib/shared/validation";
 
 function getVerifiedPrimaryEmail(
   user: Awaited<ReturnType<typeof currentUser>>,
@@ -22,7 +20,7 @@ function getVerifiedPrimaryEmail(
     : null;
 }
 
-export async function getAuthenticatedAccount(request?: Request) {
+export async function getAuthenticatedUser() {
   const { userId } = await auth();
 
   if (!userId) {
@@ -35,18 +33,8 @@ export async function getAuthenticatedAccount(request?: Request) {
     throw new AppError("UNAUTHORIZED", 401);
   }
 
-  const user = await getOrCreateAuthenticatedUser({
+  return getOrCreateAuthenticatedUser({
     clerkUserId: userId,
     verifiedEmail: getVerifiedPrimaryEmail(clerkUser),
   });
-  const legacyLearnerId = request?.headers.get("X-Legacy-Learner-Id");
-
-  if (legacyLearnerId && isLearnerId(legacyLearnerId)) {
-    await migrateLegacyProgressIfNeeded({
-      userId: user.userId,
-      legacyLearnerId,
-    });
-  }
-
-  return user;
 }

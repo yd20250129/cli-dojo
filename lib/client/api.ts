@@ -1,6 +1,5 @@
 "use client";
 
-import { getLegacyLearnerId } from "@/lib/client/learner-id";
 import type {
   AnonymousProgressState,
   ApiErrorResponse,
@@ -25,12 +24,10 @@ export class ApiRequestError extends Error {
 }
 
 async function requestJson<T>(path: string, init: RequestInit = {}) {
-  const legacyLearnerId = getLegacyLearnerId();
   const response = await fetch(path, {
     ...init,
     headers: {
       "Content-Type": "application/json",
-      ...(legacyLearnerId ? { "X-Legacy-Learner-Id": legacyLearnerId } : {}),
       ...init.headers,
     },
   });

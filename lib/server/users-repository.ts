@@ -1,4 +1,3 @@
-import { resolveVerifiedEmailLinkCandidate } from "@/lib/server/accounts-repository";
 import { getSql } from "@/lib/server/db";
 import {
   defaultUserPreferences,
@@ -54,6 +53,12 @@ function normalizeEmail(email: string | null | undefined) {
   return value ? value : null;
 }
 
+export function resolveVerifiedEmailLinkCandidate(
+  rows: Array<{ user_id: string | number }>,
+) {
+  return rows.length === 1 ? String(rows[0].user_id) : null;
+}
+
 async function getUserByIdentity(clerkUserId: string) {
   const sql = getSql();
   const rows = await sql`
@@ -65,22 +70,6 @@ async function getUserByIdentity(clerkUserId: string) {
       ON user_identities.user_id = users.id
     WHERE user_identities.provider = 'clerk'
       AND user_identities.provider_user_id = ${clerkUserId}
-    LIMIT 1
-  `;
-
-  return rows[0] ? mapAuthenticatedUser(rows[0] as UserRow) : null;
-}
-
-async function getUserByLegacyAccount(clerkUserId: string) {
-  const sql = getSql();
-  const rows = await sql`
-    SELECT
-      users.*,
-      accounts.clerk_user_id
-    FROM users
-    INNER JOIN accounts
-      ON accounts.user_id = users.id
-    WHERE accounts.clerk_user_id = ${clerkUserId}
     LIMIT 1
   `;
 
@@ -156,36 +145,6 @@ async function ensureUserIdentity(params: {
   await syncCanonicalEmail(params.userId, email);
 }
 
-async function ensureLegacyAccount(user: AuthenticatedUser) {
-  const sql = getSql();
-  await sql`
-    INSERT INTO accounts (
-      user_id,
-      clerk_user_id,
-      locale,
-      region,
-      timezone,
-      currency
-    )
-    VALUES (
-      ${user.userId},
-      ${user.clerkUserId},
-      ${user.locale},
-      ${user.region},
-      ${user.timezone},
-      ${user.currency}
-    )
-    ON CONFLICT (user_id)
-    DO UPDATE SET
-      clerk_user_id = EXCLUDED.clerk_user_id,
-      locale = EXCLUDED.locale,
-      region = EXCLUDED.region,
-      timezone = EXCLUDED.timezone,
-      currency = EXCLUDED.currency,
-      updated_at = now()
-  `;
-}
-
 async function findLinkedUserIdByVerifiedEmail(email: string) {
   const sql = getSql();
   const rows = await sql`
@@ -242,24 +201,6 @@ async function createUser(params: {
         ${email},
         ${Boolean(email)}
       FROM new_user
-    ),
-    new_account AS (
-      INSERT INTO accounts (
-        user_id,
-        clerk_user_id,
-        locale,
-        region,
-        timezone,
-        currency
-      )
-      SELECT
-        new_user.id,
-        ${params.clerkUserId},
-        new_user.locale,
-        new_user.region,
-        new_user.timezone,
-        new_user.currency
-      FROM new_user
     )
     SELECT
       new_user.*,
@@ -287,23 +228,6 @@ export async function getOrCreateAuthenticatedUser(params: {
     const syncedUser =
       (await getUserById(existingIdentityUser.userId, params.clerkUserId)) ??
       existingIdentityUser;
-    await ensureLegacyAccount(syncedUser);
-    return syncedUser;
-  }
-
-  const existingLegacyUser = await getUserByLegacyAccount(params.clerkUserId);
-
-  if (existingLegacyUser) {
-    await ensureUserIdentity({
-      userId: existingLegacyUser.userId,
-      clerkUserId: params.clerkUserId,
-      verifiedEmail: email,
-    });
-
-    const syncedUser =
-      (await getUserById(existingLegacyUser.userId, params.clerkUserId)) ??
-      existingLegacyUser;
-    await ensureLegacyAccount(syncedUser);
     return syncedUser;
   }
 
@@ -320,7 +244,6 @@ export async function getOrCreateAuthenticatedUser(params: {
       const linkedUser = await getUserById(linkedUserId, params.clerkUserId);
 
       if (linkedUser) {
-        await ensureLegacyAccount(linkedUser);
         return linkedUser;
       }
     }
@@ -337,8 +260,7 @@ export async function getOrCreateAuthenticatedUser(params: {
     }
 
     const user =
-      (await getUserByIdentity(params.clerkUserId)) ??
-      (await getUserByLegacyAccount(params.clerkUserId));
+      await getUserByIdentity(params.clerkUserId);
 
     if (!user) {
       throw error;
@@ -351,7 +273,6 @@ export async function getOrCreateAuthenticatedUser(params: {
     });
 
     const syncedUser = (await getUserById(user.userId, params.clerkUserId)) ?? user;
-    await ensureLegacyAccount(syncedUser);
     return syncedUser;
   }
 }

@@ -2,7 +2,6 @@ import { describe, expect, it } from "vitest";
 
 import {
   isChoiceId,
-  isLearnerId,
   isSectionId,
   parseAnonymousProgressState,
   validateQuestionData,
@@ -26,12 +25,6 @@ describe("validation helpers", () => {
     expect(isChoiceId("C")).toBe(true);
     expect(isChoiceId("D")).toBe(true);
     expect(isChoiceId("E")).toBe(false);
-  });
-
-  it("accepts valid learner IDs and rejects malformed values", () => {
-    expect(isLearnerId("550e8400-e29b-41d4-a716-446655440000")).toBe(true);
-    expect(isLearnerId("not-a-uuid")).toBe(false);
-    expect(isLearnerId("550e8400-e29b-61d4-a716-446655440000")).toBe(false);
   });
 
   it("sanitizes anonymous progress payloads", () => {

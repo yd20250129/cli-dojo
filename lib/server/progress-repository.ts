@@ -21,7 +21,6 @@ import type {
 type AttemptRow = {
   id: string;
   user_id: string | null;
-  account_id: string | null;
   section_id: SectionId;
   attempt_no: number;
   status: "in_progress" | "completed";
@@ -35,7 +34,6 @@ type AnswerRow = {
   id: string;
   attempt_id: string;
   user_id: string | null;
-  account_id: string | null;
   section_id: SectionId;
   question_id: string;
   selected_choice_id: ChoiceId;
@@ -52,7 +50,6 @@ function mapAttempt(row: AttemptRow): SectionAttempt {
   return {
     id: row.id,
     userId: row.user_id,
-    accountId: row.account_id,
     sectionId: row.section_id,
     attemptNo: row.attempt_no,
     status: row.status,
@@ -68,7 +65,6 @@ function mapAnswer(row: AnswerRow): AnswerRecord {
     id: row.id,
     attemptId: row.attempt_id,
     userId: row.user_id,
-    accountId: row.account_id,
     sectionId: row.section_id,
     questionId: row.question_id,
     selectedChoiceId: row.selected_choice_id,
@@ -129,7 +125,6 @@ export async function createRetryAttempt(params: {
   const rows = await sql`
     INSERT INTO section_attempts (
       user_id,
-      learner_id,
       section_id,
       attempt_no,
       status,
@@ -138,7 +133,6 @@ export async function createRetryAttempt(params: {
     )
     VALUES (
       ${params.userId},
-      null,
       ${params.sectionId},
       COALESCE((
         SELECT MAX(attempt_no) + 1
@@ -207,7 +201,6 @@ export async function saveAnswer(params: {
       INSERT INTO answer_records (
         attempt_id,
         user_id,
-        learner_id,
         section_id,
         question_id,
         selected_choice_id,
@@ -217,7 +210,6 @@ export async function saveAnswer(params: {
       VALUES (
         ${params.attemptId},
         ${params.userId},
-        null,
         ${params.sectionId},
         ${params.questionId},
         ${params.selectedChoiceId},
@@ -505,51 +497,4 @@ export async function migrateAnonymousProgressIfNeeded(params: {
   }
 
   return { migrated: true, reason: "migrated" };
-}
-
-export async function migrateLegacyProgressIfNeeded(params: {
-  userId: string;
-  legacyLearnerId: string;
-}): Promise<MigrateProgressResult> {
-  const sql = getSql();
-  const existingAccountProgress = await sql`
-    SELECT 1
-    FROM section_attempts
-    WHERE user_id = ${params.userId}
-    LIMIT 1
-  `;
-
-  if (existingAccountProgress[0]) {
-    return { migrated: false, reason: "account_progress_exists" as const };
-  }
-
-  const existingLegacyProgress = await sql`
-    SELECT 1
-    FROM section_attempts
-    WHERE learner_id = ${params.legacyLearnerId}
-      AND account_id IS NULL
-    LIMIT 1
-  `;
-
-  if (!existingLegacyProgress[0]) {
-    return { migrated: false, reason: "no_legacy_progress" as const };
-  }
-
-  await sql`
-    UPDATE section_attempts
-    SET
-      user_id = ${params.userId}
-    WHERE learner_id = ${params.legacyLearnerId}
-      AND user_id IS NULL
-  `;
-
-  await sql`
-    UPDATE answer_records
-    SET
-      user_id = ${params.userId}
-    WHERE learner_id = ${params.legacyLearnerId}
-      AND user_id IS NULL
-  `;
-
-  return { migrated: true, reason: "migrated" as const };
 }

@@ -1,5 +1,5 @@
 import { AppError, errorResponse } from "@/lib/server/api-errors";
-import { getAuthenticatedAccount } from "@/lib/server/auth";
+import { getAuthenticatedUser } from "@/lib/server/auth";
 import { getSectionResult } from "@/lib/server/progress-repository";
 import { isSectionId } from "@/lib/shared/validation";
 
@@ -8,7 +8,7 @@ export async function GET(
   context: { params: Promise<{ sectionId: string }> },
 ) {
   try {
-    const account = await getAuthenticatedAccount(request);
+    const user = await getAuthenticatedUser();
     const { sectionId } = await context.params;
 
     if (!isSectionId(sectionId)) {
@@ -18,7 +18,7 @@ export async function GET(
     const url = new URL(request.url);
     const attemptId = url.searchParams.get("attemptId") ?? undefined;
     const result = await getSectionResult({
-      userId: account.userId,
+      userId: user.userId,
       sectionId,
       attemptId,
     });
