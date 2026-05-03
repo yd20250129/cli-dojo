@@ -186,6 +186,19 @@ agent-browser errors
 agent-browser close
 ```
 
+Reset a reusable test account before manual auth verification:
+
+```bash
+npx vercel env pull /private/tmp/cli-dojo-prod.env --yes --environment=production
+npm run reset:test-user -- wkdkzskg_next@yahoo.co.jp --yes
+```
+
+Notes:
+
+- The reset script reads `DATABASE_URL` from `/private/tmp/cli-dojo-prod.env` by default.
+- If that env file does not contain `CLERK_SECRET_KEY`, the script falls back to `01_Source/dev/.env.local`.
+- Use `--dry-run` first when you only want to inspect matching Neon / Clerk records.
+
 ## Deploy
 
 Production deployments are run from the `main` worktree:
