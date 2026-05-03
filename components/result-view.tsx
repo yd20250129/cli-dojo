@@ -64,7 +64,7 @@ export function ResultView({ locale, section, attemptId, anonymous = false }: Re
       const anonymousResult = getAnonymousSectionResult(section.id);
 
       setResult(anonymousResult);
-      setError(anonymousResult ? "" : translate("result.errors.missing"));
+      setError("");
       setLoading(false);
       return;
     }
@@ -80,7 +80,7 @@ export function ResultView({ locale, section, attemptId, anonymous = false }: Re
 
       if (active) {
         setResult(anonymousResult);
-        setError(anonymousResult ? "" : translate("result.errors.missing"));
+        setError("");
         setLoading(false);
       }
 
