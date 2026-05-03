@@ -8,7 +8,8 @@
       "C": "docker build",
       "D": "git push"
     },
-    "explanation": "docker build は Dockerfile をもとにコンテナイメージを作成します。アプリを同じ環境で動かすための土台を作るコマンドです。Dockerfile を書いたあと、まず build して形にする流れが基本です。"
+    "explanation": "docker build は Dockerfile をもとにコンテナイメージを作成します。アプリを同じ環境で動かすための土台を作るコマンドです。Dockerfile を書いたあと、まず build して形にする流れが基本です。",
+    "categoryKey": "CAT-013"
   },
   "SEC06-002": {
     "category": "コンテナ管理",
@@ -19,7 +20,8 @@
       "C": "docker ps -t app:latest .",
       "D": "docker logs -t app:latest ."
     },
-    "explanation": "docker build -t app:latest . は現在のディレクトリをビルドコンテキストにして、app:latest という名前のイメージを作ります。後で run しやすいよう、意味のある名前を付けてビルドするのが実務的です。-t は --tag の短縮形です。"
+    "explanation": "docker build -t app:latest . は現在のディレクトリをビルドコンテキストにして、app:latest という名前のイメージを作ります。後で run しやすいよう、意味のある名前を付けてビルドするのが実務的です。-t は --tag の短縮形です。",
+    "categoryKey": "CAT-013"
   },
   "SEC06-003": {
     "category": "コンテナ管理",
@@ -30,7 +32,8 @@
       "C": "docker logs",
       "D": "docker stop"
     },
-    "explanation": "docker images はローカルに保存されているDockerイメージの一覧を表示します。ビルドしたイメージ名やタグを確認したいときに使います。build 後に名前やタグが正しいか見直す用途でよく使います。"
+    "explanation": "docker images はローカルに保存されているDockerイメージの一覧を表示します。ビルドしたイメージ名やタグを確認したいときに使います。build 後に名前やタグが正しいか見直す用途でよく使います。",
+    "categoryKey": "CAT-013"
   },
   "SEC06-004": {
     "category": "コンテナ管理",
@@ -41,7 +44,8 @@
       "C": "docker images",
       "D": "docker compose down"
     },
-    "explanation": "docker run は指定したDockerイメージから新しいコンテナを起動します。イメージを作る docker build と、コンテナを動かす docker run は役割が違います。build の次に実際の動作確認として run へ進みます。"
+    "explanation": "docker run は指定したDockerイメージから新しいコンテナを起動します。イメージを作る docker build と、コンテナを動かす docker run は役割が違います。build の次に実際の動作確認として run へ進みます。",
+    "categoryKey": "CAT-013"
   },
   "SEC06-005": {
     "category": "コンテナ管理",
@@ -52,7 +56,8 @@
       "C": "docker ps -p 3000:3000 app",
       "D": "docker logs -p 3000:3000 app"
     },
-    "explanation": "docker run -p 3000:3000 app はローカルの3000番ポートをコンテナの3000番ポートへつなげて起動します。ブラウザで確認したいWebアプリでは、このポート公開を付けて起動するのが定番です。-p は --publish の短縮形です。"
+    "explanation": "docker run -p 3000:3000 app はローカルの3000番ポートをコンテナの3000番ポートへつなげて起動します。ブラウザで確認したいWebアプリでは、このポート公開を付けて起動するのが定番です。-p は --publish の短縮形です。",
+    "categoryKey": "CAT-013"
   },
   "SEC06-006": {
     "category": "コンテナ管理",
@@ -63,7 +68,8 @@
       "C": "docker build",
       "D": "docker compose up"
     },
-    "explanation": "docker ps は実行中のコンテナ一覧を表示します。コンテナID、名前、ポート、起動状態を確認したいときに使います。起動したはずのコンテナが見当たらないときに最初に確認する候補です。ps は process status に由来します。"
+    "explanation": "docker ps は実行中のコンテナ一覧を表示します。コンテナID、名前、ポート、起動状態を確認したいときに使います。起動したはずのコンテナが見当たらないときに最初に確認する候補です。ps は process status に由来します。",
+    "categoryKey": "CAT-013"
   },
   "SEC06-007": {
     "category": "コンテナ管理",
@@ -74,7 +80,8 @@
       "C": "docker logs -a",
       "D": "docker build -a"
     },
-    "explanation": "docker ps -a は停止済みも含めたコンテナ一覧を表示します。起動に失敗したコンテナや、以前動かしたコンテナを探すときに使います。`ps` に出ないときは `ps -a` まで見ると状況を追いやすいです。-a は --all の短縮形です。"
+    "explanation": "docker ps -a は停止済みも含めたコンテナ一覧を表示します。起動に失敗したコンテナや、以前動かしたコンテナを探すときに使います。`ps` に出ないときは `ps -a` まで見ると状況を追いやすいです。-a は --all の短縮形です。",
+    "categoryKey": "CAT-013"
   },
   "SEC06-008": {
     "category": "コンテナ管理",
@@ -85,7 +92,8 @@
       "C": "docker images <container>",
       "D": "docker stop <container>"
     },
-    "explanation": "docker logs <container> は指定したコンテナの標準出力や標準エラーのログを表示します。コンテナ内のアプリがなぜ動かないか調べるときに使います。起動直後に落ちた原因を追うときの基本コマンドです。"
+    "explanation": "docker logs <container> は指定したコンテナの標準出力や標準エラーのログを表示します。コンテナ内のアプリがなぜ動かないか調べるときに使います。起動直後に落ちた原因を追うときの基本コマンドです。",
+    "categoryKey": "CAT-013"
   },
   "SEC06-009": {
     "category": "コンテナ管理",
@@ -96,7 +104,8 @@
       "C": "docker images <container>",
       "D": "docker compose logs <container>"
     },
-    "explanation": "docker stop <container> は実行中のコンテナを停止します。停止対象にはコンテナIDまたはコンテナ名を指定できます。ポート競合や再起動前の片付けで stop を使います。"
+    "explanation": "docker stop <container> は実行中のコンテナを停止します。停止対象にはコンテナIDまたはコンテナ名を指定できます。ポート競合や再起動前の片付けで stop を使います。",
+    "categoryKey": "CAT-013"
   },
   "SEC06-010": {
     "category": "コンテナ管理",
@@ -107,7 +116,8 @@
       "C": "docker ps -it <container> sh",
       "D": "docker logs -it <container> sh"
     },
-    "explanation": "docker exec -it <container> sh は実行中のコンテナ内でシェルを開きます。コンテナ内のファイルや環境変数を直接確認したいときに使います。外から見えない設定を中で調べたいときに有効です。exec は execute の略です。"
+    "explanation": "docker exec -it <container> sh は実行中のコンテナ内でシェルを開きます。コンテナ内のファイルや環境変数を直接確認したいときに使います。外から見えない設定を中で調べたいときに有効です。exec は execute の略です。",
+    "categoryKey": "CAT-013"
   },
   "SEC06-011": {
     "category": "Compose操作",
@@ -118,7 +128,8 @@
       "C": "docker images up",
       "D": "git compose up"
     },
-    "explanation": "docker compose up は compose.yaml に定義された複数のサービスをまとめて起動します。アプリ、DB、Redisなどを一緒に動かすローカル開発でよく使います。複数コマンドを手で分けず、一括起動したいときの入口になります。"
+    "explanation": "docker compose up は compose.yaml に定義された複数のサービスをまとめて起動します。アプリ、DB、Redisなどを一緒に動かすローカル開発でよく使います。複数コマンドを手で分けず、一括起動したいときの入口になります。",
+    "categoryKey": "CAT-002"
   },
   "SEC06-012": {
     "category": "Compose操作",
@@ -129,7 +140,8 @@
       "C": "docker compose logs -d",
       "D": "docker compose build -d"
     },
-    "explanation": "docker compose up -d はサービスをバックグラウンドで起動します。ターミナルを占有せずにコンテナを動かしたいときに使います。起動しっぱなしで別作業を続けたいときに便利です。-d は --detach の短縮形です。"
+    "explanation": "docker compose up -d はサービスをバックグラウンドで起動します。ターミナルを占有せずにコンテナを動かしたいときに使います。起動しっぱなしで別作業を続けたいときに便利です。-d は --detach の短縮形です。",
+    "categoryKey": "CAT-002"
   },
   "SEC06-013": {
     "category": "Compose操作",
@@ -140,7 +152,8 @@
       "C": "docker compose down",
       "D": "docker compose ps"
     },
-    "explanation": "docker compose down は Compose で起動したサービスを停止し、関連するコンテナやネットワークを削除します。開発環境を一度片付けたいときに使います。作業を終えたあとにまとめて停止したいときの定番です。"
+    "explanation": "docker compose down は Compose で起動したサービスを停止し、関連するコンテナやネットワークを削除します。開発環境を一度片付けたいときに使います。作業を終えたあとにまとめて停止したいときの定番です。",
+    "categoryKey": "CAT-002"
   },
   "SEC06-014": {
     "category": "Compose操作",
@@ -151,7 +164,8 @@
       "C": "docker compose images",
       "D": "docker compose stop"
     },
-    "explanation": "docker compose logs は Compose で起動しているサービスのログを表示します。複数サービスのどこで問題が起きているか確認したいときに使います。アプリとDBの両方を見たいときに1か所で追えるのが利点です。"
+    "explanation": "docker compose logs は Compose で起動しているサービスのログを表示します。複数サービスのどこで問題が起きているか確認したいときに使います。アプリとDBの両方を見たいときに1か所で追えるのが利点です。",
+    "categoryKey": "CAT-002"
   },
   "SEC06-015": {
     "category": "クラウドデプロイ",
@@ -162,7 +176,8 @@
       "C": "git branch",
       "D": "cat"
     },
-    "explanation": "vercel コマンドはVercel CLIからプロジェクトをデプロイするために使います。初回はプロジェクトのリンクや設定確認が行われます。まず preview 環境へ出して動作を確認したいときの入口になります。"
+    "explanation": "vercel コマンドはVercel CLIからプロジェクトをデプロイするために使います。初回はプロジェクトのリンクや設定確認が行われます。まず preview 環境へ出して動作を確認したいときの入口になります。",
+    "categoryKey": "CAT-008"
   },
   "SEC06-016": {
     "category": "クラウドデプロイ",
@@ -173,7 +188,8 @@
       "C": "vercel --local",
       "D": "vercel --branch"
     },
-    "explanation": "vercel --prod はVercelのProduction環境へデプロイします。通常の vercel はPreviewデプロイとして扱われることがあります。確認済みの変更を本番へ反映したい段階で使います。prod は production の略です。"
+    "explanation": "vercel --prod はVercelのProduction環境へデプロイします。通常の vercel はPreviewデプロイとして扱われることがあります。確認済みの変更を本番へ反映したい段階で使います。prod は production の略です。",
+    "categoryKey": "CAT-008"
   },
   "SEC06-017": {
     "category": "クラウドデプロイ",
@@ -184,7 +200,8 @@
       "C": "vercel build pull",
       "D": "vercel deploy pull"
     },
-    "explanation": "vercel env pull はVercelに登録されている環境変数をローカルの .env ファイルへ取得します。ローカル開発とデプロイ環境の設定差を減らしたいときに使います。初回セットアップで環境変数をそろえる場面に向いています。env は environment の略です。"
+    "explanation": "vercel env pull はVercelに登録されている環境変数をローカルの .env ファイルへ取得します。ローカル開発とデプロイ環境の設定差を減らしたいときに使います。初回セットアップで環境変数をそろえる場面に向いています。env は environment の略です。",
+    "categoryKey": "CAT-008"
   },
   "SEC06-018": {
     "category": "クラウドデプロイ",
@@ -195,7 +212,8 @@
       "C": "vercel env",
       "D": "vercel switch"
     },
-    "explanation": "vercel logs はVercel上のログ確認に使います。デプロイ後にサーバー側のエラーや関数の出力を調べたいときに役立ちます。本番では見えない失敗原因を追うときにまず確認します。"
+    "explanation": "vercel logs はVercel上のログ確認に使います。デプロイ後にサーバー側のエラーや関数の出力を調べたいときに役立ちます。本番では見えない失敗原因を追うときにまず確認します。",
+    "categoryKey": "CAT-008"
   },
   "SEC06-019": {
     "category": "クラウドデプロイ",
@@ -206,7 +224,8 @@
       "C": "railway branch",
       "D": "railway compose"
     },
-    "explanation": "railway up はRailway CLIからプロジェクトをデプロイするために使います。Vercel以外のクラウドデプロイ例として覚えておくと選択肢が広がります。Railway利用時はこのコマンドがデプロイの起点になります。"
+    "explanation": "railway up はRailway CLIからプロジェクトをデプロイするために使います。Vercel以外のクラウドデプロイ例として覚えておくと選択肢が広がります。Railway利用時はこのコマンドがデプロイの起点になります。",
+    "categoryKey": "CAT-008"
   },
   "SEC06-020": {
     "category": "クラウドデプロイ",
@@ -217,7 +236,8 @@
       "C": "railway env pull",
       "D": "railway stop logs"
     },
-    "explanation": "railway logs はRailway上のアプリログを確認するために使います。デプロイ後の起動失敗や実行時エラーを調べるときに役立ちます。公開後に動かないときの切り分けで最初に見る候補です。"
+    "explanation": "railway logs はRailway上のアプリログを確認するために使います。デプロイ後の起動失敗や実行時エラーを調べるときに役立ちます。公開後に動かないときの切り分けで最初に見る候補です。",
+    "categoryKey": "CAT-008"
   },
   "SEC06-021": {
     "category": "CI/CD",
@@ -228,7 +248,8 @@
       "C": "git log",
       "D": "git restore"
     },
-    "explanation": "git push はローカルのコミットをリモートリポジトリへ送ります。GitHub ActionsやVercel Git Integrationでは、push がCI/CDやデプロイの起点になることがあります。ローカル確認後に自動処理を走らせる入口として理解すると分かりやすいです。"
+    "explanation": "git push はローカルのコミットをリモートリポジトリへ送ります。GitHub ActionsやVercel Git Integrationでは、push がCI/CDやデプロイの起点になることがあります。ローカル確認後に自動処理を走らせる入口として理解すると分かりやすいです。",
+    "categoryKey": "CAT-001"
   },
   "SEC06-022": {
     "category": "CI/CD",
@@ -239,7 +260,8 @@
       "C": "gh pr create",
       "D": "gh issue list"
     },
-    "explanation": "gh run list はGitHub Actionsの実行履歴を一覧表示します。CIが成功したか、どの実行が失敗したかを確認したいときに使います。push 後に最新の実行結果を確認する最初の一手として便利です。gh は GitHub CLI のコマンド名です。"
+    "explanation": "gh run list はGitHub Actionsの実行履歴を一覧表示します。CIが成功したか、どの実行が失敗したかを確認したいときに使います。push 後に最新の実行結果を確認する最初の一手として便利です。gh は GitHub CLI のコマンド名です。",
+    "categoryKey": "CAT-001"
   },
   "SEC06-023": {
     "category": "CI/CD",
@@ -250,7 +272,8 @@
       "C": "gh workflow deploy",
       "D": "gh repo watch"
     },
-    "explanation": "gh run watch はGitHub Actionsの実行状況を監視します。push後にCIの完了を待ちながら結果を確認したいときに便利です。ブラウザを開かず端末のまま進捗を追いたいときに向いています。"
+    "explanation": "gh run watch はGitHub Actionsの実行状況を監視します。push後にCIの完了を待ちながら結果を確認したいときに便利です。ブラウザを開かず端末のまま進捗を追いたいときに向いています。",
+    "categoryKey": "CAT-001"
   },
   "SEC06-024": {
     "category": "CI/CD",
@@ -261,6 +284,7 @@
       "C": "gh repo view --log",
       "D": "gh pr view --log"
     },
-    "explanation": "gh run view --log はGitHub Actionsの実行ログを表示します。CI失敗時にどのステップで何が起きたかを追うために使います。list や watch で失敗を見つけたあと、原因調査で続けて使うイメージです。"
+    "explanation": "gh run view --log はGitHub Actionsの実行ログを表示します。CI失敗時にどのステップで何が起きたかを追うために使います。list や watch で失敗を見つけたあと、原因調査で続けて使うイメージです。",
+    "categoryKey": "CAT-001"
   }
 }

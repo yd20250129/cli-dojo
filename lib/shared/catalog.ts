@@ -1,6 +1,8 @@
 import type {
+  CategoryKey,
   Choice,
   ChoiceId,
+  Locale,
   LocalizedQuestion,
   Question,
   QuestionDef,
@@ -9,6 +11,8 @@ import type {
   SectionDef,
   SectionLocaleMap,
 } from "@/types";
+import { defaultLocale } from "@/lib/i18n/config";
+import { getCategoryLabel } from "@/lib/i18n/dictionaries";
 
 const requiredChoiceIds = ["A", "B", "C", "D"] as const;
 
@@ -41,7 +45,7 @@ function assertLocalizedQuestion(
   }
 
   const data = value as Record<string, unknown>;
-  assertNonEmptyString(data.category, `${questionId}.category`);
+  assertNonEmptyString(data.categoryKey, `${questionId}.categoryKey`);
   assertNonEmptyString(data.question, `${questionId}.question`);
   assertChoiceTextMap(data.choices, `${questionId}.choices`);
   assertNonEmptyString(data.explanation, `${questionId}.explanation`);
@@ -73,6 +77,7 @@ function buildChoices(
 export function buildQuestionCatalog(
   defs: readonly QuestionDef[],
   localeMap: QuestionLocaleMap,
+  locale: Locale = defaultLocale,
 ): Question[] {
   return defs.map((def) => {
     const localized = localeMap[def.id];
@@ -86,7 +91,8 @@ export function buildQuestionCatalog(
     return {
       id: def.id,
       sectionId: def.sectionId,
-      category: localized.category,
+      categoryKey: localized.categoryKey as CategoryKey,
+      category: getCategoryLabel(locale, localized.categoryKey),
       command: def.command,
       question: localized.question,
       choices: buildChoices(def.choiceIds, localized.choices),

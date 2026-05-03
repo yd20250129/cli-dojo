@@ -1,4 +1,10 @@
 import { getSql } from "@/lib/server/db";
+import {
+  defaultUserPreferences,
+  isCurrency,
+  isLocale,
+  isRegion,
+} from "@/lib/i18n/config";
 import type { AuthenticatedUser } from "@/types";
 
 type UserRow = {
@@ -6,6 +12,10 @@ type UserRow = {
   clerk_user_id: string;
   canonical_email: string | null;
   canonical_email_verified: boolean;
+  locale: string;
+  region: string;
+  timezone: string;
+  currency: string;
   created_at: Date | string;
   updated_at: Date | string;
 };
@@ -20,6 +30,10 @@ function mapAuthenticatedUser(row: UserRow): AuthenticatedUser {
     clerkUserId: row.clerk_user_id,
     canonicalEmail: row.canonical_email,
     canonicalEmailVerified: row.canonical_email_verified,
+    locale: isLocale(row.locale) ? row.locale : defaultUserPreferences.locale,
+    region: isRegion(row.region) ? row.region : defaultUserPreferences.region,
+    timezone: row.timezone ?? defaultUserPreferences.timezone,
+    currency: isCurrency(row.currency) ? row.currency : defaultUserPreferences.currency,
     createdAt: toIso(row.created_at),
     updatedAt: toIso(row.updated_at),
   };
@@ -156,11 +170,19 @@ async function createUser(params: {
     WITH new_user AS (
       INSERT INTO users (
         canonical_email,
-        canonical_email_verified
+        canonical_email_verified,
+        locale,
+        region,
+        timezone,
+        currency
       )
       VALUES (
         ${email},
-        ${Boolean(email)}
+        ${Boolean(email)},
+        ${defaultUserPreferences.locale},
+        ${defaultUserPreferences.region},
+        ${defaultUserPreferences.timezone},
+        ${defaultUserPreferences.currency}
       )
       RETURNING *
     ),

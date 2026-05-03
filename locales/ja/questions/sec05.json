@@ -8,7 +8,8 @@
       "C": "git merge",
       "D": "vercel"
     },
-    "explanation": "npm test は package.json の test スクリプトを実行します。プロジェクトによっては Jest、Vitest、Playwright などのテストツールがこのスクリプトに紐づきます。変更後の基本確認としてまず npm test を打つ流れが分かりやすいです。"
+    "explanation": "npm test は package.json の test スクリプトを実行します。プロジェクトによっては Jest、Vitest、Playwright などのテストツールがこのスクリプトに紐づきます。変更後の基本確認としてまず npm test を打つ流れが分かりやすいです。",
+    "categoryKey": "CAT-019"
   },
   "SEC05-002": {
     "category": "テスト実行",
@@ -19,7 +20,8 @@
       "C": "npm run format",
       "D": "npm run lint"
     },
-    "explanation": "npm run test は package.json の scripts.test を実行します。npm test と近い意味ですが、npm run の形を覚えておくと他のスクリプト実行にも応用できます。lint や build と同じ書き方でそろえたいときに使いやすい形です。"
+    "explanation": "npm run test は package.json の scripts.test を実行します。npm test と近い意味ですが、npm run の形を覚えておくと他のスクリプト実行にも応用できます。lint や build と同じ書き方でそろえたいときに使いやすい形です。",
+    "categoryKey": "CAT-019"
   },
   "SEC05-003": {
     "category": "テスト実行",
@@ -30,7 +32,8 @@
       "C": "npm watch test",
       "D": "npm install --watch"
     },
-    "explanation": "npm test -- --watch は npm の後ろにある引数を test スクリプト側へ渡します。ファイル変更のたびにテストを再実行したいときに使います。実装しながら継続的に確認したいときにこの形で起動します。"
+    "explanation": "npm test -- --watch は npm の後ろにある引数を test スクリプト側へ渡します。ファイル変更のたびにテストを再実行したいときに使います。実装しながら継続的に確認したいときにこの形で起動します。",
+    "categoryKey": "CAT-019"
   },
   "SEC05-004": {
     "category": "テスト実行",
@@ -41,7 +44,8 @@
       "C": "npm install --coverage",
       "D": "npm run build --coverage"
     },
-    "explanation": "npm test -- --coverage はテストツールに coverage オプションを渡します。テストがコードのどの範囲を実行したかを確認したいときに使います。レビュー前に網羅率を見たい場面で実行することがあります。"
+    "explanation": "npm test -- --coverage はテストツールに coverage オプションを渡します。テストがコードのどの範囲を実行したかを確認したいときに使います。レビュー前に網羅率を見たい場面で実行することがあります。",
+    "categoryKey": "CAT-019"
   },
   "SEC05-005": {
     "category": "テスト実行",
@@ -52,7 +56,8 @@
       "C": "python install",
       "D": "npm test"
     },
-    "explanation": "pytest はPythonの代表的なテスト実行コマンドです。test_ で始まるファイルや関数などを検出してテストを実行します。Pythonプロジェクトではまず pytest だけ打って全体確認することが多いです。"
+    "explanation": "pytest はPythonの代表的なテスト実行コマンドです。test_ で始まるファイルや関数などを検出してテストを実行します。Pythonプロジェクトではまず pytest だけ打って全体確認することが多いです。",
+    "categoryKey": "CAT-019"
   },
   "SEC05-006": {
     "category": "テスト実行",
@@ -63,7 +68,8 @@
       "C": "pip tests/",
       "D": "python tests/pytest"
     },
-    "explanation": "pytest tests/ は tests ディレクトリを対象にテストを実行します。対象範囲を絞ると、確認したいテストだけを実行しやすくなります。変更箇所に近いテストだけ素早く回したいときに便利です。"
+    "explanation": "pytest tests/ は tests ディレクトリを対象にテストを実行します。対象範囲を絞ると、確認したいテストだけを実行しやすくなります。変更箇所に近いテストだけ素早く回したいときに便利です。",
+    "categoryKey": "CAT-019"
   },
   "SEC05-007": {
     "category": "Lint",
@@ -74,7 +80,8 @@
       "C": "npm run test",
       "D": "npm run preview"
     },
-    "explanation": "npm run lint は package.json の scripts.lint を実行します。コード規約違反や潜在的なミスを静的解析で見つけるために使います。コミット前の確認として npm run lint を挟む運用がよくあります。lint は元々、コードのほこり取りのように問題を拾う道具の名前に由来します。"
+    "explanation": "npm run lint は package.json の scripts.lint を実行します。コード規約違反や潜在的なミスを静的解析で見つけるために使います。コミット前の確認として npm run lint を挟む運用がよくあります。lint は元々、コードのほこり取りのように問題を拾う道具の名前に由来します。",
+    "categoryKey": "CAT-003"
   },
   "SEC05-008": {
     "category": "Lint",
@@ -85,7 +92,8 @@
       "C": "tsc .",
       "D": "vitest ."
     },
-    "explanation": "eslint . は現在のディレクトリ配下のJavaScriptやTypeScriptを検査します。npm run lint の中でこのコマンドが呼ばれる構成もよくあります。CLIから直接確認したいときに eslint . と打つと挙動を把握しやすいです。"
+    "explanation": "eslint . は現在のディレクトリ配下のJavaScriptやTypeScriptを検査します。npm run lint の中でこのコマンドが呼ばれる構成もよくあります。CLIから直接確認したいときに eslint . と打つと挙動を把握しやすいです。",
+    "categoryKey": "CAT-003"
   },
   "SEC05-009": {
     "category": "フォーマット",
@@ -96,7 +104,8 @@
       "C": "npm run test",
       "D": "npm run dev"
     },
-    "explanation": "npm run format は package.json の scripts.format を実行します。多くのプロジェクトでは Prettier などを使ってコードの見た目を揃えます。提出前に全体の体裁をそろえるためにまとめて実行することがあります。"
+    "explanation": "npm run format は package.json の scripts.format を実行します。多くのプロジェクトでは Prettier などを使ってコードの見た目を揃えます。提出前に全体の体裁をそろえるためにまとめて実行することがあります。",
+    "categoryKey": "CAT-027"
   },
   "SEC05-010": {
     "category": "フォーマット",
@@ -107,7 +116,8 @@
       "C": "eslint --write .",
       "D": "tsc --write ."
     },
-    "explanation": "prettier --write . は対象ファイルを整形し、その結果をファイルに書き戻します。実行前後で差分が出る可能性があるため、コミット前に確認すると安心です。保存形式を一気に整えたいときにこのコマンドを使います。"
+    "explanation": "prettier --write . は対象ファイルを整形し、その結果をファイルに書き戻します。実行前後で差分が出る可能性があるため、コミット前に確認すると安心です。保存形式を一気に整えたいときにこのコマンドを使います。",
+    "categoryKey": "CAT-027"
   },
   "SEC05-011": {
     "category": "フォーマット",
@@ -118,7 +128,8 @@
       "C": "npm run build",
       "D": "eslint --fix ."
     },
-    "explanation": "prettier --check . は整形が必要なファイルがあるかを確認します。CIではファイルを書き換えずに失敗として検知したいので、この形がよく使われます。ローカルでも書き換え前の確認として先に流すことがあります。"
+    "explanation": "prettier --check . は整形が必要なファイルがあるかを確認します。CIではファイルを書き換えずに失敗として検知したいので、この形がよく使われます。ローカルでも書き換え前の確認として先に流すことがあります。",
+    "categoryKey": "CAT-027"
   },
   "SEC05-012": {
     "category": "型チェック",
@@ -129,7 +140,8 @@
       "C": "npm run format",
       "D": "npm run start"
     },
-    "explanation": "npm run typecheck は TypeScript の型チェック用スクリプトとしてよく使われます。プロジェクトによっては tsc --noEmit などが紐づきます。画面が動いていても型安全性を確認したいときに別で実行します。"
+    "explanation": "npm run typecheck は TypeScript の型チェック用スクリプトとしてよく使われます。プロジェクトによっては tsc --noEmit などが紐づきます。画面が動いていても型安全性を確認したいときに別で実行します。",
+    "categoryKey": "CAT-052"
   },
   "SEC05-013": {
     "category": "型チェック",
@@ -140,7 +152,8 @@
       "C": "eslint --noEmit",
       "D": "prettier --noEmit"
     },
-    "explanation": "tsc --noEmit はTypeScriptの型チェックを行い、JavaScriptファイルなどの出力は作りません。CIで型の問題だけを検出したいときによく使います。ビルド成果物は不要で型エラーだけ見たい場面に向いています。tsc は TypeScript Compiler の略です。"
+    "explanation": "tsc --noEmit はTypeScriptの型チェックを行い、JavaScriptファイルなどの出力は作りません。CIで型の問題だけを検出したいときによく使います。ビルド成果物は不要で型エラーだけ見たい場面に向いています。tsc は TypeScript Compiler の略です。",
+    "categoryKey": "CAT-052"
   },
   "SEC05-014": {
     "category": "ビルド",
@@ -151,7 +164,8 @@
       "C": "npm run lint",
       "D": "npm run test"
     },
-    "explanation": "npm run build は package.json の build スクリプトを実行します。Next.js、Vite、Astro など多くのフロントエンドプロジェクトで本番向けのビルドに使います。デプロイ前の最終確認として build を通す流れが一般的です。"
+    "explanation": "npm run build は package.json の build スクリプトを実行します。Next.js、Vite、Astro など多くのフロントエンドプロジェクトで本番向けのビルドに使います。デプロイ前の最終確認として build を通す流れが一般的です。",
+    "categoryKey": "CAT-022"
   },
   "SEC05-015": {
     "category": "ビルド",
@@ -162,7 +176,8 @@
       "C": "next lint",
       "D": "next preview"
     },
-    "explanation": "next build はNext.jsアプリを本番向けにビルドします。通常は package.json の build スクリプトに設定して npm run build から実行します。CLIで直接原因を切り分けたいときに next build を単独で打つこともあります。"
+    "explanation": "next build はNext.jsアプリを本番向けにビルドします。通常は package.json の build スクリプトに設定して npm run build から実行します。CLIで直接原因を切り分けたいときに next build を単独で打つこともあります。",
+    "categoryKey": "CAT-022"
   },
   "SEC05-016": {
     "category": "ビルド",
@@ -173,7 +188,8 @@
       "C": "vite build",
       "D": "vite test"
     },
-    "explanation": "vite build はViteプロジェクトを本番向けにビルドします。多くの場合、npm run build の中でこのコマンドが実行されます。Vite固有のビルド挙動を確認したいときに直接実行できます。"
+    "explanation": "vite build はViteプロジェクトを本番向けにビルドします。多くの場合、npm run build の中でこのコマンドが実行されます。Vite固有のビルド挙動を確認したいときに直接実行できます。",
+    "categoryKey": "CAT-022"
   },
   "SEC05-017": {
     "category": "プレビュー",
@@ -184,7 +200,8 @@
       "C": "npm run clone",
       "D": "npm run commit"
     },
-    "explanation": "npm run preview はビルド後の成果物をローカルで確認するためによく使われます。Viteなどのプロジェクトでは preview スクリプトとして定義されることが多いです。build のあとに preview を流して、本番相当の表示を確認します。"
+    "explanation": "npm run preview はビルド後の成果物をローカルで確認するためによく使われます。Viteなどのプロジェクトでは preview スクリプトとして定義されることが多いです。build のあとに preview を流して、本番相当の表示を確認します。",
+    "categoryKey": "CAT-031"
   },
   "SEC05-018": {
     "category": "自動修正",
@@ -195,6 +212,7 @@
       "C": "prettier --fix .",
       "D": "tsc --fix ."
     },
-    "explanation": "eslint --fix . はESLintが自動修正できる問題を直しながら検査します。すべての問題が直るわけではないため、実行後に差分と残りのエラーを確認します。細かいLint違反をまとめて直したいときの初手として便利です。"
+    "explanation": "eslint --fix . はESLintが自動修正できる問題を直しながら検査します。すべての問題が直るわけではないため、実行後に差分と残りのエラーを確認します。細かいLint違反をまとめて直したいときの初手として便利です。",
+    "categoryKey": "CAT-068"
   }
 }

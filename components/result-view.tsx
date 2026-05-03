@@ -7,6 +7,7 @@ import { useEffect, useState } from "react";
 import { CheckCircle2, CircleAlert, RotateCcw, Sparkles } from "lucide-react";
 import { toast } from "sonner";
 
+import { getTranslator } from "@/lib/i18n";
 import { AppHeader } from "@/components/app-header";
 import { Button } from "@/components/ui/button";
 import {
@@ -23,25 +24,30 @@ import {
   getAnonymousSectionResult,
 } from "@/lib/client/anonymous-progress";
 import { fetchSectionResult, startAttempt } from "@/lib/client/api";
-import type { Section, SectionResult } from "@/types";
+import type { Locale, Section, SectionResult } from "@/types";
 
 type ResultViewProps = {
+  locale: Locale;
   section: Section;
   attemptId?: string;
+  anonymous?: boolean;
 };
 
 function percent(value: number) {
   return Math.round(value * 100);
 }
 
-function resultMessage(rate: number) {
-  if (rate === 1) return "全問正解です";
-  if (rate >= 0.7) return "よく理解できています";
-  if (rate > 0) return "復習してもう一度挑戦しましょう";
-  return "まずは解説を確認しましょう";
+function resultMessage(
+  rate: number,
+  t: ReturnType<typeof getTranslator>,
+) {
+  if (rate === 1) return t("result.messages.perfect");
+  if (rate >= 0.7) return t("result.messages.good");
+  if (rate > 0) return t("result.messages.retry");
+  return t("result.messages.review");
 }
 
-export function ResultView({ section, attemptId }: ResultViewProps) {
+export function ResultView({ locale, section, attemptId, anonymous = false }: ResultViewProps) {
   const { isLoaded, userId } = useAuth();
   const router = useRouter();
   const [result, setResult] = useState<SectionResult | null>(null);
@@ -49,8 +55,20 @@ export function ResultView({ section, attemptId }: ResultViewProps) {
   const [error, setError] = useState("");
   const [retrying, setRetrying] = useState(false);
   const isSignedIn = isLoaded && Boolean(userId);
+  const t = getTranslator(locale);
 
   useEffect(() => {
+    const translate = getTranslator(locale);
+
+    if (anonymous) {
+      const anonymousResult = getAnonymousSectionResult(section.id);
+
+      setResult(anonymousResult);
+      setError(anonymousResult ? "" : translate("result.errors.missing"));
+      setLoading(false);
+      return;
+    }
+
     if (!isLoaded) {
       return;
     }
@@ -58,9 +76,13 @@ export function ResultView({ section, attemptId }: ResultViewProps) {
     let active = true;
 
     if (!isSignedIn) {
-      setResult(getAnonymousSectionResult(section.id));
-      setError("");
-      setLoading(false);
+      const anonymousResult = getAnonymousSectionResult(section.id);
+
+      if (active) {
+        setResult(anonymousResult);
+        setError(anonymousResult ? "" : translate("result.errors.missing"));
+        setLoading(false);
+      }
 
       return () => {
         active = false;
@@ -76,7 +98,7 @@ export function ResultView({ section, attemptId }: ResultViewProps) {
       })
       .catch(() => {
         if (active) {
-          setError("学習結果を読み込めませんでした");
+          setError(translate("result.errors.fetchFailed"));
         }
       })
       .finally(() => {
@@ -88,22 +110,22 @@ export function ResultView({ section, attemptId }: ResultViewProps) {
     return () => {
       active = false;
     };
-  }, [attemptId, isLoaded, isSignedIn, section.id]);
+  }, [anonymous, attemptId, isLoaded, isSignedIn, locale, section.id]);
 
   async function handleRetry() {
+    setRetrying(true);
+
     if (!isSignedIn) {
       clearAnonymousSectionProgress(section.id);
       router.push(`/section/${section.id}`);
       return;
     }
 
-    setRetrying(true);
-
     try {
       await startAttempt(section.id, true);
       router.push(`/section/${section.id}`);
     } catch {
-      toast.error("再挑戦を開始できませんでした");
+      toast.error(t("result.errors.retryFailed"));
     } finally {
       setRetrying(false);
     }
@@ -113,37 +135,34 @@ export function ResultView({ section, attemptId }: ResultViewProps) {
 
   return (
     <div className="min-h-screen bg-zinc-50 text-zinc-950">
-      <AppHeader />
+      <AppHeader locale={locale} />
       <main className="mx-auto flex w-full max-w-4xl flex-col gap-6 px-4 py-8">
         <div className="flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
           <div>
             <p className="font-mono text-sm text-emerald-700">{section.id}</p>
-            <h1 className="text-3xl font-semibold">{section.name} の結果</h1>
+            <h1 className="text-3xl font-semibold">{t("result.title", { sectionName: section.name })}</h1>
           </div>
-          <Button asChild variant="outline">
-            <Link href="/">ホームへ戻る</Link>
-          </Button>
         </div>
 
         <Card className="rounded-2xl border-zinc-200/80 bg-white/90 shadow-sm">
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
               {loading ? (
-                "読み込み中..."
+                t("app.common.loading")
               ) : result ? (
                 <>
                   <Sparkles className="size-5 text-emerald-600" />
-                  {resultMessage(rate)}
+                  {resultMessage(rate, t)}
                 </>
               ) : (
                 <>
                   <CircleAlert className="size-5 text-red-600" />
-                  学習結果が見つかりません
+                  {t("result.missing")}
                 </>
               )}
             </CardTitle>
             <CardDescription>
-              {result ? `Attempt ${result.attemptNo}` : "セクションを完了すると結果が表示されます"}
+              {result ? t("result.attempt", { attemptNo: result.attemptNo }) : t("result.empty")}
             </CardDescription>
           </CardHeader>
           <CardContent className="space-y-5">
@@ -152,28 +171,28 @@ export function ResultView({ section, attemptId }: ResultViewProps) {
               <>
                 <div className="grid gap-3 sm:grid-cols-3">
                   <div className="rounded-2xl border border-zinc-200 bg-zinc-50 p-4">
-                    <p className="text-sm text-zinc-500">正答数</p>
+                    <p className="text-sm text-zinc-500">{t("result.stats.score")}</p>
                     <p className="text-3xl font-semibold">
                       {result.score} / {result.totalQuestions}
                     </p>
                   </div>
                   <div className="rounded-2xl border border-zinc-200 bg-zinc-50 p-4">
-                    <p className="text-sm text-zinc-500">正答率</p>
+                    <p className="text-sm text-zinc-500">{t("result.stats.correctRate")}</p>
                     <p className="text-3xl font-semibold">{percent(rate)}%</p>
                   </div>
                   <div className="rounded-2xl border border-zinc-200 bg-zinc-50 p-4">
-                    <p className="text-sm text-zinc-500">不正解</p>
+                    <p className="text-sm text-zinc-500">{t("result.stats.incorrectCount")}</p>
                     <p className="text-3xl font-semibold">{result.incorrectAnswers.length}</p>
                   </div>
                 </div>
                 <Progress value={percent(rate)} />
 
                 <div className="space-y-3">
-                  <h2 className="text-lg font-semibold">復習</h2>
+                  <h2 className="text-lg font-semibold">{t("result.review.title")}</h2>
                   {result.incorrectAnswers.length === 0 ? (
                     <p className="flex items-start gap-2 rounded-2xl border border-emerald-200 bg-emerald-50 p-4 text-emerald-800">
                       <CheckCircle2 className="mt-0.5 size-5 shrink-0" />
-                      <span>今回の不正解はありません。</span>
+                      <span>{t("result.review.empty")}</span>
                     </p>
                   ) : (
                     result.incorrectAnswers.map((answer) => (
@@ -182,12 +201,14 @@ export function ResultView({ section, attemptId }: ResultViewProps) {
                         <div className="mt-3 grid gap-3 sm:grid-cols-2">
                           <div className="rounded-xl border border-red-200 bg-red-50 p-3">
                             <p className="text-xs font-medium uppercase tracking-[0.2em] text-red-700">
-                              あなたの回答
+                              {t("result.review.yourAnswer")}
                             </p>
                             <p className="mt-1 font-semibold text-red-900">{answer.selectedChoiceId}</p>
                           </div>
                           <div className="rounded-xl border border-emerald-200 bg-emerald-50 p-3">
-                            <p className="text-xs font-medium uppercase tracking-[0.2em] text-emerald-700">正解</p>
+                            <p className="text-xs font-medium uppercase tracking-[0.2em] text-emerald-700">
+                              {t("result.review.answer")}
+                            </p>
                             <p className="mt-1 font-semibold text-emerald-900">{answer.correctChoiceId}</p>
                           </div>
                         </div>
@@ -204,11 +225,11 @@ export function ResultView({ section, attemptId }: ResultViewProps) {
           </CardContent>
           <CardFooter className="flex-col items-stretch gap-3 sm:flex-row sm:justify-end">
             <Button asChild variant="outline">
-              <Link href="/">ホームへ戻る</Link>
+              <Link href="/">{t("app.common.backHome")}</Link>
             </Button>
             <Button disabled={retrying} onClick={handleRetry}>
               <RotateCcw className="size-4" />
-              もう一度挑戦
+              {t("result.actions.retry")}
             </Button>
           </CardFooter>
         </Card>

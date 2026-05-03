@@ -1,0 +1,173 @@
+{
+  "app": {
+    "name": "CLI Dojo",
+    "metadata": {
+      "title": "CLI Dojo",
+      "description": "CLIコマンドをカテゴリ別に学べる4択学習アプリ"
+    },
+    "common": {
+      "backHome": "ホームへ戻る",
+      "loading": "読み込み中..."
+    }
+  },
+  "nav": {
+    "home": "ホーム",
+    "progress": "学習記録",
+    "signIn": "ログイン"
+  },
+  "home": {
+    "badges": {
+      "commandLearner": "Command Learner",
+      "recordSupport": "学習記録対応",
+      "sectionCount": "6セクション"
+    },
+    "hero": {
+      "title": "CLIコマンドを\\n一問一答で反復する。",
+      "description": "ターミナル、npm、Git、開発サーバー、テスト、デプロイのコマンドを4択で確認します。"
+    },
+    "summary": {
+      "title": "学習記録サマリー",
+      "answered": "{{answered}} / {{total}} 問 回答済み",
+      "emptySignedIn": "まだ回答はありません",
+      "emptyAnonymous": "未ログインでも、このセッション内の学習記録を表示します",
+      "progressRate": "進捗率",
+      "correctRate": "正答率",
+      "details": "詳しく見る",
+      "signInPrompt": "ログインして学習記録を確認"
+    },
+    "sectionCard": {
+      "answered": "{{answered}} / {{total}} 問",
+      "correctRate": "正答率 {{rate}}%",
+      "resume": "続きから",
+      "start": "学習を始める"
+    },
+    "errors": {
+      "progressFetchFailed": "進捗を読み込めませんでした"
+    }
+  },
+  "quiz": {
+    "empty": {
+      "title": "問題データがありません",
+      "description": "別のセクションを選択してください。"
+    },
+    "header": {
+      "progress": "{{current}} / {{total}} 問"
+    },
+    "feedback": {
+      "correct": "正解！",
+      "incorrect": "不正解",
+      "correctChoice": "正解は {{choiceId}}: {{choiceText}}",
+      "yourChoice": "あなたの選択",
+      "answer": "正解"
+    },
+    "actions": {
+      "saving": "保存中...",
+      "next": "次の問題へ",
+      "viewResult": "結果を見る"
+    },
+    "errors": {
+      "startSaveFailed": "結果を保存できませんでした",
+      "startFailed": "学習を開始できませんでした",
+      "progressSaveFailed": "進捗を保存できませんでした。学習は続けられます",
+      "resultSaveFailed": "結果を保存できませんでした"
+    }
+  },
+  "result": {
+    "title": "{{sectionName}} の結果",
+    "attempt": "Attempt {{attemptNo}}",
+    "empty": "セクションを完了すると結果が表示されます",
+    "missing": "学習結果が見つかりません",
+    "stats": {
+      "score": "正答数",
+      "correctRate": "正答率",
+      "incorrectCount": "不正解"
+    },
+    "review": {
+      "title": "復習",
+      "empty": "今回の不正解はありません。",
+      "yourAnswer": "あなたの回答",
+      "answer": "正解"
+    },
+    "actions": {
+      "retry": "もう一度挑戦"
+    },
+    "messages": {
+      "perfect": "全問正解です",
+      "good": "よく理解できています",
+      "retry": "復習してもう一度挑戦しましょう",
+      "review": "まずは解説を確認しましょう"
+    },
+    "errors": {
+      "missing": "学習結果が見つかりませんでした",
+      "fetchFailed": "学習結果を読み込めませんでした",
+      "retryFailed": "再挑戦を開始できませんでした"
+    }
+  },
+  "progress": {
+    "eyebrow": "Learning Record",
+    "title": "学習記録",
+    "stats": {
+      "progressRate": "進捗率",
+      "answered": "回答済み",
+      "correctRate": "正答率"
+    },
+    "section": {
+      "title": "セクション別",
+      "description": "回答数、正答数、直近回答日時を確認できます。",
+      "headers": {
+        "section": "セクション",
+        "answered": "回答済み",
+        "correct": "正解",
+        "correctRate": "正答率",
+        "latestAnsweredAt": "直近回答",
+        "status": "状態"
+      }
+    },
+    "status": {
+      "perfect": "全問正解",
+      "completed": "完了",
+      "inProgress": "学習中",
+      "notStarted": "未着手"
+    },
+    "card": {
+      "answered": "{{answered}} / {{total}} 問",
+      "correctRate": "正答率 {{rate}}%"
+    },
+    "errors": {
+      "fetchFailed": "進捗を読み込めませんでした"
+    }
+  },
+  "auth": {
+    "eyebrow": "CLI Dojo Authentication",
+    "backHome": "ホームへ戻る",
+    "signIn": {
+      "title": "アカウントで学習を続ける",
+      "description": "学習データはログイン中のアカウントに紐づいて保存されます。進捗と成績を保存し、学習を継続しましょう。",
+      "footerPrefix": "アカウントをお持ちでない場合は",
+      "footerLink": "サインアップ"
+    },
+    "signUp": {
+      "title": "アカウントを作成する",
+      "description": "学習データはログイン中のアカウントに紐づいて保存されます。進捗と成績を保存し、学習を継続しましょう。",
+      "footerPrefix": "すでにアカウントをお持ちの場合は",
+      "footerLink": "ログイン"
+    },
+    "signUpComplete": {
+      "title": "学習記録をアカウントへ引き継いでいます",
+      "description": "このセッションで回答した内容を新しいアカウントへ保存します。",
+      "footer": "引き継ぎ完了後、自動で学習記録へ移動します。",
+      "cardTitle": "進捗を保存中です",
+      "cardDescription": "匿名で回答した内容をアカウントの学習記録へ反映しています。",
+      "loading": "学習記録を移行しています...",
+      "errors": {
+        "migrationFailed": "学習記録の引き継ぎに失敗しました。学習記録ページで状態を確認してください。"
+      }
+    }
+  },
+  "section": {
+    "notFound": {
+      "title": "セクションが見つかりません",
+      "description": "ホームから学習するカテゴリを選び直してください。"
+    }
+  }
+}

@@ -4,12 +4,15 @@ import { UserButton, useAuth } from "@clerk/nextjs";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 
+import { getTranslator } from "@/lib/i18n";
 import { Button } from "@/components/ui/button";
+import type { Locale } from "@/types";
 
-export function AppHeader() {
+export function AppHeader({ locale }: { locale: Locale }) {
   const { isLoaded, userId } = useAuth();
   const pathname = usePathname();
   const isSignedIn = isLoaded && Boolean(userId);
+  const t = getTranslator(locale);
 
   return (
     <header className="sticky top-0 z-30 border-b border-zinc-200/80 bg-background/85 backdrop-blur supports-[backdrop-filter]:bg-background/70">
@@ -24,14 +27,14 @@ export function AppHeader() {
         </div>
         <nav className="flex items-center gap-2">
           <Button asChild size="sm" variant={pathname === "/" ? "outline" : "ghost"}>
-            <Link href="/">ホーム</Link>
+            <Link href="/">{t("nav.home")}</Link>
           </Button>
           <Button asChild size="sm" variant={pathname === "/progress" ? "outline" : "ghost"}>
-            <Link href="/progress">学習記録</Link>
+            <Link href="/progress">{t("nav.progress")}</Link>
           </Button>
           {isLoaded && !isSignedIn ? (
             <Button asChild size="sm">
-              <Link href="/sign-in">ログイン</Link>
+              <Link href="/sign-in">{t("nav.signIn")}</Link>
             </Button>
           ) : null}
           {isSignedIn ? (

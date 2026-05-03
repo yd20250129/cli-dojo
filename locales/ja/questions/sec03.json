@@ -8,7 +8,8 @@
       "C": "git pull",
       "D": "docker build"
     },
-    "explanation": "npm run dev は package.json の dev スクリプトを実行します。Next.jsやViteでは、ローカル開発サーバーの起動に使うことが多いコマンドです。コードを書き始める前にまず npm run dev で開発環境を立ち上げる流れが基本です。"
+    "explanation": "npm run dev は package.json の dev スクリプトを実行します。Next.jsやViteでは、ローカル開発サーバーの起動に使うことが多いコマンドです。コードを書き始める前にまず npm run dev で開発環境を立ち上げる流れが基本です。",
+    "categoryKey": "CAT-070"
   },
   "SEC03-002": {
     "category": "起動",
@@ -19,7 +20,8 @@
       "C": "npm outdated",
       "D": "npm uninstall"
     },
-    "explanation": "npm start は package.json の start スクリプトを実行します。Next.jsでは npm run build 後に本番相当のサーバーを起動するときに使います。ビルド済み成果物の動作確認で npm start を実行する場面があります。"
+    "explanation": "npm start は package.json の start スクリプトを実行します。Next.jsでは npm run build 後に本番相当のサーバーを起動するときに使います。ビルド済み成果物の動作確認で npm start を実行する場面があります。",
+    "categoryKey": "CAT-070"
   },
   "SEC03-003": {
     "category": "プレビュー",
@@ -30,7 +32,8 @@
       "C": "npm install -D",
       "D": "git commit"
     },
-    "explanation": "npm run preview は package.json の preview スクリプトを実行します。Viteなどでは、ビルド後の画面をローカルで確認する用途でよく使われます。npm run build のあとに続けて npm run preview で確認する使い方が定番です。"
+    "explanation": "npm run preview は package.json の preview スクリプトを実行します。Viteなどでは、ビルド後の画面をローカルで確認する用途でよく使われます。npm run build のあとに続けて npm run preview で確認する使い方が定番です。",
+    "categoryKey": "CAT-031"
   },
   "SEC03-004": {
     "category": "停止",
@@ -41,7 +44,8 @@
       "C": "Ctrl+F",
       "D": "Ctrl+P"
     },
-    "explanation": "Ctrl+C はターミナルで実行中のプロセスへ中断シグナルを送ります。開発サーバーを止めたいときの基本操作です。ポート変更や再起動が必要になったら、まず Ctrl+C で止めます。"
+    "explanation": "Ctrl+C はターミナルで実行中のプロセスへ中断シグナルを送ります。開発サーバーを止めたいときの基本操作です。ポート変更や再起動が必要になったら、まず Ctrl+C で止めます。",
+    "categoryKey": "CAT-044"
   },
   "SEC03-005": {
     "category": "ポート指定",
@@ -52,7 +56,8 @@
       "C": "--watch",
       "D": "--global"
     },
-    "explanation": "--port は開発サーバーの待ち受けポートを指定します。例えば Vite では npm run dev -- --port 3001 のように渡します。3000番が埋まっているときに別ポートへずらす用途でよく使います。"
+    "explanation": "--port は開発サーバーの待ち受けポートを指定します。例えば Vite では npm run dev -- --port 3001 のように渡します。3000番が埋まっているときに別ポートへずらす用途でよく使います。",
+    "categoryKey": "CAT-036"
   },
   "SEC03-006": {
     "category": "ポート指定",
@@ -63,7 +68,8 @@
       "C": "next lint -p 3001",
       "D": "next install -p 3001"
     },
-    "explanation": "next dev -p 3001 はNext.jsの開発サーバーを3001番ポートで起動します。-p は --port の短縮形です。Next.jsを直接起動したいときに next dev -p 3001 のように指定します。"
+    "explanation": "next dev -p 3001 はNext.jsの開発サーバーを3001番ポートで起動します。-p は --port の短縮形です。Next.jsを直接起動したいときに next dev -p 3001 のように指定します。",
+    "categoryKey": "CAT-036"
   },
   "SEC03-007": {
     "category": "ホスト指定",
@@ -74,7 +80,8 @@
       "C": "--format",
       "D": "--delete"
     },
-    "explanation": "--host は開発サーバーの待ち受けホストを指定するために使います。Viteなどでは npm run dev -- --host のように渡すことがあります。同じLAN内の別端末から見たいときに追加するオプションです。"
+    "explanation": "--host は開発サーバーの待ち受けホストを指定するために使います。Viteなどでは npm run dev -- --host のように渡すことがあります。同じLAN内の別端末から見たいときに追加するオプションです。",
+    "categoryKey": "CAT-034"
   },
   "SEC03-008": {
     "category": "ホスト指定",
@@ -85,7 +92,8 @@
       "C": "localhost",
       "D": "255.255.255.255"
     },
-    "explanation": "0.0.0.0 は全ネットワークインターフェースで待ち受ける指定として使われます。スマートフォンなど別端末から確認したいときに使うことがあります。例えば --host 0.0.0.0 のように指定して起動します。"
+    "explanation": "0.0.0.0 は全ネットワークインターフェースで待ち受ける指定として使われます。スマートフォンなど別端末から確認したいときに使うことがあります。例えば --host 0.0.0.0 のように指定して起動します。",
+    "categoryKey": "CAT-034"
   },
   "SEC03-009": {
     "category": "ローカルアクセス",
@@ -96,7 +104,8 @@
       "C": "main",
       "D": "node_modules"
     },
-    "explanation": "localhost は自分自身のPCを指すホスト名です。http://localhost:3000 のように、ローカルで起動した開発サーバーへアクセスするときに使います。起動ログにURLが出たら、その localhost のURLをブラウザで開きます。"
+    "explanation": "localhost は自分自身のPCを指すホスト名です。http://localhost:3000 のように、ローカルで起動した開発サーバーへアクセスするときに使います。起動ログにURLが出たら、その localhost のURLをブラウザで開きます。",
+    "categoryKey": "CAT-041"
   },
   "SEC03-010": {
     "category": "ホットリロード",
@@ -107,7 +116,8 @@
       "C": "npm publish",
       "D": "docker pull"
     },
-    "explanation": "hot reload は開発中の変更を画面へ自動反映する仕組みです。毎回サーバーを手動で再起動しなくても、変更を確認しやすくなります。ファイル保存後にすぐブラウザを見て反映を確かめる流れと相性が良いです。"
+    "explanation": "hot reload は開発中の変更を画面へ自動反映する仕組みです。毎回サーバーを手動で再起動しなくても、変更を確認しやすくなります。ファイル保存後にすぐブラウザを見て反映を確かめる流れと相性が良いです。",
+    "categoryKey": "CAT-035"
   },
   "SEC03-011": {
     "category": "監視",
@@ -118,7 +128,8 @@
       "C": "--save-dev",
       "D": "--force-delete"
     },
-    "explanation": "--watch はファイル変更を監視するモードでよく使われるオプションです。テストやビルド補助ツールで、変更のたびに処理を走らせたいときに使います。開発中に何度も同じコマンドを打ちたくない場面で便利です。"
+    "explanation": "--watch はファイル変更を監視するモードでよく使われるオプションです。テストやビルド補助ツールで、変更のたびに処理を走らせたいときに使います。開発中に何度も同じコマンドを打ちたくない場面で便利です。",
+    "categoryKey": "CAT-066"
   },
   "SEC03-012": {
     "category": "環境変数",
@@ -129,7 +140,8 @@
       "C": "git port 3001",
       "D": "npm install PORT=3001"
     },
-    "explanation": "PORT=3001 npm run dev は、そのコマンド実行時だけ PORT 環境変数を渡す書き方です。ツールによっては PORT を見て起動ポートを決めます。一時的にポートだけ変えたいときに、この形で先頭に設定を書きます。"
+    "explanation": "PORT=3001 npm run dev は、そのコマンド実行時だけ PORT 環境変数を渡す書き方です。ツールによっては PORT を見て起動ポートを決めます。一時的にポートだけ変えたいときに、この形で先頭に設定を書きます。",
+    "categoryKey": "CAT-062"
   },
   "SEC03-013": {
     "category": "ログ確認",
@@ -140,7 +152,8 @@
       "C": "GitHubのコミットID",
       "D": "node_modules のファイル名"
     },
-    "explanation": "開発サーバーのURL、ビルド状況、エラーは、起動したターミナルの出力に表示されることが多いです。画面が動かないときは、まずターミナルのログを確認します。ブラウザだけで詰まったら、起動した端末へ戻るのが基本です。"
+    "explanation": "開発サーバーのURL、ビルド状況、エラーは、起動したターミナルの出力に表示されることが多いです。画面が動かないときは、まずターミナルのログを確認します。ブラウザだけで詰まったら、起動した端末へ戻るのが基本です。",
+    "categoryKey": "CAT-039"
   },
   "SEC03-014": {
     "category": "再起動",
@@ -151,6 +164,7 @@
       "C": "npmパッケージを全て公開する",
       "D": "OSを必ず再インストールする"
     },
-    "explanation": "環境変数や一部の設定ファイルは、開発サーバーの起動時に読み込まれることがあります。変更が反映されない場合は、まずサーバーを停止して再起動します。`.env` を変えたのに効かないときは再起動を最初に試します。"
+    "explanation": "環境変数や一部の設定ファイルは、開発サーバーの起動時に読み込まれることがあります。変更が反映されない場合は、まずサーバーを停止して再起動します。`.env` を変えたのに効かないときは再起動を最初に試します。",
+    "categoryKey": "CAT-046"
   }
 }

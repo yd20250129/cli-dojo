@@ -8,6 +8,17 @@ export type SectionId =
 
 export type ChoiceId = "A" | "B" | "C" | "D";
 export type Locale = "ja" | "en";
+export type Region = "JP" | "US";
+export type Currency = "JPY" | "USD";
+export type CategoryKey = string;
+export type LegalDocumentKind = "terms" | "privacy";
+
+export type UserPreferences = {
+  locale: Locale;
+  region: Region;
+  timezone: string;
+  currency: Currency;
+};
 
 export type AttemptStatus = "in_progress" | "completed";
 
@@ -18,7 +29,7 @@ export type AnonymousSectionProgress = {
 
 export type AnonymousProgressState = Partial<Record<SectionId, AnonymousSectionProgress>>;
 
-export type AuthenticatedUser = {
+export type AuthenticatedUser = UserPreferences & {
   userId: string;
   clerkUserId: string;
   canonicalEmail: string | null;
@@ -49,7 +60,7 @@ export type QuestionDef = {
 };
 
 export type LocalizedQuestion = {
-  category: string;
+  categoryKey: CategoryKey;
   question: string;
   choices: Record<ChoiceId, string>;
   explanation: string;
@@ -73,6 +84,7 @@ export type SectionLocaleMap = Record<SectionId, LocalizedSection>;
 export type Question = {
   id: string;
   sectionId: SectionId;
+  categoryKey: CategoryKey;
   category: string;
   command: string;
   question: string;

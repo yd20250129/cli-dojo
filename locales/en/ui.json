@@ -1,0 +1,29 @@
+{
+  "nav": {
+    "home": "Home",
+    "progress": "Progress",
+    "signIn": "Sign in"
+  },
+  "home": {
+    "summary": {
+      "title": "Learning Summary",
+      "details": "View details"
+    }
+  },
+  "progress": {
+    "title": "Progress"
+  },
+  "auth": {
+    "signUpComplete": {
+      "title": "Moving your progress to the new account",
+      "description": "Saving the answers from this browser session to your new account.",
+      "footer": "You will be redirected automatically when the migration finishes.",
+      "cardTitle": "Saving progress",
+      "cardDescription": "Applying your anonymous quiz answers to the account progress.",
+      "loading": "Migrating your learning progress...",
+      "errors": {
+        "migrationFailed": "We could not migrate the learning progress. Please check the progress page."
+      }
+    }
+  }
+}
