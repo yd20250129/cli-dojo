@@ -2,7 +2,7 @@
 
 import { useAuth } from "@clerk/nextjs";
 import Link from "next/link";
-import { useEffect, useMemo, useState, useSyncExternalStore } from "react";
+import { useEffect, useMemo, useRef, useState, useSyncExternalStore } from "react";
 import { ArrowRight, CheckCircle2, CircleGauge, Sparkles } from "lucide-react";
 
 import { AppHeader } from "@/components/app-header";
@@ -17,10 +17,13 @@ import {
 } from "@/components/ui/card";
 import { Progress } from "@/components/ui/progress";
 import {
+  clearAnonymousProgress,
+  getAnonymousProgressState,
   getAnonymousProgressSnapshot,
+  hasAnonymousProgress,
   subscribeAnonymousProgress,
 } from "@/lib/client/anonymous-progress";
-import { fetchProgress } from "@/lib/client/api";
+import { fetchProgress, migrateAnonymousProgress } from "@/lib/client/api";
 import type { ProgressSummary, Section } from "@/types";
 
 type HomeViewProps = {
@@ -36,26 +39,53 @@ export function HomeView({ sections }: HomeViewProps) {
   const [progress, setProgress] = useState<ProgressSummary | null>(null);
   const [error, setError] = useState("");
   const isSignedIn = isLoaded && Boolean(userId);
+  const hasAttemptedAnonymousMigration = useRef(false);
 
   useEffect(() => {
     if (!isSignedIn) {
+      hasAttemptedAnonymousMigration.current = false;
       return;
     }
 
     let active = true;
 
-    fetchProgress()
-      .then((data) => {
+    async function loadProgress() {
+      if (!hasAttemptedAnonymousMigration.current) {
+        const anonymousProgress = getAnonymousProgressState();
+
+        if (hasAnonymousProgress(anonymousProgress)) {
+          hasAttemptedAnonymousMigration.current = true;
+
+          try {
+            const result = await migrateAnonymousProgress(anonymousProgress);
+
+            if (
+              active &&
+              (result.reason === "migrated" || result.reason === "no_anonymous_progress")
+            ) {
+              clearAnonymousProgress();
+            }
+          } catch {
+            // Keep sessionStorage data when migration fails and continue loading account progress.
+          }
+        }
+      }
+
+      try {
+        const data = await fetchProgress();
+
         if (active) {
           setProgress(data);
           setError("");
         }
-      })
-      .catch(() => {
+      } catch {
         if (active) {
           setError("進捗を読み込めませんでした");
         }
-      });
+      }
+    }
+
+    loadProgress();
 
     return () => {
       active = false;
@@ -68,7 +98,11 @@ export function HomeView({ sections }: HomeViewProps) {
     () => null,
   );
 
-  const visibleProgress = isSignedIn ? progress : isLoaded ? anonymousProgress : null;
+  const visibleProgress = isSignedIn
+    ? progress ?? anonymousProgress
+    : isLoaded
+      ? anonymousProgress
+      : null;
   const visibleError = isSignedIn ? error : "";
 
   const progressBySection = useMemo(() => {

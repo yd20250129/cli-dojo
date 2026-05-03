@@ -1,5 +1,6 @@
 "use client";
 
+import { useAuth } from "@clerk/nextjs";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
@@ -17,6 +18,10 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { Progress } from "@/components/ui/progress";
+import {
+  clearAnonymousSectionProgress,
+  getAnonymousSectionResult,
+} from "@/lib/client/anonymous-progress";
 import { fetchSectionResult, startAttempt } from "@/lib/client/api";
 import type { Section, SectionResult } from "@/types";
 
@@ -37,14 +42,30 @@ function resultMessage(rate: number) {
 }
 
 export function ResultView({ section, attemptId }: ResultViewProps) {
+  const { isLoaded, userId } = useAuth();
   const router = useRouter();
   const [result, setResult] = useState<SectionResult | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
   const [retrying, setRetrying] = useState(false);
+  const isSignedIn = isLoaded && Boolean(userId);
 
   useEffect(() => {
+    if (!isLoaded) {
+      return;
+    }
+
     let active = true;
+
+    if (!isSignedIn) {
+      setResult(getAnonymousSectionResult(section.id));
+      setError("");
+      setLoading(false);
+
+      return () => {
+        active = false;
+      };
+    }
 
     fetchSectionResult(section.id, attemptId)
       .then((data) => {
@@ -67,9 +88,15 @@ export function ResultView({ section, attemptId }: ResultViewProps) {
     return () => {
       active = false;
     };
-  }, [attemptId, section.id]);
+  }, [attemptId, isLoaded, isSignedIn, section.id]);
 
   async function handleRetry() {
+    if (!isSignedIn) {
+      clearAnonymousSectionProgress(section.id);
+      router.push(`/section/${section.id}`);
+      return;
+    }
+
     setRetrying(true);
 
     try {

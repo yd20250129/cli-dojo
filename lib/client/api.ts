@@ -3,8 +3,10 @@
 import type {
   ApiErrorResponse,
   ApiSuccess,
+  AnonymousProgressState,
   ChoiceId,
   CurrentSectionAttempt,
+  MigrateProgressResult,
   ProgressSummary,
   SectionAttempt,
   SectionId,
@@ -46,6 +48,13 @@ const startAttemptRequests = new Map<string, Promise<CurrentSectionAttempt>>();
 
 export function fetchProgress() {
   return requestJson<ProgressSummary>("/api/progress");
+}
+
+export function migrateAnonymousProgress(anonymousProgress: AnonymousProgressState) {
+  return requestJson<MigrateProgressResult>("/api/progress/migrate-anonymous", {
+    method: "POST",
+    body: JSON.stringify({ anonymousProgress }),
+  });
 }
 
 export function startAttempt(sectionId: SectionId, retry = false) {

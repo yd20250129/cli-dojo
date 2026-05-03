@@ -91,6 +91,16 @@ export function getAnonymousAnsweredQuestionIds(sectionId: SectionId) {
   return Object.keys(state[sectionId]?.answers ?? {});
 }
 
+export function getAnonymousProgressState() {
+  return readState();
+}
+
+export function hasAnonymousProgress(state: AnonymousProgressState = readState()) {
+  return Object.values(state).some((sectionState) => {
+    return Object.keys(sectionState?.answers ?? {}).length > 0;
+  });
+}
+
 export function recordAnonymousAnswer(params: {
   sectionId: SectionId;
   questionId: string;
@@ -114,6 +124,10 @@ export function clearAnonymousSectionProgress(sectionId: SectionId) {
   const state = readState();
   delete state[sectionId];
   writeState(state);
+}
+
+export function clearAnonymousProgress() {
+  writeState({});
 }
 
 function buildIncorrectAnswers(sectionId: SectionId, answers: Record<string, ChoiceId>) {

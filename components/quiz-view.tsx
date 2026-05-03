@@ -1,5 +1,6 @@
 "use client";
 
+import { useAuth } from "@clerk/nextjs";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useEffect, useMemo, useState } from "react";
@@ -18,6 +19,10 @@ import {
 } from "@/components/ui/card";
 import { Progress } from "@/components/ui/progress";
 import {
+  getAnonymousAnsweredQuestionIds,
+  recordAnonymousAnswer,
+} from "@/lib/client/anonymous-progress";
+import {
   completeAttempt,
   saveAnswer,
   startAttempt,
@@ -32,12 +37,14 @@ type QuizViewProps = {
 };
 
 export function QuizView({ section, questions }: QuizViewProps) {
+  const { isLoaded, userId } = useAuth();
   const router = useRouter();
   const [attempt, setAttempt] = useState<SectionAttempt | null>(null);
   const [currentIndex, setCurrentIndex] = useState(0);
   const [selectedChoiceId, setSelectedChoiceId] = useState<ChoiceId | null>(null);
   const [isSaving, setIsSaving] = useState(false);
   const [startError, setStartError] = useState("");
+  const isSignedIn = isLoaded && Boolean(userId);
 
   const currentQuestion = questions[currentIndex];
   const isLastQuestion = currentIndex === questions.length - 1;
@@ -45,7 +52,32 @@ export function QuizView({ section, questions }: QuizViewProps) {
   const progressValue = ((currentIndex + (selectedChoiceId ? 1 : 0)) / questions.length) * 100;
 
   useEffect(() => {
+    if (!isLoaded) {
+      return;
+    }
+
     let active = true;
+
+    if (!isSignedIn) {
+      const resumeIndex = getResumeQuestionIndex(
+        questions,
+        getAnonymousAnsweredQuestionIds(section.id),
+      );
+
+      if (resumeIndex === -1) {
+        router.push(`/section/${section.id}/result`);
+        return;
+      }
+
+      setAttempt(null);
+      setCurrentIndex(resumeIndex);
+      setSelectedChoiceId(null);
+      setStartError("");
+
+      return () => {
+        active = false;
+      };
+    }
 
     startAttempt(section.id)
       .then((data) => {
@@ -76,23 +108,39 @@ export function QuizView({ section, questions }: QuizViewProps) {
     return () => {
       active = false;
     };
-  }, [questions, router, section.id]);
+  }, [isLoaded, isSignedIn, questions, router, section.id]);
 
   const correctChoiceText = useMemo(() => {
     return currentQuestion?.choices.find((choice) => choice.id === currentQuestion.answer)?.text ?? "";
   }, [currentQuestion]);
 
   async function handleAnswer(choiceId: ChoiceId) {
-    if (!attempt || selectedChoiceId || !currentQuestion) {
+    if (selectedChoiceId || !currentQuestion || (!isSignedIn && !isLoaded)) {
       return;
     }
 
+    if (isSignedIn && !attempt) {
+      return;
+    }
+
+    const activeAttempt = attempt;
+
     setSelectedChoiceId(choiceId);
+
+    if (!isSignedIn) {
+      recordAnonymousAnswer({
+        sectionId: section.id,
+        questionId: currentQuestion.id,
+        selectedChoiceId: choiceId,
+      });
+      return;
+    }
+
     setIsSaving(true);
 
     try {
       await saveAnswer({
-        attemptId: attempt.id,
+        attemptId: activeAttempt!.id,
         sectionId: section.id,
         questionId: currentQuestion.id,
         selectedChoiceId: choiceId,
@@ -105,9 +153,11 @@ export function QuizView({ section, questions }: QuizViewProps) {
   }
 
   async function handleNext() {
-    if (!attempt) {
+    if (isSignedIn && !attempt) {
       return;
     }
+
+    const activeAttempt = attempt;
 
     if (!isLastQuestion) {
       setCurrentIndex((index) => index + 1);
@@ -115,9 +165,14 @@ export function QuizView({ section, questions }: QuizViewProps) {
       return;
     }
 
+    if (!isSignedIn) {
+      router.push(`/section/${section.id}/result`);
+      return;
+    }
+
     try {
-      await completeAttempt(attempt.id);
-      router.push(`/section/${section.id}/result?attemptId=${attempt.id}`);
+      await completeAttempt(activeAttempt!.id);
+      router.push(`/section/${section.id}/result?attemptId=${activeAttempt!.id}`);
     } catch {
       toast.error("結果を保存できませんでした");
     }
@@ -192,7 +247,7 @@ export function QuizView({ section, questions }: QuizViewProps) {
                       answered && isAnswer && "border-emerald-600 bg-emerald-50 text-emerald-950",
                       answered && isSelected && !isAnswer && "border-red-500 bg-red-50 text-red-950",
                     )}
-                    disabled={!attempt || answered}
+                    disabled={(!isLoaded || (isSignedIn && !attempt)) || answered}
                     onClick={() => handleAnswer(choice.id)}
                     type="button"
                   >
