@@ -103,16 +103,19 @@ export function SignInPanel({
     setIsSubmitting(true);
 
     try {
-      const createParams = password.trim()
-        ? { identifier: email.trim(), password: password.trim() }
-        : { identifier: email.trim() };
-      const createResult = await signIn.create(createParams);
+      const createResult = await signIn.create({ identifier: email.trim() });
       if (createResult.error) {
         setError(createResult.error.message || t("auth.errors.signInFailed"));
         return;
       }
 
       if (password.trim()) {
+        const passwordResult = await signIn.password({ password: password.trim() });
+        if (passwordResult.error) {
+          setError(passwordResult.error.message || t("auth.errors.signInFailed"));
+          return;
+        }
+
         await finalizeSignIn();
         return;
       }
