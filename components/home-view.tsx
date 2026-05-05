@@ -33,6 +33,14 @@ function percent(value: number) {
   return Math.round(value * 100);
 }
 
+function openSignInModal() {
+  window.dispatchEvent(
+    new CustomEvent("cli-dojo:open-auth", {
+      detail: { mode: "sign-in" as const },
+    }),
+  );
+}
+
 export function HomeView({ locale, sections }: HomeViewProps) {
   const { isLoaded, userId } = useAuth();
   const [progress, setProgress] = useState<ProgressSummary | null>(null);
@@ -160,8 +168,8 @@ export function HomeView({ locale, sections }: HomeViewProps) {
                   <Link href="/progress">{t("home.summary.details")}</Link>
                 </Button>
               ) : (
-                <Button asChild variant="outline" className="w-full">
-                  <Link href="/sign-in">{t("home.summary.signInPrompt")}</Link>
+                <Button variant="outline" className="w-full" onClick={openSignInModal}>
+                  {t("home.summary.signInPrompt")}
                 </Button>
               )}
             </CardFooter>

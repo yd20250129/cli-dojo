@@ -1,7 +1,7 @@
-import { SignIn } from "@clerk/nextjs";
 import Link from "next/link";
 
 import { AuthShell } from "@/components/auth/auth-shell";
+import { SignInPanel } from "@/components/auth/sign-in-panel";
 import { getTranslator } from "@/lib/i18n";
 import { resolveRequestLocale } from "@/lib/i18n/request";
 
@@ -23,7 +23,7 @@ export default async function SignInPage() {
       locale={locale}
       title={t("auth.signIn.title")}
     >
-      <SignIn path="/sign-in" routing="path" signUpUrl="/sign-up" />
+      <SignInPanel locale={locale} redirectTo="/" />
     </AuthShell>
   );
 }

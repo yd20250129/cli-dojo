@@ -12,7 +12,7 @@ describe("i18n helpers", () => {
   });
 
   it("falls back to ja when the en dictionary is incomplete", () => {
-    expect(t("en", "auth.signIn.title")).toBe("アカウントで学習を続ける");
+    expect(t("en", "home.badges.commandLearner")).toBe("Command Learner");
   });
 
   it("formats dates with locale and timezone", () => {

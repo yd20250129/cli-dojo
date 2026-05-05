@@ -1,7 +1,7 @@
-import { SignUp } from "@clerk/nextjs";
 import Link from "next/link";
 
 import { AuthShell } from "@/components/auth/auth-shell";
+import { SignUpPanel } from "@/components/auth/sign-up-panel";
 import { getTranslator } from "@/lib/i18n";
 import { resolveRequestLocale } from "@/lib/i18n/request";
 
@@ -23,13 +23,7 @@ export default async function SignUpPage() {
       locale={locale}
       title={t("auth.signUp.title")}
     >
-      <SignUp
-        fallbackRedirectUrl="/auth/sign-up-complete"
-        forceRedirectUrl="/auth/sign-up-complete"
-        path="/sign-up"
-        routing="path"
-        signInUrl="/sign-in"
-      />
+      <SignUpPanel locale={locale} redirectTo="/auth/sign-up-complete" />
     </AuthShell>
   );
 }

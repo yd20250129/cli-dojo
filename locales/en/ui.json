@@ -2,7 +2,9 @@
   "nav": {
     "home": "Home",
     "progress": "Progress",
-    "signIn": "Sign in"
+    "signIn": "Sign in",
+    "signUp": "Sign up",
+    "settings": "Settings"
   },
   "home": {
     "summary": {
@@ -14,6 +16,47 @@
     "title": "Progress"
   },
   "auth": {
+    "eyebrow": "CLI Dojo Authentication",
+    "backHome": "Back home",
+    "common": {
+      "or": "or",
+      "emailLabel": "Email address",
+      "emailPlaceholder": "Enter your email address",
+      "passwordLabel": "Password",
+      "passwordPlaceholder": "Enter your password",
+      "codeLabel": "Verification code",
+      "codePlaceholder": "Enter the 6-digit code",
+      "continue": "Continue",
+      "verifyCode": "Verify code",
+      "changeEmail": "Change email",
+      "close": "Close"
+    },
+    "errors": {
+      "signInFailed": "We could not start the sign-in flow.",
+      "signInIncomplete": "We could not complete the sign-in. Please review the available authentication methods and try again.",
+      "signInIncompleteWithFactors": "We could not complete the sign-in. Available methods: {{factors}}",
+      "signUpFailed": "We could not start the sign-up flow.",
+      "signUpIncomplete": "We could not complete the sign-up. Please review the required steps and try again from the beginning.",
+      "signUpIncompleteWithFields": "We could not complete the sign-up. Pending fields: {{fields}}",
+      "emailCodeUnavailable": "Email code sign-in is not available for this address.",
+      "invalidCode": "We could not verify the code.",
+      "oauthFailed": "We could not start the social sign-in flow.",
+      "signOutFailed": "We could not sign you out."
+    },
+    "signIn": {
+      "title": "Continue learning with your account",
+      "description": "Your learning data is saved to the signed-in account. Keep your progress and scores in sync as you study.",
+      "codeSent": "We sent a verification code to {{email}}.",
+      "footerPrefix": "If you do not have an account,",
+      "footerLink": "sign up"
+    },
+    "signUp": {
+      "title": "Create your account",
+      "description": "Your learning data is saved to the signed-in account. Keep your progress and scores in sync as you study.",
+      "codeSent": "We sent a verification code to {{email}}.",
+      "footerPrefix": "If you already have an account,",
+      "footerLink": "sign in"
+    },
     "signUpComplete": {
       "title": "Moving your progress to the new account",
       "description": "Saving the answers from this browser session to your new account.",
@@ -25,5 +68,27 @@
         "migrationFailed": "We could not migrate the learning progress. Please check the progress page."
       }
     }
+  },
+  "settings": {
+    "title": "Settings",
+    "manageAccount": "Manage account",
+    "signOut": "Sign out",
+    "profile": {
+      "title": "Profile",
+      "nameLabel": "Name",
+      "editName": "Edit",
+      "saveName": "Save",
+      "cancelEdit": "Cancel",
+      "nameUpdated": "Name updated successfully",
+      "nameUpdateFailed": "Failed to update name",
+      "emailLabel": "Email Address",
+      "providerNotice": "Authentication settings are managed by your provider (Google/GitHub, etc.)."
+    },
+    "general": {
+      "title": "General",
+      "terms": "Terms of Service",
+      "feedback": "Send Feedback"
+    },
+    "feedbackSent": "Feedback feature is under construction."
   }
 }

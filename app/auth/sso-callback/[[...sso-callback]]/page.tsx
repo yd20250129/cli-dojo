@@ -1,0 +1,13 @@
+"use client";
+
+import { AuthenticateWithRedirectCallback } from "@clerk/nextjs";
+
+export default function SsoCallbackPage() {
+  return (
+    <AuthenticateWithRedirectCallback
+      signInFallbackRedirectUrl="/"
+      signUpFallbackRedirectUrl="/auth/sign-up-complete"
+      signUpForceRedirectUrl="/auth/sign-up-complete"
+    />
+  );
+}

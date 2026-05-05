@@ -13,7 +13,9 @@
   "nav": {
     "home": "ホーム",
     "progress": "学習記録",
-    "signIn": "ログイン"
+    "signIn": "ログイン",
+    "signUp": "サインアップ",
+    "settings": "設定"
   },
   "home": {
     "badges": {
@@ -140,15 +142,42 @@
   "auth": {
     "eyebrow": "CLI Dojo Authentication",
     "backHome": "ホームへ戻る",
+    "common": {
+      "or": "or",
+      "emailLabel": "Email address",
+      "emailPlaceholder": "メールアドレスを入力",
+      "passwordLabel": "パスワード",
+      "passwordPlaceholder": "パスワードを入力",
+      "codeLabel": "認証コード",
+      "codePlaceholder": "6桁コードを入力",
+      "continue": "Continue",
+      "verifyCode": "コードを確認",
+      "changeEmail": "メールを変更",
+      "close": "閉じる"
+    },
+    "errors": {
+      "signInFailed": "ログインを開始できませんでした",
+      "signInIncomplete": "ログインを完了できませんでした。認証方法を確認して、もう一度お試しください。",
+      "signInIncompleteWithFactors": "ログインを完了できませんでした。利用可能な認証方法: {{factors}}",
+      "signUpFailed": "サインアップを開始できませんでした",
+      "signUpIncomplete": "サインアップを完了できませんでした。入力項目や認証状態を確認して、最初からやり直してください。",
+      "signUpIncompleteWithFields": "サインアップを完了できませんでした。未完了の項目: {{fields}}",
+      "emailCodeUnavailable": "このメールアドレスでは認証コードを利用できませんでした",
+      "invalidCode": "認証コードを確認できませんでした",
+      "oauthFailed": "外部認証を開始できませんでした",
+      "signOutFailed": "サインアウトに失敗しました"
+    },
     "signIn": {
       "title": "アカウントで学習を続ける",
       "description": "学習データはログイン中のアカウントに紐づいて保存されます。進捗と成績を保存し、学習を継続しましょう。",
+      "codeSent": "{{email}} に認証コードを送信しました。メールを確認して続けてください。",
       "footerPrefix": "アカウントをお持ちでない場合は",
       "footerLink": "サインアップ"
     },
     "signUp": {
       "title": "アカウントを作成する",
       "description": "学習データはログイン中のアカウントに紐づいて保存されます。進捗と成績を保存し、学習を継続しましょう。",
+      "codeSent": "{{email}} に確認コードを送信しました。メールを確認して続けてください。",
       "footerPrefix": "すでにアカウントをお持ちの場合は",
       "footerLink": "ログイン"
     },
@@ -169,5 +198,28 @@
       "title": "セクションが見つかりません",
       "description": "ホームから学習するカテゴリを選び直してください。"
     }
+  },
+  "settings": {
+    "eyebrow": "Settings",
+    "title": "設定",
+    "manageAccount": "Manage account",
+    "signOut": "Sign out",
+    "profile": {
+      "title": "プロフィール",
+      "nameLabel": "ユーザー名",
+      "editName": "編集",
+      "saveName": "保存",
+      "cancelEdit": "キャンセル",
+      "nameUpdated": "ユーザー名を更新しました",
+      "nameUpdateFailed": "ユーザー名の更新に失敗しました",
+      "emailLabel": "メールアドレス",
+      "providerNotice": "認証情報の変更は、ご利用のプロバイダー（Google/GitHubなど）側で管理されます。"
+    },
+    "general": {
+      "title": "一般",
+      "terms": "利用規約",
+      "feedback": "ご意見・ご要望"
+    },
+    "feedbackSent": "フィードバック機能は準備中です（スタブ）"
   }
 }
