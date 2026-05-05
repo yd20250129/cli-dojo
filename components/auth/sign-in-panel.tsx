@@ -3,7 +3,7 @@
 import { Loader2, Mail, MoveRight } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useRef, useState } from "react";
-import { useSignIn } from "@clerk/nextjs";
+import { useClerk, useSignIn } from "@clerk/nextjs";
 
 import { AuthPanelCard } from "@/components/auth/auth-panel-card";
 import { Button } from "@/components/ui/button";
@@ -55,6 +55,7 @@ export function SignInPanel({
 }: SignInPanelProps) {
   const router = useRouter();
   const t = getTranslator(locale);
+  const clerk = useClerk();
   const { signIn } = useSignIn();
   const formRef = useRef<HTMLFormElement | null>(null);
   const [step, setStep] = useState<SignInStep>("identifier");
@@ -115,16 +116,34 @@ export function SignInPanel({
       }
 
       if (submittedPassword) {
-        const passwordResult = await signIn.password({
-          identifier: submittedEmail,
-          password: submittedPassword,
-        });
-        if (passwordResult.error) {
-          setError(passwordResult.error.message || t("auth.errors.signInFailed"));
+        const legacySignIn = clerk.client?.signIn;
+        if (!legacySignIn) {
+          setError(t("auth.errors.signInFailed"));
           return;
         }
 
-        await finalizeSignIn();
+        const passwordAttempt = await legacySignIn.create({ identifier: submittedEmail });
+        const completedSignIn = await passwordAttempt.attemptFirstFactor({
+          strategy: "password",
+          password: submittedPassword,
+        });
+
+        if (completedSignIn.status !== "complete" || !completedSignIn.createdSessionId) {
+          const supportedFactors = formatSupportedFactors(completedSignIn.supportedFirstFactors);
+          setError(
+            supportedFactors
+              ? t("auth.errors.signInIncompleteWithFactors", { factors: supportedFactors })
+              : t("auth.errors.signInIncomplete"),
+          );
+          return;
+        }
+
+        await clerk.setActive({ session: completedSignIn.createdSessionId });
+        router.refresh();
+        onSuccess?.();
+        if (redirectTo !== "/") {
+          router.push(redirectTo);
+        }
         return;
       }
 
