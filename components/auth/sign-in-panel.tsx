@@ -20,6 +20,19 @@ type SignInPanelProps = {
 };
 
 type SignInStep = "identifier" | "code";
+type CodeStepMode = "email_first_factor" | "email_second_factor";
+
+type FactorListState = {
+  status?: string | null;
+  supportedFirstFactors?: Array<{ strategy: string }> | null;
+  supportedSecondFactors?: Array<{ strategy: string }> | null;
+};
+
+type EmailCodeFactorState = {
+  strategy: "email_code";
+  emailAddressId: string;
+  safeIdentifier: string;
+};
 
 function getClerkErrorMessage(error: unknown, fallback: string) {
   if (typeof error === "object" && error && "errors" in error) {
@@ -47,6 +60,17 @@ function formatSupportedFactors(factors: Array<{ strategy: string }> | null | un
     .join(", ");
 }
 
+function getIncompleteFactorMessage(resource: FactorListState, fallback: string) {
+  const supportedFactors =
+    resource.status === "needs_second_factor"
+      ? formatSupportedFactors(resource.supportedSecondFactors)
+      : formatSupportedFactors(resource.supportedFirstFactors);
+
+  return supportedFactors
+    ? fallback.replace("{{factors}}", supportedFactors)
+    : "";
+}
+
 export function SignInPanel({
   locale,
   redirectTo = "/",
@@ -59,6 +83,7 @@ export function SignInPanel({
   const { signIn } = useSignIn();
   const formRef = useRef<HTMLFormElement | null>(null);
   const [step, setStep] = useState<SignInStep>("identifier");
+  const [codeStepMode, setCodeStepMode] = useState<CodeStepMode>("email_first_factor");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [code, setCode] = useState("");
@@ -67,18 +92,84 @@ export function SignInPanel({
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isSocialLoading, setIsSocialLoading] = useState<"oauth_github" | "oauth_google" | null>(null);
 
+  const completeSignIn = () => {
+    router.refresh();
+    onSuccess?.();
+    if (redirectTo !== "/") {
+      router.push(redirectTo);
+    }
+  };
+
+  const transitionToEmailCodeStep = (identifier: string, mode: CodeStepMode) => {
+    setSafeIdentifier(identifier);
+    setCode("");
+    setCodeStepMode(mode);
+    setStep("code");
+  };
+
+  const resetCodeStep = () => {
+    void signIn?.reset();
+    setStep("identifier");
+    setCode("");
+    setError("");
+    setSafeIdentifier("");
+    setCodeStepMode("email_first_factor");
+  };
+
+  const beginSecondFactorEmailCode = async (
+    signInAttempt: {
+      status: string | null;
+      createdSessionId: string | null;
+      supportedFirstFactors: Array<{ strategy: string }> | null;
+      supportedSecondFactors: Array<{ strategy: string }> | null;
+      prepareSecondFactor: (params: { strategy: "email_code"; emailAddressId?: string }) => Promise<{
+        status: string | null;
+        createdSessionId: string | null;
+        supportedFirstFactors: Array<{ strategy: string }> | null;
+        supportedSecondFactors: Array<{ strategy: string }> | null;
+      }>;
+    },
+    fallbackIdentifier: string,
+  ) => {
+    const emailCodeFactor = signInAttempt.supportedSecondFactors?.find(
+      (factor): factor is EmailCodeFactorState => factor.strategy === "email_code",
+    );
+
+    if (!emailCodeFactor) {
+      const incompleteMessage = getIncompleteFactorMessage(
+        signInAttempt,
+        t("auth.errors.signInIncompleteWithFactors", { factors: "{{factors}}" }),
+      );
+      setError(incompleteMessage || t("auth.errors.signInIncomplete"));
+      return false;
+    }
+
+    const preparedSignIn = await signInAttempt.prepareSecondFactor({
+      strategy: "email_code",
+      emailAddressId: emailCodeFactor.emailAddressId,
+    });
+
+    if (preparedSignIn.status === "complete" && preparedSignIn.createdSessionId) {
+      await clerk.setActive({ session: preparedSignIn.createdSessionId });
+      completeSignIn();
+      return true;
+    }
+
+    transitionToEmailCodeStep(emailCodeFactor.safeIdentifier || fallbackIdentifier, "email_second_factor");
+    return true;
+  };
+
   const finalizeSignIn = async () => {
     if (!signIn) {
       return false;
     }
 
     if (signIn.status !== "complete" || !signIn.createdSessionId) {
-      const supportedFactors = formatSupportedFactors(signIn.supportedFirstFactors);
-      setError(
-        supportedFactors
-          ? t("auth.errors.signInIncompleteWithFactors", { factors: supportedFactors })
-          : t("auth.errors.signInIncomplete"),
+      const incompleteMessage = getIncompleteFactorMessage(
+        signIn,
+        t("auth.errors.signInIncompleteWithFactors", { factors: "{{factors}}" }),
       );
+      setError(incompleteMessage || t("auth.errors.signInIncomplete"));
       return false;
     }
 
@@ -88,11 +179,7 @@ export function SignInPanel({
       return false;
     }
 
-    router.refresh();
-    onSuccess?.();
-    if (redirectTo !== "/") {
-      router.push(redirectTo);
-    }
+    completeSignIn();
     return true;
   };
 
@@ -128,22 +215,22 @@ export function SignInPanel({
           password: submittedPassword,
         });
 
+        if (completedSignIn.status === "needs_second_factor") {
+          await beginSecondFactorEmailCode(completedSignIn, submittedEmail);
+          return;
+        }
+
         if (completedSignIn.status !== "complete" || !completedSignIn.createdSessionId) {
-          const supportedFactors = formatSupportedFactors(completedSignIn.supportedFirstFactors);
-          setError(
-            supportedFactors
-              ? t("auth.errors.signInIncompleteWithFactors", { factors: supportedFactors })
-              : t("auth.errors.signInIncomplete"),
+          const incompleteMessage = getIncompleteFactorMessage(
+            completedSignIn,
+            t("auth.errors.signInIncompleteWithFactors", { factors: "{{factors}}" }),
           );
+          setError(incompleteMessage || t("auth.errors.signInIncomplete"));
           return;
         }
 
         await clerk.setActive({ session: completedSignIn.createdSessionId });
-        router.refresh();
-        onSuccess?.();
-        if (redirectTo !== "/") {
-          router.push(redirectTo);
-        }
+        completeSignIn();
         return;
       }
 
@@ -154,6 +241,8 @@ export function SignInPanel({
       }
 
       setSafeIdentifier(submittedEmail);
+      setCode("");
+      setCodeStepMode("email_first_factor");
       setStep("code");
     } catch (signInError) {
       setError(getClerkErrorMessage(signInError, t("auth.errors.signInFailed")));
@@ -171,9 +260,46 @@ export function SignInPanel({
     setIsSubmitting(true);
 
     try {
+      if (codeStepMode === "email_second_factor") {
+        const legacySignIn = clerk.client?.signIn;
+        if (!legacySignIn) {
+          setError(t("auth.errors.signInFailed"));
+          return;
+        }
+
+        const secondFactorResult = await legacySignIn.attemptSecondFactor({
+          strategy: "email_code",
+          code: code.trim(),
+        });
+
+        if (secondFactorResult.status !== "complete" || !secondFactorResult.createdSessionId) {
+          const incompleteMessage = getIncompleteFactorMessage(
+            secondFactorResult,
+            t("auth.errors.signInIncompleteWithFactors", { factors: "{{factors}}" }),
+          );
+          setError(incompleteMessage || t("auth.errors.invalidCode"));
+          return;
+        }
+
+        await clerk.setActive({ session: secondFactorResult.createdSessionId });
+        completeSignIn();
+        return;
+      }
+
       const verifyCodeResult = await signIn.emailCode.verifyCode({ code: code.trim() });
       if (verifyCodeResult.error) {
         setError(verifyCodeResult.error.message || t("auth.errors.invalidCode"));
+        return;
+      }
+
+      if (signIn.status === "needs_second_factor") {
+        const legacySignIn = clerk.client?.signIn;
+        if (!legacySignIn) {
+          setError(t("auth.errors.signInFailed"));
+          return;
+        }
+
+        await beginSecondFactorEmailCode(legacySignIn, safeIdentifier || email);
         return;
       }
 
@@ -349,11 +475,7 @@ export function SignInPanel({
                 type="button"
                 variant="outline"
                 className="h-12 w-full rounded-2xl sm:w-auto"
-                onClick={() => {
-                  setStep("identifier");
-                  setCode("");
-                  setError("");
-                }}
+                onClick={resetCodeStep}
                 disabled={isSubmitting}
               >
                 {t("auth.common.changeEmail")}
