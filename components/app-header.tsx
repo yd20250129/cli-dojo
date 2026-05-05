@@ -85,7 +85,8 @@ export function AppHeader({ locale }: { locale: Locale }) {
               <Button
                 type="button"
                 size="sm"
-                className="rounded-full bg-emerald-600 px-4 text-white hover:bg-emerald-500"
+                variant="outline"
+                className="rounded-full px-4"
                 onClick={() => setAuthMode("sign-in")}
               >
                 {t("nav.signIn")}
@@ -93,7 +94,8 @@ export function AppHeader({ locale }: { locale: Locale }) {
               <Button
                 type="button"
                 size="sm"
-                className="rounded-full bg-[#ef7d32] px-4 text-white hover:bg-[#df6d20]"
+                variant="default"
+                className="rounded-full px-4 hover:bg-primary/90"
                 onClick={() => setAuthMode("sign-up")}
               >
                 {t("nav.signUp")}
