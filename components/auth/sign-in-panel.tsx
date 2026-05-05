@@ -2,7 +2,7 @@
 
 import { Loader2, Mail, MoveRight } from "lucide-react";
 import { useRouter } from "next/navigation";
-import { useState } from "react";
+import { useRef, useState } from "react";
 import { useSignIn } from "@clerk/nextjs";
 
 import { AuthPanelCard } from "@/components/auth/auth-panel-card";
@@ -56,6 +56,7 @@ export function SignInPanel({
   const router = useRouter();
   const t = getTranslator(locale);
   const { signIn } = useSignIn();
+  const formRef = useRef<HTMLFormElement | null>(null);
   const [step, setStep] = useState<SignInStep>("identifier");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -103,16 +104,20 @@ export function SignInPanel({
     setIsSubmitting(true);
 
     try {
-      const createResult = await signIn.create({ identifier: email.trim() });
+      const formData = new FormData(formRef.current ?? undefined);
+      const submittedEmail = String(formData.get("email") ?? email).trim();
+      const submittedPassword = String(formData.get("password") ?? password).trim();
+
+      const createResult = await signIn.create({ identifier: submittedEmail });
       if (createResult.error) {
         setError(createResult.error.message || t("auth.errors.signInFailed"));
         return;
       }
 
-      if (password.trim()) {
+      if (submittedPassword) {
         const passwordResult = await signIn.password({
-          identifier: email.trim(),
-          password: password.trim(),
+          identifier: submittedEmail,
+          password: submittedPassword,
         });
         if (passwordResult.error) {
           setError(passwordResult.error.message || t("auth.errors.signInFailed"));
@@ -123,13 +128,13 @@ export function SignInPanel({
         return;
       }
 
-      const sendCodeResult = await signIn.emailCode.sendCode({ emailAddress: email.trim() });
+      const sendCodeResult = await signIn.emailCode.sendCode({ emailAddress: submittedEmail });
       if (sendCodeResult.error) {
         setError(sendCodeResult.error.message || t("auth.errors.emailCodeUnavailable"));
         return;
       }
 
-      setSafeIdentifier(email.trim());
+      setSafeIdentifier(submittedEmail);
       setStep("code");
     } catch (signInError) {
       setError(getClerkErrorMessage(signInError, t("auth.errors.signInFailed")));
@@ -242,12 +247,13 @@ export function SignInPanel({
         </div>
 
         {step === "identifier" ? (
-          <div className="space-y-4">
+          <form ref={formRef} className="space-y-4" onSubmit={(event) => event.preventDefault()}>
             <label className="block space-y-2">
               <span className="text-sm font-medium text-zinc-700">
                 {t("auth.common.emailLabel")}
               </span>
               <Input
+                name="email"
                 type="email"
                 inputMode="email"
                 autoComplete="email"
@@ -264,6 +270,7 @@ export function SignInPanel({
                 {t("auth.common.passwordLabel")}
               </span>
               <PasswordInput
+                name="password"
                 locale={locale}
                 autoComplete="current-password"
                 placeholder={t("auth.common.passwordPlaceholder")}
@@ -285,7 +292,7 @@ export function SignInPanel({
               {isSubmitting ? <Loader2 className="size-4 animate-spin" /> : <Mail className="size-4" />}
               {t("auth.common.continue")}
             </Button>
-          </div>
+          </form>
         ) : (
           <div className="space-y-4">
             <div className="rounded-2xl border border-emerald-200 bg-emerald-50 px-4 py-3 text-sm text-emerald-900">
