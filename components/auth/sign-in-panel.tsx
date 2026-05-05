@@ -110,7 +110,10 @@ export function SignInPanel({
       }
 
       if (password.trim()) {
-        const passwordResult = await signIn.password({ password: password.trim() });
+        const passwordResult = await signIn.password({
+          identifier: email.trim(),
+          password: password.trim(),
+        });
         if (passwordResult.error) {
           setError(passwordResult.error.message || t("auth.errors.signInFailed"));
           return;
