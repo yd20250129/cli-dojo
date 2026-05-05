@@ -129,7 +129,7 @@ export function HomeView({ locale, sections }: HomeViewProps) {
               {t("home.hero.description")}
             </p>
           </div>
-          <Card className="self-start rounded-2xl border-zinc-200/80 bg-white/90 shadow-sm backdrop-blur">
+          <Card className="self-start border-zinc-200/80 bg-white/90 shadow-sm backdrop-blur">
             <CardHeader>
               <CardTitle>{t("home.summary.title")}</CardTitle>
               <p className="text-sm text-zinc-500">
@@ -178,7 +178,7 @@ export function HomeView({ locale, sections }: HomeViewProps) {
             return (
               <Card
                 key={section.id}
-                className="flex h-full flex-col rounded-2xl border-zinc-200/80 bg-white/90 shadow-sm transition duration-200 hover:-translate-y-0.5 hover:shadow-md"
+                className="flex h-full flex-col border-zinc-200/80 bg-white/90 shadow-sm transition duration-200 hover:-translate-y-0.5 hover:shadow-md"
               >
                 <CardHeader>
                   <CardTitle>{section.name}</CardTitle>

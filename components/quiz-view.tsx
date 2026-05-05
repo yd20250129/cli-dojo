@@ -207,7 +207,7 @@ export function QuizView({ locale, section, questions }: QuizViewProps) {
           </div>
         </div>
 
-        <Card className="rounded-2xl border-zinc-200/80 bg-white/90 shadow-sm">
+        <Card className="border-zinc-200/80 bg-white/90 shadow-sm">
           <CardHeader>
             <CardTitle>
               {t("quiz.header.progress", {
@@ -239,7 +239,7 @@ export function QuizView({ locale, section, questions }: QuizViewProps) {
                   <button
                     key={choice.id}
                     className={cn(
-                      "min-h-14 rounded-2xl border bg-white px-4 py-3 text-left text-base transition focus-visible:outline-none focus-visible:ring-3 focus-visible:ring-zinc-300",
+                      "min-h-14 rounded-xl border bg-white px-4 py-3 text-left text-base transition focus-visible:outline-none focus-visible:ring-3 focus-visible:ring-zinc-300",
                       !answered && "hover:border-zinc-900 hover:bg-zinc-50",
                       answered && isAnswer && "border-emerald-600 bg-emerald-50 text-emerald-950",
                       answered && isSelected && !isAnswer && "border-red-500 bg-red-50 text-red-950",
@@ -267,7 +267,7 @@ export function QuizView({ locale, section, questions }: QuizViewProps) {
             </div>
 
             {selectedChoiceId ? (
-              <div className="rounded-2xl border bg-zinc-50 p-4">
+              <div className="rounded-xl border bg-zinc-50 p-4">
                 <div className="flex items-center gap-2">
                   {isCorrect ? (
                     <CheckCircle2 className="size-5 text-emerald-600" />
