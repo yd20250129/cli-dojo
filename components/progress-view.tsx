@@ -95,7 +95,7 @@ export function ProgressView({ locale, sections, timezone }: ProgressViewProps) 
         </div>
 
         <div className="grid gap-4 md:grid-cols-2">
-          <Card className="rounded-2xl border-zinc-200/80 bg-white/90 shadow-sm">
+          <Card className="border-zinc-200/80 bg-white/90 shadow-sm">
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
               <div className="space-y-1">
                 <CardTitle>{percent(progress?.overallProgressRate ?? 0)}%</CardTitle>
@@ -112,7 +112,7 @@ export function ProgressView({ locale, sections, timezone }: ProgressViewProps) 
               <Progress value={percent(progress?.overallProgressRate ?? 0)} />
             </CardContent>
           </Card>
-          <Card className="rounded-2xl border-zinc-200/80 bg-white/90 shadow-sm">
+          <Card className="border-zinc-200/80 bg-white/90 shadow-sm">
             <CardHeader className="pb-2">
               <CardTitle>{percent(progress?.overallCorrectRate ?? 0)}%</CardTitle>
               <CardDescription>{t("progress.stats.correctRate")}</CardDescription>
@@ -144,7 +144,7 @@ export function ProgressView({ locale, sections, timezone }: ProgressViewProps) 
               });
 
               return (
-                <div key={section.id} className="rounded-2xl border border-zinc-200 bg-white p-4 shadow-sm">
+                <div key={section.id} className="rounded-xl border border-zinc-200 bg-white p-4 shadow-sm">
                   <div className="flex items-start justify-between gap-3">
                     <div className="min-w-0 flex-1">
                       <p className="font-medium">{section.name}</p>
@@ -182,7 +182,7 @@ export function ProgressView({ locale, sections, timezone }: ProgressViewProps) 
           </div>
         </div>
 
-        <Card className="hidden rounded-2xl border-zinc-200/80 bg-white/90 shadow-sm md:block">
+        <Card className="hidden border-zinc-200/80 bg-white/90 shadow-sm md:block">
           <CardHeader>
             <CardTitle>{t("progress.section.title")}</CardTitle>
             <CardDescription>{t("progress.section.description")}</CardDescription>

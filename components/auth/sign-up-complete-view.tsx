@@ -111,7 +111,7 @@ export function SignUpCompleteView({ locale }: SignUpCompleteViewProps) {
   }, [isLoaded, router, t, userId]);
 
   return (
-    <Card className="w-full rounded-2xl border-zinc-200/80 bg-white/90 shadow-sm">
+    <Card className="w-full border-zinc-200/80 bg-white/90 shadow-sm">
       <CardHeader>
         <CardTitle>{t("auth.signUpComplete.cardTitle")}</CardTitle>
         <CardDescription>{t("auth.signUpComplete.cardDescription")}</CardDescription>

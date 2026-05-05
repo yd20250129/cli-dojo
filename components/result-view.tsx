@@ -144,7 +144,7 @@ export function ResultView({ locale, section, attemptId, anonymous = false }: Re
           </div>
         </div>
 
-        <Card className="rounded-2xl border-zinc-200/80 bg-white/90 shadow-sm">
+        <Card className="border-zinc-200/80 bg-white/90 shadow-sm">
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
               {loading ? (
@@ -170,17 +170,17 @@ export function ResultView({ locale, section, attemptId, anonymous = false }: Re
             {result ? (
               <>
                 <div className="grid gap-3 sm:grid-cols-3">
-                  <div className="rounded-2xl border border-zinc-200 bg-zinc-50 p-4">
+                  <div className="rounded-xl border border-zinc-200 bg-zinc-50 p-4">
                     <p className="text-sm text-zinc-500">{t("result.stats.score")}</p>
                     <p className="text-3xl font-semibold">
                       {result.score} / {result.totalQuestions}
                     </p>
                   </div>
-                  <div className="rounded-2xl border border-zinc-200 bg-zinc-50 p-4">
+                  <div className="rounded-xl border border-zinc-200 bg-zinc-50 p-4">
                     <p className="text-sm text-zinc-500">{t("result.stats.correctRate")}</p>
                     <p className="text-3xl font-semibold">{percent(rate)}%</p>
                   </div>
-                  <div className="rounded-2xl border border-zinc-200 bg-zinc-50 p-4">
+                  <div className="rounded-xl border border-zinc-200 bg-zinc-50 p-4">
                     <p className="text-sm text-zinc-500">{t("result.stats.incorrectCount")}</p>
                     <p className="text-3xl font-semibold">{result.incorrectAnswers.length}</p>
                   </div>
@@ -190,13 +190,13 @@ export function ResultView({ locale, section, attemptId, anonymous = false }: Re
                 <div className="space-y-3">
                   <h2 className="text-lg font-semibold">{t("result.review.title")}</h2>
                   {result.incorrectAnswers.length === 0 ? (
-                    <p className="flex items-start gap-2 rounded-2xl border border-emerald-200 bg-emerald-50 p-4 text-emerald-800">
+                    <p className="flex items-start gap-2 rounded-xl border border-emerald-200 bg-emerald-50 p-4 text-emerald-800">
                       <CheckCircle2 className="mt-0.5 size-5 shrink-0" />
                       <span>{t("result.review.empty")}</span>
                     </p>
                   ) : (
                     result.incorrectAnswers.map((answer) => (
-                      <div key={answer.questionId} className="rounded-2xl border border-zinc-200 bg-white p-4">
+                      <div key={answer.questionId} className="rounded-xl border border-zinc-200 bg-white p-4">
                         <p className="font-medium">{answer.question}</p>
                         <div className="mt-3 grid gap-3 sm:grid-cols-2">
                           <div className="rounded-xl border border-red-200 bg-red-50 p-3">
