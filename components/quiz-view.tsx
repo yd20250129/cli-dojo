@@ -206,7 +206,7 @@ export function QuizView({ locale, section, questions }: QuizViewProps) {
           </div>
         </div>
 
-        <Card className="border-zinc-200/80 bg-white/90 shadow-sm">
+        <Card className="border-border bg-surface-raised shadow-sm">
           <CardHeader>
             <CardTitle>
               {t("quiz.header.progress", {
@@ -238,8 +238,8 @@ export function QuizView({ locale, section, questions }: QuizViewProps) {
                   <button
                     key={choice.id}
                     className={cn(
-                      "min-h-14 rounded-xl border bg-white px-4 py-3 text-left text-base transition focus-visible:outline-none focus-visible:ring-3 focus-visible:ring-zinc-300",
-                      !answered && "hover:border-zinc-900 hover:bg-zinc-50",
+                      "min-h-14 rounded-xl border bg-surface-raised px-4 py-3 text-left text-base transition focus-visible:outline-none focus-visible:ring-3 focus-visible:ring-ring",
+                      !answered && "hover:border-foreground hover:bg-surface-subtle",
                       answered && isAnswer && "border-emerald-600 bg-emerald-50 text-emerald-950",
                       answered && isSelected && !isAnswer && "border-red-500 bg-red-50 text-red-950",
                     )}
@@ -266,7 +266,7 @@ export function QuizView({ locale, section, questions }: QuizViewProps) {
             </div>
 
             {selectedChoiceId ? (
-              <div className="rounded-xl border bg-zinc-50 p-4">
+              <div className="rounded-xl border bg-surface-subtle p-4">
                 <div className="flex items-center gap-2">
                   {isCorrect ? (
                     <CheckCircle2 className="size-5 text-emerald-600" />
@@ -278,8 +278,8 @@ export function QuizView({ locale, section, questions }: QuizViewProps) {
                   </p>
                 </div>
                 {!isCorrect ? (
-                  <p className="mt-3 flex items-start gap-2 text-sm text-zinc-600">
-                    <Info className="mt-0.5 size-4 shrink-0 text-zinc-500" />
+                  <p className="mt-3 flex items-start gap-2 text-sm text-muted-foreground">
+                    <Info className="mt-0.5 size-4 shrink-0 text-muted-foreground" />
                     {t("quiz.feedback.correctChoice", {
                       choiceId: currentQuestion.answer,
                       choiceText: correctChoiceText,
@@ -287,11 +287,11 @@ export function QuizView({ locale, section, questions }: QuizViewProps) {
                   </p>
                 ) : null}
                 <div className="mt-4 grid gap-3 sm:grid-cols-2">
-                  <div className="rounded-xl border border-zinc-200 bg-white p-3">
-                    <p className="text-xs font-medium uppercase tracking-[0.2em] text-zinc-500">
+                  <div className="rounded-xl border border-border bg-surface-raised p-3">
+                    <p className="text-xs font-medium uppercase tracking-eyebrow text-muted-foreground">
                       {t("quiz.feedback.yourChoice")}
                     </p>
-                    <p className="mt-1 text-base font-semibold text-zinc-900">{selectedChoiceId}</p>
+                    <p className="mt-1 text-base font-semibold text-foreground">{selectedChoiceId}</p>
                   </div>
                   <div className="rounded-xl border border-emerald-200 bg-emerald-50 p-3">
                     <p className="text-xs font-medium uppercase tracking-[0.2em] text-emerald-700">
@@ -302,14 +302,14 @@ export function QuizView({ locale, section, questions }: QuizViewProps) {
                     </p>
                   </div>
                 </div>
-                <p className="mt-4 flex items-start gap-2 leading-7 text-zinc-700">
-                  <CircleCheckBig className="mt-1 size-4 shrink-0 text-zinc-500" />
+                <p className="mt-4 flex items-start gap-2 leading-7 text-text-secondary">
+                  <CircleCheckBig className="mt-1 size-4 shrink-0 text-muted-foreground" />
                   <span>{currentQuestion.explanation}</span>
                 </p>
               </div>
             ) : null}
           </CardContent>
-          <CardFooter className="border-t bg-zinc-50/90 py-4 backdrop-blur">
+          <CardFooter className="border-t bg-surface-subtle/90 py-4 backdrop-blur">
             <div className="flex w-full flex-col gap-3 sm:flex-row sm:justify-end">
               <Button asChild className="w-full sm:w-auto" variant="outline">
                 <Link href="/">{t("app.common.backHome")}</Link>

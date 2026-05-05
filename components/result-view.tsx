@@ -143,7 +143,7 @@ export function ResultView({ locale, section, attemptId, anonymous = false }: Re
           </div>
         </div>
 
-        <Card className="border-zinc-200/80 bg-white/90 shadow-sm">
+        <Card className="border-border bg-surface-raised shadow-sm">
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
               {loading ? (
@@ -165,22 +165,22 @@ export function ResultView({ locale, section, attemptId, anonymous = false }: Re
             </CardDescription>
           </CardHeader>
           <CardContent className="space-y-5">
-            {error ? <p className="text-sm text-red-600">{error}</p> : null}
+            {error ? <p className="text-sm text-status-error">{error}</p> : null}
             {result ? (
               <>
                 <div className="grid gap-3 sm:grid-cols-3">
-                  <div className="rounded-xl border border-zinc-200 bg-zinc-50 p-4">
-                    <p className="text-sm text-zinc-500">{t("result.stats.score")}</p>
+                  <div className="rounded-xl border border-border bg-surface-subtle p-4">
+                    <p className="text-sm text-muted-foreground">{t("result.stats.score")}</p>
                     <p className="text-3xl font-semibold">
                       {result.score} / {result.totalQuestions}
                     </p>
                   </div>
-                  <div className="rounded-xl border border-zinc-200 bg-zinc-50 p-4">
-                    <p className="text-sm text-zinc-500">{t("result.stats.correctRate")}</p>
+                  <div className="rounded-xl border border-border bg-surface-subtle p-4">
+                    <p className="text-sm text-muted-foreground">{t("result.stats.correctRate")}</p>
                     <p className="text-3xl font-semibold">{percent(rate)}%</p>
                   </div>
-                  <div className="rounded-xl border border-zinc-200 bg-zinc-50 p-4">
-                    <p className="text-sm text-zinc-500">{t("result.stats.incorrectCount")}</p>
+                  <div className="rounded-xl border border-border bg-surface-subtle p-4">
+                    <p className="text-sm text-muted-foreground">{t("result.stats.incorrectCount")}</p>
                     <p className="text-3xl font-semibold">{result.incorrectAnswers.length}</p>
                   </div>
                 </div>
@@ -195,7 +195,7 @@ export function ResultView({ locale, section, attemptId, anonymous = false }: Re
                     </p>
                   ) : (
                     result.incorrectAnswers.map((answer) => (
-                      <div key={answer.questionId} className="rounded-xl border border-zinc-200 bg-white p-4">
+                      <div key={answer.questionId} className="rounded-xl border border-border bg-surface-raised p-4">
                         <p className="font-medium">{answer.question}</p>
                         <div className="mt-3 grid gap-3 sm:grid-cols-2">
                           <div className="rounded-xl border border-red-200 bg-red-50 p-3">
@@ -211,8 +211,8 @@ export function ResultView({ locale, section, attemptId, anonymous = false }: Re
                             <p className="mt-1 font-semibold text-emerald-900">{answer.correctChoiceId}</p>
                           </div>
                         </div>
-                        <p className="mt-3 flex items-start gap-2 leading-7 text-zinc-700">
-                          <CircleAlert className="mt-1 size-4 shrink-0 text-zinc-500" />
+                        <p className="mt-3 flex items-start gap-2 leading-7 text-text-secondary">
+                          <CircleAlert className="mt-1 size-4 shrink-0 text-muted-foreground" />
                           <span>{answer.explanation}</span>
                         </p>
                       </div>

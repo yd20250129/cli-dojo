@@ -95,7 +95,7 @@ export function ProgressView({ locale, sections, timezone }: ProgressViewProps) 
         </div>
 
         <div className="grid gap-4 md:grid-cols-2">
-          <Card className="border-zinc-200/80 bg-white/90 shadow-sm">
+          <Card className="border-border bg-surface-raised shadow-sm">
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
               <div className="space-y-1">
                 <CardTitle>{percent(progress?.overallProgressRate ?? 0)}%</CardTitle>
@@ -112,7 +112,7 @@ export function ProgressView({ locale, sections, timezone }: ProgressViewProps) 
               <Progress value={percent(progress?.overallProgressRate ?? 0)} />
             </CardContent>
           </Card>
-          <Card className="border-zinc-200/80 bg-white/90 shadow-sm">
+          <Card className="border-border bg-surface-raised shadow-sm">
             <CardHeader className="pb-2">
               <CardTitle>{percent(progress?.overallCorrectRate ?? 0)}%</CardTitle>
               <CardDescription>{t("progress.stats.correctRate")}</CardDescription>
@@ -123,12 +123,12 @@ export function ProgressView({ locale, sections, timezone }: ProgressViewProps) 
           </Card>
         </div>
 
-        {error ? <p className="text-sm text-red-600">{error}</p> : null}
+        {error ? <p className="text-sm text-status-error">{error}</p> : null}
 
         <div className="md:hidden">
           <div className="px-1 pb-4">
             <h2 className="text-lg font-semibold tracking-tight">{t("progress.section.title")}</h2>
-            <p className="text-sm text-zinc-500">{t("progress.section.description")}</p>
+            <p className="text-sm text-muted-foreground">{t("progress.section.description")}</p>
           </div>
           <div className="space-y-3">
             {sections.map((section) => {
@@ -144,18 +144,18 @@ export function ProgressView({ locale, sections, timezone }: ProgressViewProps) 
               });
 
               return (
-                <div key={section.id} className="rounded-xl border border-zinc-200 bg-white p-4 shadow-sm">
+                <div key={section.id} className="rounded-xl border border-border bg-surface-raised p-4 shadow-sm">
                   <div className="flex items-start justify-between gap-3">
                     <div className="min-w-0 flex-1">
                       <p className="font-medium">{section.name}</p>
-                      <p className="mt-1 text-sm text-zinc-500">{section.description}</p>
+                      <p className="mt-1 text-sm text-muted-foreground">{section.description}</p>
                     </div>
                     <span className={`shrink-0 rounded-full px-2.5 py-1 text-center text-xs font-medium ${status.className}`}>
                       {status.label}
                     </span>
                   </div>
                   <div className="mt-4 space-y-2">
-                    <div className="flex items-center justify-between text-sm text-zinc-600">
+                    <div className="flex items-center justify-between text-sm text-muted-foreground">
                       <span>
                         {t("progress.card.answered", {
                           answered,
@@ -167,12 +167,12 @@ export function ProgressView({ locale, sections, timezone }: ProgressViewProps) 
                     <Progress value={(answered / section.questionCount) * 100} />
                   </div>
                   <div className="mt-4 grid grid-cols-2 gap-3 text-sm">
-                    <div className="rounded-xl border border-zinc-200 bg-zinc-50 p-3">
-                      <p className="text-zinc-500">{t("progress.stats.answered")}</p>
+                    <div className="rounded-xl border border-border bg-surface-subtle p-3">
+                      <p className="text-muted-foreground">{t("progress.stats.answered")}</p>
                       <p className="mt-1 text-lg font-semibold">{answered}</p>
                     </div>
-                    <div className="rounded-xl border border-stone-200 bg-stone-50 p-3">
-                      <p className="text-zinc-500">{t("progress.section.headers.correct")}</p>
+                    <div className="rounded-xl border border-border bg-surface-subtle p-3">
+                      <p className="text-muted-foreground">{t("progress.section.headers.correct")}</p>
                       <p className="mt-1 text-lg font-semibold">{correct}</p>
                     </div>
                   </div>
@@ -182,14 +182,14 @@ export function ProgressView({ locale, sections, timezone }: ProgressViewProps) 
           </div>
         </div>
 
-        <Card className="hidden border-zinc-200/80 bg-white/90 shadow-sm md:block">
+        <Card className="hidden border-border bg-surface-raised shadow-sm md:block">
           <CardHeader>
             <CardTitle>{t("progress.section.title")}</CardTitle>
             <CardDescription>{t("progress.section.description")}</CardDescription>
           </CardHeader>
           <CardContent className="overflow-x-auto">
             <table className="w-full min-w-[720px] text-left text-sm">
-              <thead className="border-b text-zinc-500">
+              <thead className="border-b text-muted-foreground">
                 <tr>
                   <th className="py-3 pr-4 font-medium">{t("progress.section.headers.section")}</th>
                   <th className="py-3 pr-4 font-medium">{t("progress.section.headers.answered")}</th>
