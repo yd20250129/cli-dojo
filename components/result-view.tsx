@@ -134,7 +134,7 @@ export function ResultView({ locale, section, attemptId, anonymous = false }: Re
   const rate = result?.correctRate ?? 0;
 
   return (
-    <div className="min-h-screen bg-zinc-50 text-zinc-950">
+    <div className="min-h-screen bg-background text-foreground">
       <AppHeader locale={locale} />
       <main className="mx-auto flex w-full max-w-4xl flex-col gap-6 px-4 py-8">
         <div className="flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">

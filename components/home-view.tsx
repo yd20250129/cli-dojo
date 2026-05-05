@@ -103,14 +103,14 @@ export function HomeView({ locale, sections }: HomeViewProps) {
   const answered = visibleProgress?.totalAnsweredCount ?? 0;
 
   return (
-    <div className="relative min-h-screen bg-zinc-50 text-zinc-950">
+    <div className="relative min-h-screen bg-background text-foreground">
       <div className="pointer-events-none absolute inset-x-0 top-0 -z-10 h-72 bg-[radial-gradient(circle_at_top_left,_rgba(16,185,129,0.18),_transparent_35%),radial-gradient(circle_at_top_right,_rgba(39,39,42,0.08),_transparent_28%)]" />
       <AppHeader locale={locale} />
       <main className="mx-auto flex w-full max-w-6xl flex-col gap-8 px-4 py-8 sm:py-10">
         <section className="grid gap-5 lg:grid-cols-[1.2fr_0.8fr]">
           <div className="flex h-full flex-col justify-center space-y-6 lg:pr-8">
             <div className="flex flex-wrap items-center gap-2">
-              <span className="inline-flex items-center gap-1 rounded-full border border-emerald-200 bg-emerald-50 px-3 py-1 text-xs font-medium text-emerald-800">
+              <span className="inline-flex items-center gap-1 rounded-full border border-primary/20 bg-primary/10 px-3 py-1 text-xs font-medium text-primary">
                 <Sparkles className="size-3.5" />
                 {t("home.badges.commandLearner")}
               </span>
