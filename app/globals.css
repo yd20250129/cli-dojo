@@ -46,16 +46,117 @@
   --radius-2xl: calc(var(--radius) * 1.8);
   --radius-3xl: calc(var(--radius) * 2.2);
   --radius-4xl: calc(var(--radius) * 2.6);
+
+  /* App-specific tokens → Tailwind class mappings */
+  --color-surface-page:          var(--surface-page);
+  --color-surface-raised:        var(--surface-raised);
+  --color-surface-subtle:        var(--surface-subtle);
+  --color-surface-warm:          var(--surface-warm);
+  --color-surface-warm-border:   var(--surface-warm-border);
+  --color-text-brand-accent:     var(--text-brand-accent);
+  --color-text-secondary:        var(--text-secondary);
+  --color-text-tertiary:         var(--text-tertiary);
+
+  --color-status-success:        var(--status-success);
+  --color-status-success-bg:     var(--status-success-bg);
+  --color-status-success-border: var(--status-success-border);
+  --color-status-success-text:   var(--status-success-text);
+  --color-status-success-text-strong: var(--status-success-text-strong);
+  --color-status-error:          var(--status-error);
+  --color-status-error-bg:       var(--status-error-bg);
+  --color-status-error-border:   var(--status-error-border);
+  --color-status-error-text:     var(--status-error-text);
+  --color-status-error-text-strong: var(--status-error-text-strong);
+  --color-status-warning:        var(--status-warning);
+  --color-status-warning-bg:     var(--status-warning-bg);
+  --color-status-info:           var(--status-info);
+  --color-status-info-bg:        var(--status-info-bg);
+
+  --color-choice-correct-bg:     var(--choice-correct-bg);
+  --color-choice-correct-border: var(--choice-correct-border);
+  --color-choice-correct-text:   var(--choice-correct-text);
+  --color-choice-wrong-bg:       var(--choice-wrong-bg);
+  --color-choice-wrong-border:   var(--choice-wrong-border);
+  --color-choice-wrong-text:     var(--choice-wrong-text);
+
+  --color-badge-perfect-bg:      var(--badge-perfect-bg);
+  --color-badge-perfect-text:    var(--badge-perfect-text);
+  --color-badge-completed-bg:    var(--badge-completed-bg);
+  --color-badge-completed-text:  var(--badge-completed-text);
+  --color-badge-inprogress-bg:   var(--badge-inprogress-bg);
+  --color-badge-inprogress-text: var(--badge-inprogress-text);
+  --color-badge-notstarted-bg:   var(--badge-notstarted-bg);
+  --color-badge-notstarted-text: var(--badge-notstarted-text);
+
+  --letter-spacing-eyebrow:      var(--tracking-eyebrow);
 }
 
 :root {
+  /* ============================================================
+     PRIMITIVE TOKENS
+     Raw color values. Never use these directly in components.
+     Always reference semantic tokens below.
+     ============================================================ */
+
+  /* Teal scale (hue 150) — brand primary */
+  --color-teal-100: oklch(0.95 0.05 150);
+  --color-teal-200: oklch(0.90 0.08 150);
+  --color-teal-500: oklch(0.65 0.15 150);
+  --color-teal-600: oklch(0.56 0.15 150);
+  --color-teal-700: oklch(0.45 0.13 150);
+  --color-teal-800: oklch(0.35 0.10 150);
+
+  /* Warm neutral scale (hue 100) — replaces zinc throughout the app */
+  --color-neutral-50:  oklch(0.99 0.02 100);
+  --color-neutral-100: oklch(0.97 0.02 100);
+  --color-neutral-150: oklch(0.95 0.02 100);
+  --color-neutral-300: oklch(0.88 0.02 100);
+  --color-neutral-500: oklch(0.62 0.02 100);
+  --color-neutral-600: oklch(0.50 0.02 100);
+  --color-neutral-700: oklch(0.38 0.02 100);
+  --color-neutral-800: oklch(0.28 0.02 100);
+  --color-neutral-950: oklch(0.15 0.02 100);
+
+  /* Warm brand beige — unifies #f6f1e3 / #faf7ef / #fcfaf4 */
+  --color-warm-50:  oklch(0.975 0.025 95);
+  --color-warm-100: oklch(0.960 0.025 95);
+
+  /* Success (hue 145 — near primary teal for visual harmony) */
+  --color-success-50:  oklch(0.97 0.05 145);
+  --color-success-100: oklch(0.93 0.08 145);
+  --color-success-200: oklch(0.87 0.10 145);
+  --color-success-600: oklch(0.55 0.16 145);
+  --color-success-700: oklch(0.46 0.14 145);
+  --color-success-800: oklch(0.36 0.11 145);
+  --color-success-950: oklch(0.18 0.07 145);
+
+  /* Error (hue 20 — matches existing --destructive) */
+  --color-error-50:  oklch(0.97 0.04 20);
+  --color-error-100: oklch(0.93 0.07 20);
+  --color-error-200: oklch(0.87 0.10 20);
+  --color-error-500: oklch(0.62 0.18 20);
+  --color-error-600: oklch(0.54 0.18 20);
+  --color-error-700: oklch(0.44 0.15 20);
+  --color-error-950: oklch(0.19 0.07 20);
+
+  /* Warning (hue 75 — amber) */
+  --color-warning-100: oklch(0.95 0.08 75);
+  --color-warning-800: oklch(0.38 0.12 75);
+
+  /* Info (hue 220 — sky) */
+  --color-info-100: oklch(0.94 0.06 220);
+  --color-info-800: oklch(0.38 0.12 220);
+
+  /* ============================================================
+     SHADCN / TAILWIND SEMANTIC TOKENS (existing — unchanged)
+     ============================================================ */
   --background: oklch(0.99 0.02 100);
   --foreground: oklch(0.2 0.02 100);
   --card: oklch(1 0 0);
   --card-foreground: oklch(0.2 0.02 100);
   --popover: oklch(1 0 0);
   --popover-foreground: oklch(0.2 0.02 100);
-  --primary: oklch(0.65 0.15 150); /* Friendly soft teal */
+  --primary: oklch(0.65 0.15 150);
   --primary-foreground: oklch(0.98 0 0);
   --secondary: oklch(0.93 0.05 150);
   --secondary-foreground: oklch(0.3 0.1 150);
@@ -81,16 +182,76 @@
   --sidebar-accent-foreground: oklch(0.3 0.1 150);
   --sidebar-border: oklch(0.9 0.02 100);
   --sidebar-ring: oklch(0.65 0.15 150);
+
+  /* ============================================================
+     APP-SPECIFIC SEMANTIC TOKENS (new)
+     ============================================================ */
+
+  /* Surface hierarchy */
+  --surface-page:        var(--color-neutral-100);
+  --surface-raised:      oklch(1 0 0 / 90%);
+  --surface-subtle:      var(--color-neutral-150);
+  --surface-warm:        var(--color-warm-50);
+  --surface-warm-border: oklch(0.90 0.025 95);
+
+  /* Text hierarchy */
+  --text-secondary:      var(--color-neutral-700);
+  --text-tertiary:       var(--color-neutral-600);
+  --text-brand-accent:   var(--color-teal-600);
+
+  /* Status */
+  --status-success:            var(--color-success-600);
+  --status-success-bg:         var(--color-success-50);
+  --status-success-border:     var(--color-success-200);
+  --status-success-text:       var(--color-success-700);
+  --status-success-text-strong: var(--color-success-950);
+  --status-error:              var(--color-error-600);
+  --status-error-bg:           var(--color-error-50);
+  --status-error-border:       var(--color-error-200);
+  --status-error-text:         var(--color-error-700);
+  --status-error-text-strong:  var(--color-error-950);
+  --status-warning:            var(--color-warning-800);
+  --status-warning-bg:         var(--color-warning-100);
+  --status-info:               var(--color-info-800);
+  --status-info-bg:            var(--color-info-100);
+
+  /* Quiz choice states */
+  --choice-correct-bg:     var(--color-success-50);
+  --choice-correct-border: var(--color-success-600);
+  --choice-correct-text:   var(--color-success-950);
+  --choice-wrong-bg:       var(--color-error-50);
+  --choice-wrong-border:   var(--color-error-500);
+  --choice-wrong-text:     var(--color-error-950);
+
+  /* Progress status badges */
+  --badge-perfect-bg:      var(--color-success-100);
+  --badge-perfect-text:    var(--color-success-800);
+  --badge-completed-bg:    var(--color-info-100);
+  --badge-completed-text:  var(--color-info-800);
+  --badge-inprogress-bg:   var(--color-warning-100);
+  --badge-inprogress-text: var(--color-warning-800);
+  --badge-notstarted-bg:   var(--color-neutral-150);
+  --badge-notstarted-text: var(--color-neutral-600);
+
+  /* Hero gradient stops (replaces inline rgba hardcodes) */
+  --gradient-hero-teal: oklch(0.65 0.15 145 / 18%);
+  --gradient-hero-dark: oklch(0.25 0 0 / 8%);
+
+  /* Typography */
+  --tracking-eyebrow: 0.2em;
 }
 
 .dark {
+  /* ============================================================
+     SHADCN / TAILWIND SEMANTIC TOKENS (existing — unchanged)
+     ============================================================ */
   --background: oklch(0.18 0.02 100);
   --foreground: oklch(0.98 0.01 100);
   --card: oklch(0.22 0.02 100);
   --card-foreground: oklch(0.98 0.01 100);
   --popover: oklch(0.22 0.02 100);
   --popover-foreground: oklch(0.98 0.01 100);
-  --primary: oklch(0.7 0.15 150); /* Friendly soft teal for dark mode */
+  --primary: oklch(0.7 0.15 150);
   --primary-foreground: oklch(0.2 0.02 100);
   --secondary: oklch(0.28 0.05 150);
   --secondary-foreground: oklch(0.98 0.01 100);
@@ -115,6 +276,53 @@
   --sidebar-accent-foreground: oklch(0.98 0.01 100);
   --sidebar-border: oklch(1 0 0 / 10%);
   --sidebar-ring: oklch(0.7 0.15 150);
+
+  /* ============================================================
+     APP-SPECIFIC SEMANTIC TOKENS — DARK (new)
+     ============================================================ */
+  --surface-page:        oklch(0.15 0.02 100);
+  --surface-raised:      oklch(0.22 0.02 100 / 90%);
+  --surface-subtle:      oklch(0.20 0.02 100);
+  --surface-warm:        oklch(0.23 0.03 95);
+  --surface-warm-border: oklch(1 0 0 / 12%);
+
+  --text-secondary:      oklch(0.82 0.01 100);
+  --text-tertiary:       oklch(0.70 0.01 100);
+  --text-brand-accent:   oklch(0.65 0.14 150);
+
+  --status-success:             oklch(0.60 0.15 145);
+  --status-success-bg:          oklch(0.20 0.05 145);
+  --status-success-border:      oklch(0.32 0.08 145);
+  --status-success-text:        oklch(0.70 0.12 145);
+  --status-success-text-strong: oklch(0.90 0.08 145);
+  --status-error:               oklch(0.65 0.18 20);
+  --status-error-bg:            oklch(0.20 0.05 20);
+  --status-error-border:        oklch(0.32 0.08 20);
+  --status-error-text:          oklch(0.72 0.15 20);
+  --status-error-text-strong:   oklch(0.90 0.08 20);
+  --status-warning:             oklch(0.72 0.14 75);
+  --status-warning-bg:          oklch(0.22 0.06 75);
+  --status-info:                oklch(0.70 0.12 220);
+  --status-info-bg:             oklch(0.20 0.05 220);
+
+  --choice-correct-bg:     oklch(0.20 0.05 145);
+  --choice-correct-border: oklch(0.48 0.13 145);
+  --choice-correct-text:   oklch(0.90 0.07 145);
+  --choice-wrong-bg:       oklch(0.20 0.05 20);
+  --choice-wrong-border:   oklch(0.50 0.16 20);
+  --choice-wrong-text:     oklch(0.90 0.06 20);
+
+  --badge-perfect-bg:      oklch(0.20 0.05 145);
+  --badge-perfect-text:    oklch(0.70 0.12 145);
+  --badge-completed-bg:    oklch(0.20 0.05 220);
+  --badge-completed-text:  oklch(0.70 0.11 220);
+  --badge-inprogress-bg:   oklch(0.22 0.06 75);
+  --badge-inprogress-text: oklch(0.72 0.13 75);
+  --badge-notstarted-bg:   oklch(0.28 0.02 100);
+  --badge-notstarted-text: oklch(0.65 0.01 100);
+
+  --gradient-hero-teal: oklch(0.50 0.12 145 / 15%);
+  --gradient-hero-dark: oklch(0.10 0 0 / 20%);
 }
 
 @layer base {
