@@ -39,7 +39,7 @@ export function AuthOverlayFrame({ children, onClose, className }: AuthOverlayFr
   }
 
   return (
-    <div className="fixed inset-0 z-50 flex items-start justify-center bg-zinc-950/45 px-4 py-8 backdrop-blur-sm sm:items-center">
+    <div className="fixed inset-0 z-50 flex items-start justify-center bg-foreground/45 px-4 py-8 backdrop-blur-sm sm:items-center">
       <button
         type="button"
         aria-label="Close dialog"
@@ -48,16 +48,16 @@ export function AuthOverlayFrame({ children, onClose, className }: AuthOverlayFr
       />
       <div
         className={cn(
-          "relative z-10 max-h-[calc(100vh-2rem)] w-full max-w-2xl overflow-y-auto rounded-[28px] border border-zinc-200 bg-[#fcfaf4] shadow-[0_24px_80px_rgba(24,24,27,0.18)]",
+          "relative z-10 max-h-[calc(100vh-2rem)] w-full max-w-2xl overflow-y-auto rounded-[28px] border border-surface-warm-border bg-surface-warm shadow-[0_24px_80px_rgba(24,24,27,0.18)]",
           className,
         )}
       >
-        <div className="sticky top-0 z-10 flex justify-end bg-gradient-to-b from-[#fcfaf4] via-[#fcfaf4] to-transparent px-4 pt-4">
+        <div className="sticky top-0 z-10 flex justify-end bg-gradient-to-b from-surface-warm via-surface-warm to-transparent px-4 pt-4">
           <button
             type="button"
             aria-label="Close dialog"
             onClick={onClose}
-            className="rounded-full border border-zinc-200 bg-white p-2 text-zinc-500 transition-colors hover:text-zinc-900"
+            className="rounded-full border border-border bg-surface-raised p-2 text-muted-foreground transition-colors hover:text-foreground"
           >
             <X className="size-4" />
           </button>
