@@ -150,12 +150,12 @@ export function ResultView({ locale, section, attemptId, anonymous = false }: Re
                 t("app.common.loading")
               ) : result ? (
                 <>
-                  <Sparkles className="size-5 text-emerald-600" />
+                  <Sparkles className="size-5 text-status-success" />
                   {resultMessage(rate, t)}
                 </>
               ) : (
                 <>
-                  <CircleAlert className="size-5 text-red-600" />
+                  <CircleAlert className="size-5 text-status-error" />
                   {t("result.missing")}
                 </>
               )}
@@ -189,7 +189,7 @@ export function ResultView({ locale, section, attemptId, anonymous = false }: Re
                 <div className="space-y-3">
                   <h2 className="text-lg font-semibold">{t("result.review.title")}</h2>
                   {result.incorrectAnswers.length === 0 ? (
-                    <p className="flex items-start gap-2 rounded-xl border border-emerald-200 bg-emerald-50 p-4 text-emerald-800">
+                    <p className="flex items-start gap-2 rounded-xl border border-status-success-border bg-status-success-bg p-4 text-status-success-text">
                       <CheckCircle2 className="mt-0.5 size-5 shrink-0" />
                       <span>{t("result.review.empty")}</span>
                     </p>
@@ -198,17 +198,17 @@ export function ResultView({ locale, section, attemptId, anonymous = false }: Re
                       <div key={answer.questionId} className="rounded-xl border border-border bg-surface-raised p-4">
                         <p className="font-medium">{answer.question}</p>
                         <div className="mt-3 grid gap-3 sm:grid-cols-2">
-                          <div className="rounded-xl border border-red-200 bg-red-50 p-3">
-                            <p className="text-xs font-medium uppercase tracking-[0.2em] text-red-700">
+                          <div className="rounded-xl border border-status-error-border bg-status-error-bg p-3">
+                            <p className="text-xs font-medium uppercase tracking-eyebrow text-status-error-text">
                               {t("result.review.yourAnswer")}
                             </p>
-                            <p className="mt-1 font-semibold text-red-900">{answer.selectedChoiceId}</p>
+                            <p className="mt-1 font-semibold text-status-error-text-strong">{answer.selectedChoiceId}</p>
                           </div>
-                          <div className="rounded-xl border border-emerald-200 bg-emerald-50 p-3">
-                            <p className="text-xs font-medium uppercase tracking-[0.2em] text-emerald-700">
+                          <div className="rounded-xl border border-status-success-border bg-status-success-bg p-3">
+                            <p className="text-xs font-medium uppercase tracking-eyebrow text-status-success-text">
                               {t("result.review.answer")}
                             </p>
-                            <p className="mt-1 font-semibold text-emerald-900">{answer.correctChoiceId}</p>
+                            <p className="mt-1 font-semibold text-status-success-text-strong">{answer.correctChoiceId}</p>
                           </div>
                         </div>
                         <p className="mt-3 flex items-start gap-2 leading-7 text-text-secondary">

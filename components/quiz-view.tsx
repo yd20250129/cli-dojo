@@ -220,7 +220,7 @@ export function QuizView({ locale, section, questions }: QuizViewProps) {
             <Progress value={progressValue} />
 
             {startError ? (
-              <p className="flex items-start gap-2 rounded-xl border border-red-200 bg-red-50 p-3 text-sm text-red-700">
+              <p className="flex items-start gap-2 rounded-xl border border-status-error-border bg-status-error-bg p-3 text-sm text-status-error-text">
                 <CircleAlert className="mt-0.5 size-4 shrink-0" />
                 {startError}
               </p>
@@ -240,8 +240,8 @@ export function QuizView({ locale, section, questions }: QuizViewProps) {
                     className={cn(
                       "min-h-14 rounded-xl border bg-surface-raised px-4 py-3 text-left text-base transition focus-visible:outline-none focus-visible:ring-3 focus-visible:ring-ring",
                       !answered && "hover:border-foreground hover:bg-surface-subtle",
-                      answered && isAnswer && "border-emerald-600 bg-emerald-50 text-emerald-950",
-                      answered && isSelected && !isAnswer && "border-red-500 bg-red-50 text-red-950",
+                      answered && isAnswer && "border-choice-correct-border bg-choice-correct-bg text-choice-correct-text",
+                      answered && isSelected && !isAnswer && "border-choice-wrong-border bg-choice-wrong-bg text-choice-wrong-text",
                     )}
                     disabled={(isSignedIn && !attempt) || answered}
                     onClick={() => handleAnswer(choice.id)}
@@ -251,9 +251,9 @@ export function QuizView({ locale, section, questions }: QuizViewProps) {
                       <span
                         className={cn(
                           "inline-flex size-8 items-center justify-center rounded-full border font-mono text-sm font-semibold",
-                          answered && isAnswer && "border-emerald-600 bg-emerald-100",
-                          answered && isSelected && !isAnswer && "border-red-500 bg-red-100",
-                          !answered && "border-zinc-300 bg-zinc-100",
+                          answered && isAnswer && "border-choice-correct-border bg-status-success-bg",
+                          answered && isSelected && !isAnswer && "border-choice-wrong-border bg-status-error-bg",
+                          !answered && "border-border bg-surface-subtle",
                         )}
                       >
                         {choice.id}
@@ -269,11 +269,11 @@ export function QuizView({ locale, section, questions }: QuizViewProps) {
               <div className="rounded-xl border bg-surface-subtle p-4">
                 <div className="flex items-center gap-2">
                   {isCorrect ? (
-                    <CheckCircle2 className="size-5 text-emerald-600" />
+                    <CheckCircle2 className="size-5 text-status-success" />
                   ) : (
-                    <XCircle className="size-5 text-red-600" />
+                    <XCircle className="size-5 text-status-error" />
                   )}
-                  <p className={cn("font-semibold", isCorrect ? "text-emerald-700" : "text-red-700")}>
+                  <p className={cn("font-semibold", isCorrect ? "text-status-success-text" : "text-status-error-text")}>
                     {isCorrect ? t("quiz.feedback.correct") : t("quiz.feedback.incorrect")}
                   </p>
                 </div>
@@ -293,11 +293,11 @@ export function QuizView({ locale, section, questions }: QuizViewProps) {
                     </p>
                     <p className="mt-1 text-base font-semibold text-foreground">{selectedChoiceId}</p>
                   </div>
-                  <div className="rounded-xl border border-emerald-200 bg-emerald-50 p-3">
-                    <p className="text-xs font-medium uppercase tracking-[0.2em] text-emerald-700">
+                  <div className="rounded-xl border border-status-success-border bg-status-success-bg p-3">
+                    <p className="text-xs font-medium uppercase tracking-eyebrow text-status-success-text">
                       {t("quiz.feedback.answer")}
                     </p>
-                    <p className="mt-1 text-base font-semibold text-emerald-900">
+                    <p className="mt-1 text-base font-semibold text-status-success-text-strong">
                       {currentQuestion.answer}: {correctChoiceText}
                     </p>
                   </div>

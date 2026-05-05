@@ -37,27 +37,27 @@ function getStatusMeta(params: {
   if (params.isPerfect) {
     return {
       label: params.t("progress.status.perfect"),
-      className: "bg-emerald-100 text-emerald-800",
+      className: "bg-badge-perfect-bg text-badge-perfect-text",
     };
   }
 
   if (params.isCompleted) {
     return {
       label: params.t("progress.status.completed"),
-      className: "bg-sky-100 text-sky-800",
+      className: "bg-badge-completed-bg text-badge-completed-text",
     };
   }
 
   if (params.answeredCount > 0) {
     return {
       label: params.t("progress.status.inProgress"),
-      className: "bg-amber-100 text-amber-800",
+      className: "bg-badge-inprogress-bg text-badge-inprogress-text",
     };
   }
 
   return {
     label: params.t("progress.status.notStarted"),
-    className: "bg-zinc-100 text-zinc-600",
+    className: "bg-badge-notstarted-bg text-badge-notstarted-text",
   };
 }
 
