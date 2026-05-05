@@ -8,6 +8,7 @@ import { useSignUp } from "@clerk/nextjs";
 import { AuthPanelCard } from "@/components/auth/auth-panel-card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { PasswordInput } from "@/components/ui/password-input";
 import { getTranslator } from "@/lib/i18n";
 import type { Locale } from "@/types";
 
@@ -271,8 +272,8 @@ export function SignUpPanel({
               <span className="text-sm font-medium text-zinc-700">
                 {t("auth.common.passwordLabel")}
               </span>
-              <Input
-                type="password"
+              <PasswordInput
+                locale={locale}
                 autoComplete="new-password"
                 placeholder={t("auth.common.passwordPlaceholder")}
                 value={password}

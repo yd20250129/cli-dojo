@@ -70,14 +70,6 @@ export function AppHeader({ locale }: { locale: Locale }) {
           )}
           {isSignedIn ? (
             <>
-              <Button
-                type="button"
-                size="sm"
-                variant="ghost"
-                onClick={() => setIsUserMenuOpen(true)}
-              >
-                {t("nav.settings")}
-              </Button>
               <button
                 type="button"
                 aria-label={t("nav.settings")}

@@ -148,6 +148,8 @@
       "emailPlaceholder": "メールアドレスを入力",
       "passwordLabel": "パスワード",
       "passwordPlaceholder": "パスワードを入力",
+      "showPassword": "パスワードを表示する",
+      "hidePassword": "パスワードを隠す",
       "codeLabel": "認証コード",
       "codePlaceholder": "6桁コードを入力",
       "continue": "Continue",

@@ -4,7 +4,6 @@ import type {
   AnonymousProgressState,
   ApiErrorResponse,
   ApiSuccess,
-  AnonymousProgressState,
   ChoiceId,
   CurrentSectionAttempt,
   MigrateProgressResult,

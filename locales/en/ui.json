@@ -24,6 +24,8 @@
       "emailPlaceholder": "Enter your email address",
       "passwordLabel": "Password",
       "passwordPlaceholder": "Enter your password",
+      "showPassword": "Show password",
+      "hidePassword": "Hide password",
       "codeLabel": "Verification code",
       "codePlaceholder": "Enter the 6-digit code",
       "continue": "Continue",
