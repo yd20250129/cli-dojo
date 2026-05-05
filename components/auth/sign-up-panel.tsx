@@ -205,7 +205,7 @@ export function SignUpPanel({
             {t("auth.signUp.footerPrefix")}{" "}
             <button
               type="button"
-              className="font-medium text-zinc-950 underline underline-offset-4"
+              className="font-medium text-foreground underline underline-offset-4"
               onClick={onSwitchToSignIn}
             >
               {t("auth.signUp.footerLink")}
@@ -219,7 +219,7 @@ export function SignUpPanel({
           <Button
             type="button"
             variant="outline"
-            className="h-12 justify-center rounded-2xl border-zinc-200 bg-white text-zinc-900"
+            className="h-12 justify-center rounded-2xl border-border bg-surface-raised text-foreground"
             onClick={() => handleOAuth("oauth_github")}
             disabled={Boolean(isSocialLoading) || isSubmitting}
           >
@@ -232,7 +232,7 @@ export function SignUpPanel({
           <Button
             type="button"
             variant="outline"
-            className="h-12 justify-center rounded-2xl border-zinc-200 bg-white text-zinc-900"
+            className="h-12 justify-center rounded-2xl border-border bg-surface-raised text-foreground"
             onClick={() => handleOAuth("oauth_google")}
             disabled={Boolean(isSocialLoading) || isSubmitting}
           >
@@ -244,16 +244,16 @@ export function SignUpPanel({
           </Button>
         </div>
 
-        <div className="flex items-center gap-3 text-sm text-zinc-400">
-          <div className="h-px flex-1 bg-zinc-200" />
+        <div className="flex items-center gap-3 text-sm text-muted-foreground">
+          <div className="h-px flex-1 bg-border" />
           <span>{t("auth.common.or")}</span>
-          <div className="h-px flex-1 bg-zinc-200" />
+          <div className="h-px flex-1 bg-border" />
         </div>
 
         {step === "identifier" ? (
           <div className="space-y-4">
             <label className="block space-y-2">
-              <span className="text-sm font-medium text-zinc-700">
+              <span className="text-sm font-medium text-text-secondary">
                 {t("auth.common.emailLabel")}
               </span>
               <Input
@@ -269,7 +269,7 @@ export function SignUpPanel({
             </label>
 
             <label className="block space-y-2">
-              <span className="text-sm font-medium text-zinc-700">
+              <span className="text-sm font-medium text-text-secondary">
                 {t("auth.common.passwordLabel")}
               </span>
               <PasswordInput
@@ -283,11 +283,11 @@ export function SignUpPanel({
               />
             </label>
 
-            {error ? <p className="text-sm text-red-600">{error}</p> : null}
+            {error ? <p className="text-sm text-status-error">{error}</p> : null}
 
             <Button
               type="button"
-              className="h-12 w-full rounded-2xl bg-[#ef7d32] text-base text-white hover:bg-[#df6d20]"
+              className="h-12 w-full rounded-2xl bg-primary text-base text-primary-foreground hover:bg-primary/90"
               onClick={handleStartEmailCode}
               disabled={
                 !signUp ||
@@ -308,12 +308,12 @@ export function SignUpPanel({
           </div>
         ) : (
           <div className="space-y-4">
-            <div className="rounded-2xl border border-amber-200 bg-amber-50 px-4 py-3 text-sm text-amber-900">
+            <div className="rounded-2xl border border-status-warning/30 bg-status-warning-bg px-4 py-3 text-sm text-status-warning">
               {t("auth.signUp.codeSent", { email })}
             </div>
 
             <label className="block space-y-2">
-              <span className="text-sm font-medium text-zinc-700">
+              <span className="text-sm font-medium text-text-secondary">
                 {t("auth.common.codeLabel")}
               </span>
               <Input
@@ -327,12 +327,12 @@ export function SignUpPanel({
               />
             </label>
 
-            {error ? <p className="text-sm text-red-600">{error}</p> : null}
+            {error ? <p className="text-sm text-status-error">{error}</p> : null}
 
             <div className="grid gap-3 sm:grid-cols-[minmax(0,1fr)_auto] sm:items-stretch">
               <Button
                 type="button"
-                className="h-12 min-w-0 w-full rounded-2xl bg-[#ef7d32] text-base text-white hover:bg-[#df6d20] sm:justify-center"
+                className="h-12 min-w-0 w-full rounded-2xl bg-primary text-base text-primary-foreground hover:bg-primary/90 sm:justify-center"
                 onClick={handleVerifyCode}
                 disabled={!signUp || !code.trim() || isSubmitting}
               >

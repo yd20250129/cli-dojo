@@ -73,11 +73,11 @@ export function SettingsSections({
               <img
                 src={imageUrl}
                 alt={initialName}
-                className="size-16 shrink-0 rounded-full border border-zinc-200 bg-zinc-100"
+                className="size-16 shrink-0 rounded-full border border-border bg-surface-subtle"
               />
             ) : null}
             <div className="flex-1 space-y-1">
-              <div className="text-sm font-medium text-zinc-500">
+              <div className="text-sm font-medium text-muted-foreground">
                 {t("settings.profile.nameLabel")}
               </div>
               {isEditingName ? (
@@ -108,7 +108,7 @@ export function SettingsSections({
                 </div>
               ) : (
                 <div className="flex items-center justify-between gap-3">
-                  <div className="font-medium text-zinc-900">{user?.fullName || initialName}</div>
+                  <div className="font-medium text-foreground">{user?.fullName || initialName}</div>
                   <Button size="sm" variant="outline" onClick={() => setIsEditingName(true)}>
                     {t("settings.profile.editName")}
                   </Button>
@@ -117,14 +117,14 @@ export function SettingsSections({
             </div>
           </div>
 
-          <div className="space-y-1 border-t border-zinc-100 pt-4">
-            <div className="text-sm font-medium text-zinc-500">
+          <div className="space-y-1 border-t border-border pt-4">
+            <div className="text-sm font-medium text-muted-foreground">
               {t("settings.profile.emailLabel")}
             </div>
-            <div className="text-zinc-900">{email}</div>
+            <div className="text-foreground">{email}</div>
           </div>
 
-          <div className="rounded-md border border-zinc-100 bg-zinc-50 p-3 text-sm text-zinc-600">
+          <div className="rounded-md border border-border bg-surface-subtle p-3 text-sm text-muted-foreground">
             {t("settings.profile.providerNotice")}
           </div>
         </CardContent>
@@ -135,35 +135,35 @@ export function SettingsSections({
           <CardTitle>{t("settings.general.title")}</CardTitle>
         </CardHeader>
         <CardContent className="p-0">
-          <div className="divide-y divide-zinc-100">
+          <div className="divide-y divide-border">
             <Link
               href={termsUrl}
-              className="flex items-center justify-between p-4 transition-colors hover:bg-zinc-50"
+              className="flex items-center justify-between p-4 transition-colors hover:bg-surface-subtle"
             >
               <div className="flex items-center gap-3">
-                <div className="rounded-md border border-zinc-200 bg-background p-2 text-zinc-600">
+                <div className="rounded-md border border-border bg-background p-2 text-muted-foreground">
                   <FileText className="size-4" />
                 </div>
-                <span className="text-sm font-medium text-zinc-900">
+                <span className="text-sm font-medium text-foreground">
                   {t("settings.general.terms")}
                 </span>
               </div>
-              <ChevronRight className="size-4 text-zinc-400" />
+              <ChevronRight className="size-4 text-muted-foreground" />
             </Link>
             <button
               type="button"
               onClick={handleFeedbackSelection}
-              className="flex w-full items-center justify-between p-4 text-left transition-colors hover:bg-zinc-50"
+              className="flex w-full items-center justify-between p-4 text-left transition-colors hover:bg-surface-subtle"
             >
               <div className="flex items-center gap-3">
-                <div className="rounded-md border border-zinc-200 bg-background p-2 text-zinc-600">
+                <div className="rounded-md border border-border bg-background p-2 text-muted-foreground">
                   <MessageSquare className="size-4" />
                 </div>
-                <span className="text-sm font-medium text-zinc-900">
+                <span className="text-sm font-medium text-foreground">
                   {t("settings.general.feedback")}
                 </span>
               </div>
-              <ChevronRight className="size-4 text-zinc-400" />
+              <ChevronRight className="size-4 text-muted-foreground" />
             </button>
           </div>
         </CardContent>

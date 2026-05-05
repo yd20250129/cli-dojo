@@ -143,19 +143,19 @@ export function ResultView({ locale, section, attemptId, anonymous = false }: Re
           </div>
         </div>
 
-        <Card className="border-zinc-200/80 bg-white/90 shadow-sm">
+        <Card className="border-border bg-surface-raised shadow-sm">
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
               {loading ? (
                 t("app.common.loading")
               ) : result ? (
                 <>
-                  <Sparkles className="size-5 text-emerald-600" />
+                  <Sparkles className="size-5 text-status-success" />
                   {resultMessage(rate, t)}
                 </>
               ) : (
                 <>
-                  <CircleAlert className="size-5 text-red-600" />
+                  <CircleAlert className="size-5 text-status-error" />
                   {t("result.missing")}
                 </>
               )}
@@ -165,22 +165,22 @@ export function ResultView({ locale, section, attemptId, anonymous = false }: Re
             </CardDescription>
           </CardHeader>
           <CardContent className="space-y-5">
-            {error ? <p className="text-sm text-red-600">{error}</p> : null}
+            {error ? <p className="text-sm text-status-error">{error}</p> : null}
             {result ? (
               <>
                 <div className="grid gap-3 sm:grid-cols-3">
-                  <div className="rounded-xl border border-zinc-200 bg-zinc-50 p-4">
-                    <p className="text-sm text-zinc-500">{t("result.stats.score")}</p>
+                  <div className="rounded-xl border border-border bg-surface-subtle p-4">
+                    <p className="text-sm text-muted-foreground">{t("result.stats.score")}</p>
                     <p className="text-3xl font-semibold">
                       {result.score} / {result.totalQuestions}
                     </p>
                   </div>
-                  <div className="rounded-xl border border-zinc-200 bg-zinc-50 p-4">
-                    <p className="text-sm text-zinc-500">{t("result.stats.correctRate")}</p>
+                  <div className="rounded-xl border border-border bg-surface-subtle p-4">
+                    <p className="text-sm text-muted-foreground">{t("result.stats.correctRate")}</p>
                     <p className="text-3xl font-semibold">{percent(rate)}%</p>
                   </div>
-                  <div className="rounded-xl border border-zinc-200 bg-zinc-50 p-4">
-                    <p className="text-sm text-zinc-500">{t("result.stats.incorrectCount")}</p>
+                  <div className="rounded-xl border border-border bg-surface-subtle p-4">
+                    <p className="text-sm text-muted-foreground">{t("result.stats.incorrectCount")}</p>
                     <p className="text-3xl font-semibold">{result.incorrectAnswers.length}</p>
                   </div>
                 </div>
@@ -189,30 +189,30 @@ export function ResultView({ locale, section, attemptId, anonymous = false }: Re
                 <div className="space-y-3">
                   <h2 className="text-lg font-semibold">{t("result.review.title")}</h2>
                   {result.incorrectAnswers.length === 0 ? (
-                    <p className="flex items-start gap-2 rounded-xl border border-emerald-200 bg-emerald-50 p-4 text-emerald-800">
+                    <p className="flex items-start gap-2 rounded-xl border border-status-success-border bg-status-success-bg p-4 text-status-success-text">
                       <CheckCircle2 className="mt-0.5 size-5 shrink-0" />
                       <span>{t("result.review.empty")}</span>
                     </p>
                   ) : (
                     result.incorrectAnswers.map((answer) => (
-                      <div key={answer.questionId} className="rounded-xl border border-zinc-200 bg-white p-4">
+                      <div key={answer.questionId} className="rounded-xl border border-border bg-surface-raised p-4">
                         <p className="font-medium">{answer.question}</p>
                         <div className="mt-3 grid gap-3 sm:grid-cols-2">
-                          <div className="rounded-xl border border-red-200 bg-red-50 p-3">
-                            <p className="text-xs font-medium uppercase tracking-[0.2em] text-red-700">
+                          <div className="rounded-xl border border-status-error-border bg-status-error-bg p-3">
+                            <p className="text-xs font-medium uppercase tracking-eyebrow text-status-error-text">
                               {t("result.review.yourAnswer")}
                             </p>
-                            <p className="mt-1 font-semibold text-red-900">{answer.selectedChoiceId}</p>
+                            <p className="mt-1 font-semibold text-status-error-text-strong">{answer.selectedChoiceId}</p>
                           </div>
-                          <div className="rounded-xl border border-emerald-200 bg-emerald-50 p-3">
-                            <p className="text-xs font-medium uppercase tracking-[0.2em] text-emerald-700">
+                          <div className="rounded-xl border border-status-success-border bg-status-success-bg p-3">
+                            <p className="text-xs font-medium uppercase tracking-eyebrow text-status-success-text">
                               {t("result.review.answer")}
                             </p>
-                            <p className="mt-1 font-semibold text-emerald-900">{answer.correctChoiceId}</p>
+                            <p className="mt-1 font-semibold text-status-success-text-strong">{answer.correctChoiceId}</p>
                           </div>
                         </div>
-                        <p className="mt-3 flex items-start gap-2 leading-7 text-zinc-700">
-                          <CircleAlert className="mt-1 size-4 shrink-0 text-zinc-500" />
+                        <p className="mt-3 flex items-start gap-2 leading-7 text-text-secondary">
+                          <CircleAlert className="mt-1 size-4 shrink-0 text-muted-foreground" />
                           <span>{answer.explanation}</span>
                         </p>
                       </div>

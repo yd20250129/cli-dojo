@@ -40,13 +40,13 @@ export function AppHeader({ locale }: { locale: Locale }) {
 
   return (
     <>
-      <header className="sticky top-0 z-30 border-b border-zinc-200/80 bg-[#f6f1e3]/90 backdrop-blur supports-[backdrop-filter]:bg-[#f6f1e3]/80">
+      <header className="sticky top-0 z-30 border-b border-surface-warm-border bg-surface-warm/90 backdrop-blur supports-[backdrop-filter]:bg-surface-warm/80">
         <div className="mx-auto flex w-full max-w-6xl flex-col gap-3 px-4 py-3 sm:flex-row sm:items-center sm:justify-between">
         <div className="flex items-center justify-between gap-3">
           <Link className="font-mono text-lg font-semibold tracking-normal" href="/">
             CLI Dojo
           </Link>
-          <span className="rounded-full border border-zinc-200 bg-zinc-100 px-2.5 py-1 text-[11px] font-medium uppercase tracking-[0.2em] text-zinc-600 sm:hidden">
+          <span className="rounded-full border border-border bg-surface-subtle px-2.5 py-1 text-xs font-medium uppercase tracking-eyebrow text-muted-foreground sm:hidden">
             MVP
           </span>
         </div>
@@ -74,7 +74,7 @@ export function AppHeader({ locale }: { locale: Locale }) {
                 type="button"
                 aria-label={t("nav.settings")}
                 onClick={() => setIsUserMenuOpen(true)}
-                className="ml-1 rounded-full border border-zinc-200 bg-white text-zinc-500 transition-colors hover:text-zinc-900"
+                className="ml-1 rounded-full border border-border bg-surface-raised text-muted-foreground transition-colors hover:text-foreground"
               >
                 <UserCircle2 className="size-9" />
               </button>

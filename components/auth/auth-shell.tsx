@@ -17,26 +17,26 @@ export function AuthShell({ children, title, description, footer, locale }: Auth
   const t = getTranslator(locale);
 
   return (
-    <main className="min-h-screen bg-zinc-50 px-4 py-10 text-zinc-950">
+    <main className="min-h-screen bg-surface-page px-4 py-10 text-foreground">
       <div className="mx-auto grid w-full max-w-6xl gap-8 lg:grid-cols-[0.9fr_1.1fr] lg:items-center">
         <section className="space-y-6">
           <div className="space-y-3">
-            <p className="text-sm font-medium text-zinc-500">{t("auth.eyebrow")}</p>
+            <p className="text-sm font-medium text-muted-foreground">{t("auth.eyebrow")}</p>
             <h1 className="text-3xl font-semibold leading-tight sm:text-4xl">{title}</h1>
             <div className="flex flex-wrap gap-2">
               {AUTH_METHODS.map((provider) => (
                 <span
                   key={provider}
-                  className="rounded-full border border-zinc-200 bg-white px-3 py-1 text-sm font-medium text-zinc-700"
+                  className="rounded-full border border-border bg-surface-raised px-3 py-1 text-sm font-medium text-text-secondary"
                 >
                   {provider}
                 </span>
               ))}
             </div>
-            <p className="max-w-xl text-sm leading-7 text-zinc-600 sm:text-base">{description}</p>
+            <p className="max-w-xl text-sm leading-7 text-muted-foreground sm:text-base">{description}</p>
           </div>
-          <div className="pt-4 text-sm text-zinc-600">
-            <Link className="font-medium text-zinc-950 underline underline-offset-4" href="/">
+          <div className="pt-4 text-sm text-muted-foreground">
+            <Link className="font-medium text-foreground underline underline-offset-4" href="/">
               {t("auth.backHome")}
             </Link>
           </div>
@@ -44,7 +44,7 @@ export function AuthShell({ children, title, description, footer, locale }: Auth
         <section className="flex justify-center">
           <div className="flex w-full max-w-md flex-col items-center space-y-4">
             {children}
-            <p className="text-center text-sm text-zinc-600">{footer}</p>
+            <p className="text-center text-sm text-muted-foreground">{footer}</p>
           </div>
         </section>
       </div>

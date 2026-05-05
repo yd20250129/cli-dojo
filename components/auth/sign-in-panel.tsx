@@ -220,7 +220,7 @@ export function SignInPanel({
             {t("auth.signIn.footerPrefix")}{" "}
             <button
               type="button"
-              className="font-medium text-zinc-950 underline underline-offset-4"
+              className="font-medium text-foreground underline underline-offset-4"
               onClick={onSwitchToSignUp}
             >
               {t("auth.signIn.footerLink")}
@@ -234,7 +234,7 @@ export function SignInPanel({
           <Button
             type="button"
             variant="outline"
-            className="h-12 justify-center rounded-2xl border-zinc-200 bg-white text-zinc-900"
+            className="h-12 justify-center rounded-2xl border-border bg-surface-raised text-foreground"
             onClick={() => handleOAuth("oauth_github")}
             disabled={Boolean(isSocialLoading) || isSubmitting}
           >
@@ -247,7 +247,7 @@ export function SignInPanel({
           <Button
             type="button"
             variant="outline"
-            className="h-12 justify-center rounded-2xl border-zinc-200 bg-white text-zinc-900"
+            className="h-12 justify-center rounded-2xl border-border bg-surface-raised text-foreground"
             onClick={() => handleOAuth("oauth_google")}
             disabled={Boolean(isSocialLoading) || isSubmitting}
           >
@@ -259,16 +259,16 @@ export function SignInPanel({
           </Button>
         </div>
 
-        <div className="flex items-center gap-3 text-sm text-zinc-400">
-          <div className="h-px flex-1 bg-zinc-200" />
+        <div className="flex items-center gap-3 text-sm text-muted-foreground">
+          <div className="h-px flex-1 bg-border" />
           <span>{t("auth.common.or")}</span>
-          <div className="h-px flex-1 bg-zinc-200" />
+          <div className="h-px flex-1 bg-border" />
         </div>
 
         {step === "identifier" ? (
           <form ref={formRef} className="space-y-4" onSubmit={(event) => event.preventDefault()}>
             <label className="block space-y-2">
-              <span className="text-sm font-medium text-zinc-700">
+              <span className="text-sm font-medium text-text-secondary">
                 {t("auth.common.emailLabel")}
               </span>
               <Input
@@ -285,7 +285,7 @@ export function SignInPanel({
             </label>
 
             <label className="block space-y-2">
-              <span className="text-sm font-medium text-zinc-700">
+              <span className="text-sm font-medium text-text-secondary">
                 {t("auth.common.passwordLabel")}
               </span>
               <PasswordInput
@@ -300,11 +300,11 @@ export function SignInPanel({
               />
             </label>
 
-            {error ? <p className="text-sm text-red-600">{error}</p> : null}
+            {error ? <p className="text-sm text-status-error">{error}</p> : null}
 
             <Button
               type="button"
-              className="h-12 w-full rounded-2xl bg-zinc-900 text-base text-white hover:bg-zinc-800"
+              className="h-12 w-full rounded-2xl bg-foreground text-base text-background hover:bg-foreground/90"
               onClick={handleStartEmailCode}
               disabled={!signIn || !email.trim() || isSubmitting || Boolean(isSocialLoading)}
             >
@@ -314,12 +314,12 @@ export function SignInPanel({
           </form>
         ) : (
           <div className="space-y-4">
-            <div className="rounded-2xl border border-emerald-200 bg-emerald-50 px-4 py-3 text-sm text-emerald-900">
+            <div className="rounded-2xl border border-status-success-border bg-status-success-bg px-4 py-3 text-sm text-status-success-text-strong">
               {t("auth.signIn.codeSent", { email: safeIdentifier || email })}
             </div>
 
             <label className="block space-y-2">
-              <span className="text-sm font-medium text-zinc-700">
+              <span className="text-sm font-medium text-text-secondary">
                 {t("auth.common.codeLabel")}
               </span>
               <Input
@@ -333,12 +333,12 @@ export function SignInPanel({
               />
             </label>
 
-            {error ? <p className="text-sm text-red-600">{error}</p> : null}
+            {error ? <p className="text-sm text-status-error">{error}</p> : null}
 
             <div className="grid gap-3 sm:grid-cols-[minmax(0,1fr)_auto] sm:items-stretch">
               <Button
                 type="button"
-                className="h-12 min-w-0 w-full rounded-2xl bg-zinc-900 text-base text-white hover:bg-zinc-800 sm:justify-center"
+                className="h-12 min-w-0 w-full rounded-2xl bg-foreground text-base text-background hover:bg-foreground/90 sm:justify-center"
                 onClick={handleVerifyCode}
                 disabled={!signIn || !code.trim() || isSubmitting}
               >
