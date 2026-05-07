@@ -75,6 +75,7 @@
   "settings": {
     "title": "Settings",
     "manageAccount": "Manage account",
+    "feedbackLabel": "Send Feedback",
     "signOut": "Sign out",
     "profile": {
       "title": "Profile",
@@ -87,10 +88,9 @@
       "emailLabel": "Email Address",
       "providerNotice": "Authentication settings are managed by your provider (Google/GitHub, etc.)."
     },
-    "general": {
-      "title": "General",
-      "terms": "Terms of Service",
-      "feedback": "Send Feedback"
+    "privacy": {
+      "menuLabel": "Privacy Policy",
+      "externalLabel": "Open external site"
     },
     "feedbackSent": "Feedback feature is under construction."
   }

@@ -1,0 +1,6 @@
+title: CLI Dojo Policies
+description: Public policy pages for CLI Dojo
+markdown: kramdown
+theme: minima
+plugins:
+  - jekyll-feed

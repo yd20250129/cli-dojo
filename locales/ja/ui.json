@@ -206,6 +206,7 @@
     "eyebrow": "Settings",
     "title": "設定",
     "manageAccount": "Manage account",
+    "feedbackLabel": "ご意見・ご要望",
     "signOut": "Sign out",
     "profile": {
       "title": "プロフィール",
@@ -218,10 +219,9 @@
       "emailLabel": "メールアドレス",
       "providerNotice": "認証情報の変更は、ご利用のプロバイダー（Google/GitHubなど）側で管理されます。"
     },
-    "general": {
-      "title": "一般",
-      "terms": "利用規約",
-      "feedback": "ご意見・ご要望"
+    "privacy": {
+      "menuLabel": "プライバシーポリシー",
+      "externalLabel": "外部サイトで開く"
     },
     "feedbackSent": "フィードバック機能は準備中です（スタブ）"
   }

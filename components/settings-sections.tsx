@@ -1,13 +1,11 @@
 "use client";
 
 import { useState } from "react";
-import Link from "next/link";
 import { toast } from "sonner";
-import { ChevronRight, FileText, Loader2, MessageSquare } from "lucide-react";
+import { Loader2 } from "lucide-react";
 import { useUser } from "@clerk/nextjs";
 
 import { getTranslator } from "@/lib/i18n";
-import { getLegalUrl } from "@/lib/i18n/legal";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
@@ -34,8 +32,6 @@ export function SettingsSections({
   const [editedName, setEditedName] = useState(initialName);
   const [isSavingName, setIsSavingName] = useState(false);
 
-  const termsUrl = getLegalUrl("terms", locale, "JP");
-
   const handleSaveName = async () => {
     if (!user) {
       return;
@@ -57,117 +53,72 @@ export function SettingsSections({
     }
   };
 
-  const handleFeedbackSelection = () => {
-    toast.success(t("settings.feedbackSent"));
-  };
-
   return (
-    <div className="space-y-6">
-      <Card>
-        <CardHeader>
-          <CardTitle>{t("settings.profile.title")}</CardTitle>
-        </CardHeader>
-        <CardContent className="space-y-6">
-          <div className={showAvatar ? "flex items-center gap-4" : "space-y-4"}>
-            {showAvatar ? (
-              <img
-                src={imageUrl}
-                alt={initialName}
-                className="size-16 shrink-0 rounded-full border border-border bg-surface-subtle"
-              />
-            ) : null}
-            <div className="flex-1 space-y-1">
-              <div className="text-sm font-medium text-muted-foreground">
-                {t("settings.profile.nameLabel")}
-              </div>
-              {isEditingName ? (
-                <div className="flex flex-col items-start gap-2 sm:flex-row sm:items-center">
-                  <Input
-                    value={editedName}
-                    onChange={(event) => setEditedName(event.target.value)}
-                    className="h-8 max-w-[260px]"
+    <Card>
+      <CardHeader>
+        <CardTitle>{t("settings.profile.title")}</CardTitle>
+      </CardHeader>
+      <CardContent className="space-y-6">
+        <div className={showAvatar ? "flex items-center gap-4" : "space-y-4"}>
+          {showAvatar ? (
+            <img
+              src={imageUrl}
+              alt={initialName}
+              className="size-16 shrink-0 rounded-full border border-border bg-surface-subtle"
+            />
+          ) : null}
+          <div className="flex-1 space-y-1">
+            <div className="text-sm font-medium text-muted-foreground">
+              {t("settings.profile.nameLabel")}
+            </div>
+            {isEditingName ? (
+              <div className="flex flex-col items-start gap-2 sm:flex-row sm:items-center">
+                <Input
+                  value={editedName}
+                  onChange={(event) => setEditedName(event.target.value)}
+                  className="h-8 max-w-[260px]"
+                  disabled={isSavingName}
+                />
+                <div className="flex items-center gap-2">
+                  <Button size="sm" onClick={handleSaveName} disabled={isSavingName}>
+                    {isSavingName ? <Loader2 className="mr-2 size-3 animate-spin" /> : null}
+                    {t("settings.profile.saveName")}
+                  </Button>
+                  <Button
+                    size="sm"
+                    variant="ghost"
+                    onClick={() => {
+                      setIsEditingName(false);
+                      setEditedName(user?.fullName || initialName);
+                    }}
                     disabled={isSavingName}
-                  />
-                  <div className="flex items-center gap-2">
-                    <Button size="sm" onClick={handleSaveName} disabled={isSavingName}>
-                      {isSavingName ? <Loader2 className="mr-2 size-3 animate-spin" /> : null}
-                      {t("settings.profile.saveName")}
-                    </Button>
-                    <Button
-                      size="sm"
-                      variant="ghost"
-                      onClick={() => {
-                        setIsEditingName(false);
-                        setEditedName(user?.fullName || initialName);
-                      }}
-                      disabled={isSavingName}
-                    >
-                      {t("settings.profile.cancelEdit")}
-                    </Button>
-                  </div>
-                </div>
-              ) : (
-                <div className="flex items-center justify-between gap-3">
-                  <div className="font-medium text-foreground">{user?.fullName || initialName}</div>
-                  <Button size="sm" variant="outline" onClick={() => setIsEditingName(true)}>
-                    {t("settings.profile.editName")}
+                  >
+                    {t("settings.profile.cancelEdit")}
                   </Button>
                 </div>
-              )}
-            </div>
-          </div>
-
-          <div className="space-y-1 border-t border-border pt-4">
-            <div className="text-sm font-medium text-muted-foreground">
-              {t("settings.profile.emailLabel")}
-            </div>
-            <div className="text-foreground">{email}</div>
-          </div>
-
-          <div className="rounded-md border border-border bg-surface-subtle p-3 text-sm text-muted-foreground">
-            {t("settings.profile.providerNotice")}
-          </div>
-        </CardContent>
-      </Card>
-
-      <Card>
-        <CardHeader>
-          <CardTitle>{t("settings.general.title")}</CardTitle>
-        </CardHeader>
-        <CardContent className="p-0">
-          <div className="divide-y divide-border">
-            <Link
-              href={termsUrl}
-              className="flex items-center justify-between p-4 transition-colors hover:bg-surface-subtle"
-            >
-              <div className="flex items-center gap-3">
-                <div className="rounded-md border border-border bg-background p-2 text-muted-foreground">
-                  <FileText className="size-4" />
-                </div>
-                <span className="text-sm font-medium text-foreground">
-                  {t("settings.general.terms")}
-                </span>
               </div>
-              <ChevronRight className="size-4 text-muted-foreground" />
-            </Link>
-            <button
-              type="button"
-              onClick={handleFeedbackSelection}
-              className="flex w-full items-center justify-between p-4 text-left transition-colors hover:bg-surface-subtle"
-            >
-              <div className="flex items-center gap-3">
-                <div className="rounded-md border border-border bg-background p-2 text-muted-foreground">
-                  <MessageSquare className="size-4" />
-                </div>
-                <span className="text-sm font-medium text-foreground">
-                  {t("settings.general.feedback")}
-                </span>
+            ) : (
+              <div className="flex items-center justify-between gap-3">
+                <div className="font-medium text-foreground">{user?.fullName || initialName}</div>
+                <Button size="sm" variant="outline" onClick={() => setIsEditingName(true)}>
+                  {t("settings.profile.editName")}
+                </Button>
               </div>
-              <ChevronRight className="size-4 text-muted-foreground" />
-            </button>
+            )}
           </div>
-        </CardContent>
-      </Card>
-    </div>
+        </div>
+
+        <div className="space-y-1 border-t border-border pt-4">
+          <div className="text-sm font-medium text-muted-foreground">
+            {t("settings.profile.emailLabel")}
+          </div>
+          <div className="text-foreground">{email}</div>
+        </div>
+
+        <div className="rounded-md border border-border bg-surface-subtle p-3 text-sm text-muted-foreground">
+          {t("settings.profile.providerNotice")}
+        </div>
+      </CardContent>
+    </Card>
   );
 }

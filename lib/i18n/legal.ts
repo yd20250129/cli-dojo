@@ -1,8 +1,14 @@
 import type { LegalDocumentKind, Locale, Region } from "@/types";
 
+const githubPagesBaseUrl =
+  process.env.NEXT_PUBLIC_GITHUB_PAGES_BASE_URL ?? "https://yd20250129.github.io/cli-dojo";
+const privacyPolicyUrl =
+  process.env.NEXT_PUBLIC_PRIVACY_POLICY_URL ?? `${githubPagesBaseUrl}/privacy-policy/`;
+const termsUrl = process.env.NEXT_PUBLIC_TERMS_URL ?? `${githubPagesBaseUrl}/terms/`;
+
 const defaultUrls: Record<LegalDocumentKind, string> = {
-  terms: "/legal/terms",
-  privacy: "/legal/privacy",
+  terms: termsUrl,
+  privacy: privacyPolicyUrl,
 };
 
 const regionLocaleUrls: Partial<
@@ -10,18 +16,18 @@ const regionLocaleUrls: Partial<
 > = {
   JP: {
     ja: {
-      terms: "/legal/terms",
-      privacy: "/legal/privacy",
+      terms: termsUrl,
+      privacy: privacyPolicyUrl,
     },
     en: {
-      terms: "/legal/terms?locale=en",
-      privacy: "/legal/privacy?locale=en",
+      terms: termsUrl,
+      privacy: privacyPolicyUrl,
     },
   },
   US: {
     en: {
-      terms: "/legal/terms?region=US",
-      privacy: "/legal/privacy?region=US",
+      terms: termsUrl,
+      privacy: privacyPolicyUrl,
     },
   },
 };
