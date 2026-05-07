@@ -20,6 +20,8 @@ type SignUpPanelProps = {
 };
 
 type SignUpStep = "identifier" | "code";
+type SocialOAuthStrategy = "oauth_github" | "oauth_google";
+type SocialSettings = Partial<Record<SocialOAuthStrategy, { authenticatable?: boolean }>>;
 
 function getClerkErrorMessage(error: unknown, fallback: string) {
   if (typeof error === "object" && error && "errors" in error) {
@@ -59,6 +61,19 @@ function formatPendingFields(fields: string[]) {
     .join(", ");
 }
 
+const SOCIAL_OAUTH_PROVIDERS: Array<{ strategy: SocialOAuthStrategy; label: string }> = [
+  { strategy: "oauth_github", label: "GitHub" },
+  { strategy: "oauth_google", label: "Google" },
+];
+
+function getSocialSettings() {
+  if (typeof window === "undefined") {
+    return undefined;
+  }
+
+  return (window as Window & { Clerk?: { userSettings?: { social?: SocialSettings } } }).Clerk?.userSettings?.social;
+}
+
 export function SignUpPanel({
   locale,
   redirectTo = "/auth/sign-up-complete",
@@ -75,7 +90,19 @@ export function SignUpPanel({
   const [code, setCode] = useState("");
   const [error, setError] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [isSocialLoading, setIsSocialLoading] = useState<"oauth_github" | "oauth_google" | null>(null);
+  const [isSocialLoading, setIsSocialLoading] = useState<SocialOAuthStrategy | null>(null);
+  const socialSettings = clerk.loaded ? getSocialSettings() : undefined;
+  const availableSocialProviders = clerk.loaded
+    ? SOCIAL_OAUTH_PROVIDERS.filter(
+        ({ strategy }) => socialSettings?.[strategy]?.authenticatable,
+      )
+    : [];
+
+  const canAuthenticateWithStrategy = (strategy: SocialOAuthStrategy) =>
+    Boolean(socialSettings?.[strategy]?.authenticatable);
+
+  const getProviderLabel = (strategy: SocialOAuthStrategy) =>
+    SOCIAL_OAUTH_PROVIDERS.find((provider) => provider.strategy === strategy)?.label ?? strategy;
 
   const finalizeSignUp = async () => {
     if (!signUp) {
@@ -171,9 +198,18 @@ export function SignUpPanel({
     }
   };
 
-  const handleOAuth = async (strategy: "oauth_github" | "oauth_google") => {
+  const handleOAuth = async (strategy: SocialOAuthStrategy) => {
     const legacySignUp = clerk.client?.signUp;
     if (!legacySignUp) {
+      return;
+    }
+
+    if (!canAuthenticateWithStrategy(strategy)) {
+      setError(
+        t("auth.errors.oauthProviderUnavailable", {
+          provider: getProviderLabel(strategy),
+        }),
+      );
       return;
     }
 
@@ -214,40 +250,34 @@ export function SignUpPanel({
       }
     >
       <div className="space-y-5">
-        <div className="grid gap-3 sm:grid-cols-2">
-          <Button
-            type="button"
-            variant="outline"
-            className="h-12 justify-center rounded-2xl border-border bg-surface-raised text-foreground"
-            onClick={() => handleOAuth("oauth_github")}
-            disabled={Boolean(isSocialLoading) || isSubmitting}
-          >
-            {isSocialLoading === "oauth_github" ? (
-              <Loader2 className="size-4 animate-spin" />
-            ) : (
-              <span className="text-sm font-medium">GitHub</span>
-            )}
-          </Button>
-          <Button
-            type="button"
-            variant="outline"
-            className="h-12 justify-center rounded-2xl border-border bg-surface-raised text-foreground"
-            onClick={() => handleOAuth("oauth_google")}
-            disabled={Boolean(isSocialLoading) || isSubmitting}
-          >
-            {isSocialLoading === "oauth_google" ? (
-              <Loader2 className="size-4 animate-spin" />
-            ) : (
-              <span className="text-sm font-medium">Google</span>
-            )}
-          </Button>
-        </div>
+        {availableSocialProviders.length > 0 ? (
+          <>
+            <div className="grid gap-3 sm:grid-cols-2">
+              {availableSocialProviders.map((provider) => (
+                <Button
+                  key={provider.strategy}
+                  type="button"
+                  variant="outline"
+                  className="h-12 justify-center rounded-2xl border-border bg-surface-raised text-foreground"
+                  onClick={() => handleOAuth(provider.strategy)}
+                  disabled={Boolean(isSocialLoading) || isSubmitting}
+                >
+                  {isSocialLoading === provider.strategy ? (
+                    <Loader2 className="size-4 animate-spin" />
+                  ) : (
+                    <span className="text-sm font-medium">{provider.label}</span>
+                  )}
+                </Button>
+              ))}
+            </div>
 
-        <div className="flex items-center gap-3 text-sm text-muted-foreground">
-          <div className="h-px flex-1 bg-border" />
-          <span>{t("auth.common.or")}</span>
-          <div className="h-px flex-1 bg-border" />
-        </div>
+            <div className="flex items-center gap-3 text-sm text-muted-foreground">
+              <div className="h-px flex-1 bg-border" />
+              <span>{t("auth.common.or")}</span>
+              <div className="h-px flex-1 bg-border" />
+            </div>
+          </>
+        ) : null}
 
         {step === "identifier" ? (
           <div className="space-y-4">

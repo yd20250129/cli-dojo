@@ -167,6 +167,7 @@
       "emailCodeUnavailable": "このメールアドレスでは認証コードを利用できませんでした",
       "invalidCode": "認証コードを確認できませんでした",
       "oauthFailed": "外部認証を開始できませんでした",
+      "oauthProviderUnavailable": "{{provider}} は現在利用できません。認証設定を確認してください。",
       "signOutFailed": "サインアウトに失敗しました"
     },
     "signIn": {

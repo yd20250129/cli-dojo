@@ -43,6 +43,7 @@
       "emailCodeUnavailable": "Email code sign-in is not available for this address.",
       "invalidCode": "We could not verify the code.",
       "oauthFailed": "We could not start the social sign-in flow.",
+      "oauthProviderUnavailable": "{{provider}} is not available right now. Please check the authentication settings.",
       "signOutFailed": "We could not sign you out."
     },
     "signIn": {
