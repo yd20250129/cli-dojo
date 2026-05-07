@@ -148,6 +148,8 @@
       "emailPlaceholder": "メールアドレスを入力",
       "passwordLabel": "パスワード",
       "passwordPlaceholder": "パスワードを入力",
+      "newPasswordLabel": "新しいパスワード",
+      "newPasswordPlaceholder": "新しいパスワードを入力",
       "showPassword": "パスワードを表示する",
       "hidePassword": "パスワードを隠す",
       "codeLabel": "認証コード",
@@ -166,16 +168,34 @@
       "signUpIncompleteWithFields": "サインアップを完了できませんでした。未完了の項目: {{fields}}",
       "emailCodeUnavailable": "このメールアドレスでは認証コードを利用できませんでした",
       "invalidCode": "認証コードを確認できませんでした",
+      "passwordResetStartFailed": "パスワード再設定を開始できませんでした",
+      "passwordResetSubmitFailed": "新しいパスワードを設定できませんでした",
       "oauthFailed": "外部認証を開始できませんでした",
       "oauthProviderUnavailable": "{{provider}} は現在利用できません。認証設定を確認してください。",
       "signOutFailed": "サインアウトに失敗しました"
+    },
+    "legal": {
+      "prefix": "続行する前に",
+      "privacyLink": "プライバシーポリシー",
+      "and": "と",
+      "termsLink": "利用規約"
     },
     "signIn": {
       "title": "アカウントで学習を続ける",
       "description": "学習データはログイン中のアカウントに紐づいて保存されます。進捗と成績を保存し、学習を継続しましょう。",
       "codeSent": "{{email}} に認証コードを送信しました。メールを確認して続けてください。",
+      "forgotPassword": "パスワードを忘れた場合",
       "footerPrefix": "アカウントをお持ちでない場合は",
       "footerLink": "サインアップ"
+    },
+    "forgotPassword": {
+      "title": "パスワードを再設定する",
+      "description": "登録済みメールアドレスへ認証コードを送信し、新しいパスワードへ更新します。",
+      "sendCode": "再設定コードを送信",
+      "codeSent": "{{email}} に再設定コードを送信しました。メールを確認して続けてください。",
+      "codeVerified": "コードを確認しました。新しいパスワードを設定してください。",
+      "submitPassword": "新しいパスワードを設定",
+      "backToSignIn": "ログインへ戻る"
     },
     "signUp": {
       "title": "アカウントを作成する",
@@ -222,6 +242,9 @@
     "privacy": {
       "menuLabel": "プライバシーポリシー",
       "externalLabel": "外部サイトで開く"
+    },
+    "terms": {
+      "menuLabel": "利用規約"
     },
     "feedbackSent": "フィードバック機能は準備中です（スタブ）"
   }

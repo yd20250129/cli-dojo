@@ -1,6 +1,7 @@
 "use client";
 
-import { Loader2, Mail, MoveRight } from "lucide-react";
+import Link from "next/link";
+import { ExternalLink, Loader2, Mail, MoveRight } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useRef, useState } from "react";
 import { useClerk, useSignIn } from "@clerk/nextjs";
@@ -10,6 +11,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { PasswordInput } from "@/components/ui/password-input";
 import { getTranslator } from "@/lib/i18n";
+import { getLegalUrl } from "@/lib/i18n/legal";
 import type { Locale } from "@/types";
 
 type SignInPanelProps = {
@@ -19,8 +21,10 @@ type SignInPanelProps = {
   onSuccess?: () => void;
 };
 
+type SignInPanelMode = "sign-in" | "forgot-password";
 type SignInStep = "identifier" | "code";
 type CodeStepMode = "email_first_factor" | "email_second_factor";
+type PasswordResetStep = "request" | "code" | "new-password";
 type SocialOAuthStrategy = "oauth_github" | "oauth_google";
 type SocialSettings = Partial<Record<SocialOAuthStrategy, { authenticatable?: boolean }>>;
 
@@ -97,15 +101,20 @@ export function SignInPanel({
   const clerk = useClerk();
   const { signIn } = useSignIn();
   const formRef = useRef<HTMLFormElement | null>(null);
+  const [mode, setMode] = useState<SignInPanelMode>("sign-in");
   const [step, setStep] = useState<SignInStep>("identifier");
   const [codeStepMode, setCodeStepMode] = useState<CodeStepMode>("email_first_factor");
+  const [passwordResetStep, setPasswordResetStep] = useState<PasswordResetStep>("request");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [code, setCode] = useState("");
+  const [resetPassword, setResetPassword] = useState("");
   const [safeIdentifier, setSafeIdentifier] = useState("");
   const [error, setError] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isSocialLoading, setIsSocialLoading] = useState<SocialOAuthStrategy | null>(null);
+  const privacyPolicyUrl = getLegalUrl("privacy", locale, "JP");
+  const termsUrl = getLegalUrl("terms", locale, "JP");
   const socialSettings = clerk.loaded ? getSocialSettings() : undefined;
   const availableSocialProviders = clerk.loaded
     ? SOCIAL_OAUTH_PROVIDERS.filter(
@@ -122,9 +131,7 @@ export function SignInPanel({
   const completeSignIn = () => {
     router.refresh();
     onSuccess?.();
-    if (redirectTo !== "/") {
-      router.push(redirectTo);
-    }
+    router.push(redirectTo);
   };
 
   const transitionToEmailCodeStep = (identifier: string, mode: CodeStepMode) => {
@@ -141,6 +148,24 @@ export function SignInPanel({
     setError("");
     setSafeIdentifier("");
     setCodeStepMode("email_first_factor");
+  };
+
+  const enterForgotPasswordFlow = () => {
+    void signIn?.reset();
+    setMode("forgot-password");
+    setPasswordResetStep("request");
+    setCode("");
+    setResetPassword("");
+    setError("");
+  };
+
+  const exitForgotPasswordFlow = () => {
+    void signIn?.reset();
+    setMode("sign-in");
+    setPasswordResetStep("request");
+    setCode("");
+    setResetPassword("");
+    setError("");
   };
 
   const beginSecondFactorEmailCode = async (
@@ -369,13 +394,146 @@ export function SignInPanel({
     }
   };
 
+  const handleStartPasswordReset = async () => {
+    if (!signIn) {
+      return;
+    }
+
+    setError("");
+    setIsSubmitting(true);
+
+    try {
+      const submittedEmail = email.trim();
+      const createResult = await signIn.create({ identifier: submittedEmail });
+      if (createResult.error) {
+        setError(createResult.error.message || t("auth.errors.passwordResetStartFailed"));
+        return;
+      }
+
+      const sendCodeResult = await signIn.resetPasswordEmailCode.sendCode();
+      if (sendCodeResult.error) {
+        setError(sendCodeResult.error.message || t("auth.errors.passwordResetStartFailed"));
+        return;
+      }
+
+      setSafeIdentifier(submittedEmail);
+      setCode("");
+      setPasswordResetStep("code");
+    } catch (resetError) {
+      setError(getClerkErrorMessage(resetError, t("auth.errors.passwordResetStartFailed")));
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+
+  const handleVerifyPasswordResetCode = async () => {
+    if (!signIn) {
+      return;
+    }
+
+    setError("");
+    setIsSubmitting(true);
+
+    try {
+      const verifyCodeResult = await signIn.resetPasswordEmailCode.verifyCode({ code: code.trim() });
+      if (verifyCodeResult.error) {
+        setError(verifyCodeResult.error.message || t("auth.errors.invalidCode"));
+        return;
+      }
+
+      setPasswordResetStep("new-password");
+    } catch (resetError) {
+      setError(getClerkErrorMessage(resetError, t("auth.errors.invalidCode")));
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+
+  const handleSubmitNewPassword = async () => {
+    if (!signIn) {
+      return;
+    }
+
+    setError("");
+    setIsSubmitting(true);
+
+    try {
+      const submitPasswordResult = await signIn.resetPasswordEmailCode.submitPassword({
+        password: resetPassword.trim(),
+      });
+      if (submitPasswordResult.error) {
+        setError(submitPasswordResult.error.message || t("auth.errors.passwordResetSubmitFailed"));
+        return;
+      }
+
+      if (signIn.status !== "complete" || !signIn.createdSessionId) {
+        const incompleteMessage = getIncompleteFactorMessage(
+          signIn,
+          t("auth.errors.signInIncompleteWithFactors", { factors: "{{factors}}" }),
+        );
+        setError(incompleteMessage || t("auth.errors.passwordResetSubmitFailed"));
+        return;
+      }
+
+      const finalizeResult = await signIn.finalize();
+      if (finalizeResult.error) {
+        setError(finalizeResult.error.message || t("auth.errors.passwordResetSubmitFailed"));
+        return;
+      }
+
+      completeSignIn();
+    } catch (resetError) {
+      setError(getClerkErrorMessage(resetError, t("auth.errors.passwordResetSubmitFailed")));
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+
+  const legalNotice = (
+    <p className="text-xs leading-6 text-muted-foreground">
+      {t("auth.legal.prefix")}{" "}
+      <Link
+        className="font-medium text-foreground underline underline-offset-4"
+        href={privacyPolicyUrl}
+        target="_blank"
+        rel="noreferrer"
+      >
+        {t("auth.legal.privacyLink")}
+      </Link>{" "}
+      {t("auth.legal.and")}{" "}
+      <Link
+        className="font-medium text-foreground underline underline-offset-4"
+        href={termsUrl}
+        target="_blank"
+        rel="noreferrer"
+      >
+        {t("auth.legal.termsLink")}
+      </Link>
+      <span className="ml-1 inline-flex align-middle text-muted-foreground">
+        <ExternalLink className="size-3" />
+      </span>
+    </p>
+  );
+
   return (
     <AuthPanelCard
       locale={locale}
-      title={t("auth.signIn.title")}
-      description={t("auth.signIn.description")}
+      title={mode === "forgot-password" ? t("auth.forgotPassword.title") : t("auth.signIn.title")}
+      description={
+        mode === "forgot-password"
+          ? t("auth.forgotPassword.description")
+          : t("auth.signIn.description")
+      }
       footer={
-        onSwitchToSignUp ? (
+        mode === "forgot-password" ? (
+          <button
+            type="button"
+            className="font-medium text-foreground underline underline-offset-4"
+            onClick={exitForgotPasswordFlow}
+          >
+            {t("auth.forgotPassword.backToSignIn")}
+          </button>
+        ) : step === "identifier" && onSwitchToSignUp ? (
           <>
             {t("auth.signIn.footerPrefix")}{" "}
             <button
@@ -390,126 +548,263 @@ export function SignInPanel({
       }
     >
       <div className="space-y-5">
-        {availableSocialProviders.length > 0 ? (
-          <>
-            <div className="grid gap-3 sm:grid-cols-2">
-              {availableSocialProviders.map((provider) => (
-                <Button
-                  key={provider.strategy}
-                  type="button"
-                  variant="outline"
-                  className="h-12 justify-center rounded-2xl border-border bg-surface-raised text-foreground"
-                  onClick={() => handleOAuth(provider.strategy)}
-                  disabled={Boolean(isSocialLoading) || isSubmitting}
-                >
-                  {isSocialLoading === provider.strategy ? (
-                    <Loader2 className="size-4 animate-spin" />
-                  ) : (
-                    <span className="text-sm font-medium">{provider.label}</span>
-                  )}
-                </Button>
-              ))}
-            </div>
-
-            <div className="flex items-center gap-3 text-sm text-muted-foreground">
-              <div className="h-px flex-1 bg-border" />
-              <span>{t("auth.common.or")}</span>
-              <div className="h-px flex-1 bg-border" />
-            </div>
-          </>
-        ) : null}
-
-        {step === "identifier" ? (
-          <form ref={formRef} className="space-y-4" onSubmit={(event) => event.preventDefault()}>
-            <label className="block space-y-2">
-              <span className="text-sm font-medium text-text-secondary">
-                {t("auth.common.emailLabel")}
-              </span>
-              <Input
-                name="email"
-                type="email"
-                inputMode="email"
-                autoComplete="email"
-                placeholder={t("auth.common.emailPlaceholder")}
-                value={email}
-                onChange={(event) => setEmail(event.target.value)}
-                className="h-12 rounded-2xl px-4"
-                disabled={isSubmitting || Boolean(isSocialLoading)}
-              />
-            </label>
-
-            <label className="block space-y-2">
-              <span className="text-sm font-medium text-text-secondary">
-                {t("auth.common.passwordLabel")}
-              </span>
-              <PasswordInput
-                name="password"
-                locale={locale}
-                autoComplete="current-password"
-                placeholder={t("auth.common.passwordPlaceholder")}
-                value={password}
-                onChange={(event) => setPassword(event.target.value)}
-                className="h-12 rounded-2xl px-4"
-                disabled={isSubmitting || Boolean(isSocialLoading)}
-              />
-            </label>
-
-            {error ? <p className="text-sm text-status-error">{error}</p> : null}
-
-            <Button
-              type="button"
-              className="h-12 w-full rounded-2xl bg-foreground text-base text-background hover:bg-foreground/90"
-              onClick={handleStartEmailCode}
-              disabled={!signIn || !email.trim() || isSubmitting || Boolean(isSocialLoading)}
-            >
-              {isSubmitting ? <Loader2 className="size-4 animate-spin" /> : <Mail className="size-4" />}
-              {t("auth.common.continue")}
-            </Button>
-          </form>
-        ) : (
+        {mode === "forgot-password" ? (
           <div className="space-y-4">
-            <div className="rounded-2xl border border-status-success-border bg-status-success-bg px-4 py-3 text-sm text-status-success-text-strong">
-              {t("auth.signIn.codeSent", { email: safeIdentifier || email })}
-            </div>
+            {passwordResetStep === "request" ? (
+              <>
+                <label className="block space-y-2">
+                  <span className="text-sm font-medium text-text-secondary">
+                    {t("auth.common.emailLabel")}
+                  </span>
+                  <Input
+                    name="email"
+                    type="email"
+                    inputMode="email"
+                    autoComplete="email"
+                    placeholder={t("auth.common.emailPlaceholder")}
+                    value={email}
+                    onChange={(event) => setEmail(event.target.value)}
+                    className="h-12 rounded-2xl px-4"
+                    disabled={isSubmitting}
+                  />
+                </label>
 
-            <label className="block space-y-2">
-              <span className="text-sm font-medium text-text-secondary">
-                {t("auth.common.codeLabel")}
-              </span>
-              <Input
-                inputMode="numeric"
-                autoComplete="one-time-code"
-                placeholder={t("auth.common.codePlaceholder")}
-                value={code}
-                onChange={(event) => setCode(event.target.value)}
-                className="h-12 rounded-2xl px-4 tracking-[0.3em]"
-                disabled={isSubmitting}
-              />
-            </label>
+                {error ? <p className="text-sm text-status-error">{error}</p> : null}
 
-            {error ? <p className="text-sm text-status-error">{error}</p> : null}
+                <Button
+                  type="button"
+                  className="h-12 w-full rounded-2xl bg-foreground text-base text-background hover:bg-foreground/90"
+                  onClick={handleStartPasswordReset}
+                  disabled={!signIn || !email.trim() || isSubmitting}
+                >
+                  {isSubmitting ? <Loader2 className="size-4 animate-spin" /> : <Mail className="size-4" />}
+                  {t("auth.forgotPassword.sendCode")}
+                </Button>
+              </>
+            ) : null}
 
-            <div className="grid gap-3 sm:grid-cols-[minmax(0,1fr)_auto] sm:items-stretch">
-              <Button
-                type="button"
-                className="h-12 min-w-0 w-full rounded-2xl bg-foreground text-base text-background hover:bg-foreground/90 sm:justify-center"
-                onClick={handleVerifyCode}
-                disabled={!signIn || !code.trim() || isSubmitting}
-              >
-                {isSubmitting ? <Loader2 className="size-4 animate-spin" /> : <MoveRight className="size-4" />}
-                {t("auth.common.verifyCode")}
-              </Button>
-              <Button
-                type="button"
-                variant="outline"
-                className="h-12 w-full rounded-2xl sm:w-auto"
-                onClick={resetCodeStep}
-                disabled={isSubmitting}
-              >
-                {t("auth.common.changeEmail")}
-              </Button>
-            </div>
+            {passwordResetStep === "code" ? (
+              <>
+                <div className="rounded-2xl border border-status-success-border bg-status-success-bg px-4 py-3 text-sm text-status-success-text-strong">
+                  {t("auth.forgotPassword.codeSent", { email: safeIdentifier || email })}
+                </div>
+
+                <label className="block space-y-2">
+                  <span className="text-sm font-medium text-text-secondary">
+                    {t("auth.common.codeLabel")}
+                  </span>
+                  <Input
+                    inputMode="numeric"
+                    autoComplete="one-time-code"
+                    placeholder={t("auth.common.codePlaceholder")}
+                    value={code}
+                    onChange={(event) => setCode(event.target.value)}
+                    className="h-12 rounded-2xl px-4 tracking-[0.3em]"
+                    disabled={isSubmitting}
+                  />
+                </label>
+
+                {error ? <p className="text-sm text-status-error">{error}</p> : null}
+
+                <div className="grid gap-3 sm:grid-cols-[minmax(0,1fr)_auto] sm:items-stretch">
+                  <Button
+                    type="button"
+                    className="h-12 min-w-0 w-full rounded-2xl bg-foreground text-base text-background hover:bg-foreground/90 sm:justify-center"
+                    onClick={handleVerifyPasswordResetCode}
+                    disabled={!signIn || !code.trim() || isSubmitting}
+                  >
+                    {isSubmitting ? <Loader2 className="size-4 animate-spin" /> : <MoveRight className="size-4" />}
+                    {t("auth.common.verifyCode")}
+                  </Button>
+                  <Button
+                    type="button"
+                    variant="outline"
+                    className="h-12 w-full rounded-2xl sm:w-auto"
+                    onClick={() => setPasswordResetStep("request")}
+                    disabled={isSubmitting}
+                  >
+                    {t("auth.common.changeEmail")}
+                  </Button>
+                </div>
+              </>
+            ) : null}
+
+            {passwordResetStep === "new-password" ? (
+              <>
+                <div className="rounded-2xl border border-status-success-border bg-status-success-bg px-4 py-3 text-sm text-status-success-text-strong">
+                  {t("auth.forgotPassword.codeVerified")}
+                </div>
+
+                <label className="block space-y-2">
+                  <span className="text-sm font-medium text-text-secondary">
+                    {t("auth.common.newPasswordLabel")}
+                  </span>
+                  <PasswordInput
+                    locale={locale}
+                    autoComplete="new-password"
+                    placeholder={t("auth.common.newPasswordPlaceholder")}
+                    value={resetPassword}
+                    onChange={(event) => setResetPassword(event.target.value)}
+                    className="h-12 rounded-2xl px-4"
+                    disabled={isSubmitting}
+                  />
+                </label>
+
+                {error ? <p className="text-sm text-status-error">{error}</p> : null}
+
+                <Button
+                  type="button"
+                  className="h-12 w-full rounded-2xl bg-foreground text-base text-background hover:bg-foreground/90"
+                  onClick={handleSubmitNewPassword}
+                  disabled={!signIn || !resetPassword.trim() || isSubmitting}
+                >
+                  {isSubmitting ? <Loader2 className="size-4 animate-spin" /> : <MoveRight className="size-4" />}
+                  {t("auth.forgotPassword.submitPassword")}
+                </Button>
+              </>
+            ) : null}
+
+            {legalNotice}
           </div>
+        ) : (
+          <>
+            {availableSocialProviders.length > 0 ? (
+              <>
+                <div className="grid gap-3 sm:grid-cols-2">
+                  {availableSocialProviders.map((provider) => (
+                    <Button
+                      key={provider.strategy}
+                      type="button"
+                      variant="outline"
+                      className="h-12 justify-center rounded-2xl border-border bg-surface-raised text-foreground"
+                      onClick={() => handleOAuth(provider.strategy)}
+                      disabled={Boolean(isSocialLoading) || isSubmitting}
+                    >
+                      {isSocialLoading === provider.strategy ? (
+                        <Loader2 className="size-4 animate-spin" />
+                      ) : (
+                        <span className="text-sm font-medium">{provider.label}</span>
+                      )}
+                    </Button>
+                  ))}
+                </div>
+
+                <div className="flex items-center gap-3 text-sm text-muted-foreground">
+                  <div className="h-px flex-1 bg-border" />
+                  <span>{t("auth.common.or")}</span>
+                  <div className="h-px flex-1 bg-border" />
+                </div>
+              </>
+            ) : null}
+
+            {step === "identifier" ? (
+              <form ref={formRef} className="space-y-4" onSubmit={(event) => event.preventDefault()}>
+                <label className="block space-y-2">
+                  <span className="text-sm font-medium text-text-secondary">
+                    {t("auth.common.emailLabel")}
+                  </span>
+                  <Input
+                    name="email"
+                    type="email"
+                    inputMode="email"
+                    autoComplete="email"
+                    placeholder={t("auth.common.emailPlaceholder")}
+                    value={email}
+                    onChange={(event) => setEmail(event.target.value)}
+                    className="h-12 rounded-2xl px-4"
+                    disabled={isSubmitting || Boolean(isSocialLoading)}
+                  />
+                </label>
+
+                <label className="block space-y-2">
+                  <span className="text-sm font-medium text-text-secondary">
+                    {t("auth.common.passwordLabel")}
+                  </span>
+                  <PasswordInput
+                    name="password"
+                    locale={locale}
+                    autoComplete="current-password"
+                    placeholder={t("auth.common.passwordPlaceholder")}
+                    value={password}
+                    onChange={(event) => setPassword(event.target.value)}
+                    className="h-12 rounded-2xl px-4"
+                    disabled={isSubmitting || Boolean(isSocialLoading)}
+                  />
+                </label>
+
+                {error ? <p className="text-sm text-status-error">{error}</p> : null}
+
+                <div className="flex items-center justify-between gap-3">
+                  <button
+                    type="button"
+                    className="text-sm font-medium text-foreground underline underline-offset-4"
+                    onClick={enterForgotPasswordFlow}
+                    disabled={isSubmitting || Boolean(isSocialLoading)}
+                  >
+                    {t("auth.signIn.forgotPassword")}
+                  </button>
+                </div>
+
+                <Button
+                  type="button"
+                  className="h-12 w-full rounded-2xl bg-foreground text-base text-background hover:bg-foreground/90"
+                  onClick={handleStartEmailCode}
+                  disabled={!signIn || !email.trim() || isSubmitting || Boolean(isSocialLoading)}
+                >
+                  {isSubmitting ? <Loader2 className="size-4 animate-spin" /> : <Mail className="size-4" />}
+                  {t("auth.common.continue")}
+                </Button>
+
+                {legalNotice}
+              </form>
+            ) : (
+              <div className="space-y-4">
+                <div className="rounded-2xl border border-status-success-border bg-status-success-bg px-4 py-3 text-sm text-status-success-text-strong">
+                  {t("auth.signIn.codeSent", { email: safeIdentifier || email })}
+                </div>
+
+                <label className="block space-y-2">
+                  <span className="text-sm font-medium text-text-secondary">
+                    {t("auth.common.codeLabel")}
+                  </span>
+                  <Input
+                    inputMode="numeric"
+                    autoComplete="one-time-code"
+                    placeholder={t("auth.common.codePlaceholder")}
+                    value={code}
+                    onChange={(event) => setCode(event.target.value)}
+                    className="h-12 rounded-2xl px-4 tracking-[0.3em]"
+                    disabled={isSubmitting}
+                  />
+                </label>
+
+                {error ? <p className="text-sm text-status-error">{error}</p> : null}
+
+                <div className="grid gap-3 sm:grid-cols-[minmax(0,1fr)_auto] sm:items-stretch">
+                  <Button
+                    type="button"
+                    className="h-12 min-w-0 w-full rounded-2xl bg-foreground text-base text-background hover:bg-foreground/90 sm:justify-center"
+                    onClick={handleVerifyCode}
+                    disabled={!signIn || !code.trim() || isSubmitting}
+                  >
+                    {isSubmitting ? <Loader2 className="size-4 animate-spin" /> : <MoveRight className="size-4" />}
+                    {t("auth.common.verifyCode")}
+                  </Button>
+                  <Button
+                    type="button"
+                    variant="outline"
+                    className="h-12 w-full rounded-2xl sm:w-auto"
+                    onClick={resetCodeStep}
+                    disabled={isSubmitting}
+                  >
+                    {t("auth.common.changeEmail")}
+                  </Button>
+                </div>
+
+                {legalNotice}
+              </div>
+            )}
+          </>
         )}
       </div>
     </AuthPanelCard>

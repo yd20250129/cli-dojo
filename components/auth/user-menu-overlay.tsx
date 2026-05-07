@@ -17,6 +17,7 @@ import { toast } from "sonner";
 import { AuthOverlayFrame } from "@/components/auth/auth-overlay-frame";
 import { SettingsSections } from "@/components/settings-sections";
 import { Button } from "@/components/ui/button";
+import { UserAvatar } from "@/components/ui/user-avatar";
 import { getTranslator } from "@/lib/i18n";
 import { getLegalUrl } from "@/lib/i18n/legal";
 import type { Locale } from "@/types";
@@ -47,6 +48,7 @@ export function UserMenuOverlay({ locale, onClose }: UserMenuOverlayProps) {
   const email = user?.primaryEmailAddress?.emailAddress || "";
   const imageUrl = user?.imageUrl || "";
   const privacyPolicyUrl = getLegalUrl("privacy", locale, "JP");
+  const termsUrl = getLegalUrl("terms", locale, "JP");
   const handleFeedbackSelection = () => {
     toast.success(t("settings.feedbackSent"));
   };
@@ -65,11 +67,7 @@ export function UserMenuOverlay({ locale, onClose }: UserMenuOverlayProps) {
               <ChevronLeft className="size-5" />
             </button>
           ) : (
-            <img
-              src={imageUrl}
-              alt={displayName}
-              className="size-14 rounded-full border border-border bg-surface-subtle"
-            />
+            <UserAvatar imageUrl={imageUrl} name={displayName} className="size-14" sizes="56px" />
           )}
           <div className="min-w-0 flex-1">
             <p className="truncate text-xl font-semibold text-foreground">{displayName}</p>
@@ -106,6 +104,18 @@ export function UserMenuOverlay({ locale, onClose }: UserMenuOverlayProps) {
               <div className="flex items-center gap-3">
                 <ShieldCheck className="size-4 text-muted-foreground" />
                 <span className="text-sm font-medium">{t("settings.privacy.menuLabel")}</span>
+              </div>
+              <ExternalLink className="size-4 text-muted-foreground" />
+            </Link>
+            <Link
+              href={termsUrl}
+              target="_blank"
+              rel="noreferrer"
+              className="flex items-center justify-between gap-3 px-5 py-4 text-foreground transition-colors hover:bg-surface-subtle"
+            >
+              <div className="flex items-center gap-3">
+                <ShieldCheck className="size-4 text-muted-foreground" />
+                <span className="text-sm font-medium">{t("settings.terms.menuLabel")}</span>
               </div>
               <ExternalLink className="size-4 text-muted-foreground" />
             </Link>

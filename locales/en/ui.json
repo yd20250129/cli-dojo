@@ -24,6 +24,8 @@
       "emailPlaceholder": "Enter your email address",
       "passwordLabel": "Password",
       "passwordPlaceholder": "Enter your password",
+      "newPasswordLabel": "New password",
+      "newPasswordPlaceholder": "Enter your new password",
       "showPassword": "Show password",
       "hidePassword": "Hide password",
       "codeLabel": "Verification code",
@@ -42,16 +44,34 @@
       "signUpIncompleteWithFields": "We could not complete the sign-up. Pending fields: {{fields}}",
       "emailCodeUnavailable": "Email code sign-in is not available for this address.",
       "invalidCode": "We could not verify the code.",
+      "passwordResetStartFailed": "We could not start the password reset flow.",
+      "passwordResetSubmitFailed": "We could not set the new password.",
       "oauthFailed": "We could not start the social sign-in flow.",
       "oauthProviderUnavailable": "{{provider}} is not available right now. Please check the authentication settings.",
       "signOutFailed": "We could not sign you out."
+    },
+    "legal": {
+      "prefix": "Before continuing, review the",
+      "privacyLink": "Privacy Policy",
+      "and": "and",
+      "termsLink": "Terms of Service"
     },
     "signIn": {
       "title": "Continue learning with your account",
       "description": "Your learning data is saved to the signed-in account. Keep your progress and scores in sync as you study.",
       "codeSent": "We sent a verification code to {{email}}.",
+      "forgotPassword": "Forgot your password?",
       "footerPrefix": "If you do not have an account,",
       "footerLink": "sign up"
+    },
+    "forgotPassword": {
+      "title": "Reset your password",
+      "description": "We will send a verification code to your registered email address so you can set a new password.",
+      "sendCode": "Send reset code",
+      "codeSent": "We sent a reset code to {{email}}.",
+      "codeVerified": "Code verified. Set your new password.",
+      "submitPassword": "Set new password",
+      "backToSignIn": "Back to sign in"
     },
     "signUp": {
       "title": "Create your account",
@@ -91,6 +111,9 @@
     "privacy": {
       "menuLabel": "Privacy Policy",
       "externalLabel": "Open external site"
+    },
+    "terms": {
+      "menuLabel": "Terms of Service"
     },
     "feedbackSent": "Feedback feature is under construction."
   }

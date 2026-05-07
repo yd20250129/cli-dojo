@@ -9,6 +9,7 @@ import { getTranslator } from "@/lib/i18n";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
+import { UserAvatar } from "@/components/ui/user-avatar";
 import type { Locale } from "@/types";
 
 type SettingsSectionsProps = {
@@ -61,10 +62,11 @@ export function SettingsSections({
       <CardContent className="space-y-6">
         <div className={showAvatar ? "flex items-center gap-4" : "space-y-4"}>
           {showAvatar ? (
-            <img
-              src={imageUrl}
-              alt={initialName}
-              className="size-16 shrink-0 rounded-full border border-border bg-surface-subtle"
+            <UserAvatar
+              imageUrl={imageUrl}
+              name={initialName}
+              className="size-16 shrink-0"
+              sizes="64px"
             />
           ) : null}
           <div className="flex-1 space-y-1">

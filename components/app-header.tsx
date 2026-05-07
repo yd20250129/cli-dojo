@@ -1,19 +1,20 @@
 "use client";
 
-import { useAuth } from "@clerk/nextjs";
+import { useAuth, useUser } from "@clerk/nextjs";
 import Link from "next/link";
 import { usePathname, useSearchParams } from "next/navigation";
 import { useEffect, useMemo, useState } from "react";
-import { UserCircle2 } from "lucide-react";
 
 import { AuthModal } from "@/components/auth/auth-modal";
 import { UserMenuOverlay } from "@/components/auth/user-menu-overlay";
 import { getTranslator } from "@/lib/i18n";
 import { Button } from "@/components/ui/button";
+import { UserAvatar } from "@/components/ui/user-avatar";
 import type { Locale } from "@/types";
 
 export function AppHeader({ locale }: { locale: Locale }) {
   const { isLoaded, userId } = useAuth();
+  const { user } = useUser();
   const pathname = usePathname();
   const searchParams = useSearchParams();
   const isSignedIn = isLoaded && Boolean(userId);
@@ -24,6 +25,8 @@ export function AppHeader({ locale }: { locale: Locale }) {
     const query = searchParams.toString();
     return query ? `${pathname}?${query}` : pathname;
   }, [pathname, searchParams]);
+  const displayName = user?.fullName || user?.username || "User";
+  const imageUrl = user?.imageUrl || "";
 
   useEffect(() => {
     const handleOpenAuth = (event: Event) => {
@@ -76,7 +79,12 @@ export function AppHeader({ locale }: { locale: Locale }) {
                 onClick={() => setIsUserMenuOpen(true)}
                 className="ml-1 rounded-full border border-border bg-surface-raised text-muted-foreground transition-colors hover:text-foreground"
               >
-                <UserCircle2 className="size-9" />
+                <UserAvatar
+                  imageUrl={imageUrl}
+                  name={displayName}
+                  className="size-9 border-0"
+                  sizes="36px"
+                />
               </button>
             </>
           ) : null}

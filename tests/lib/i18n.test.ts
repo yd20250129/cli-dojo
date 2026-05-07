@@ -33,5 +33,8 @@ describe("i18n helpers", () => {
     expect(getLegalUrl("privacy", "en", "US")).toBe(
       "https://yd20250129.github.io/cli-dojo/privacy-policy/",
     );
+    expect(getLegalUrl("terms", "ja", "JP")).toBe(
+      "https://yd20250129.github.io/cli-dojo/terms/",
+    );
   });
 });
