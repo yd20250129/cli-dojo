@@ -11,19 +11,19 @@
     <header class="site-header">
       <div class="site-shell">
         <div class="site-brand">
-          <a href="{{ '/' | relative_url }}">CLI Dojo Policies</a>
+          <a href="{{ '/' | relative_url }}">CLI Dojo ポリシー</a>
         </div>
         <nav class="site-nav" aria-label="Policy navigation">
           {% assign nav_key = page.nav_key | default: '' %}
           {% if nav_key == 'privacy' %}
-            <span class="is-active">Privacy Policy</span>
+            <span class="is-active">プライバシーポリシー</span>
           {% else %}
-            <a href="{{ '/privacy-policy/' | relative_url }}">Privacy Policy</a>
+            <a href="{{ '/privacy-policy/' | relative_url }}">プライバシーポリシー</a>
           {% endif %}
           {% if nav_key == 'terms' %}
-            <span class="is-active">Terms of Service</span>
+            <span class="is-active">利用規約</span>
           {% else %}
-            <a href="{{ '/terms/' | relative_url }}">Terms of Service</a>
+            <a href="{{ '/terms/' | relative_url }}">利用規約</a>
           {% endif %}
         </nav>
       </div>
