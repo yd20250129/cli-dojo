@@ -10,10 +10,55 @@ body {
   margin: 0;
 }
 
+.site-header {
+  position: sticky;
+  top: 0;
+  z-index: 10;
+  border-bottom: 1px solid #e7e1d3;
+  background: rgba(255, 253, 247, 0.94);
+  backdrop-filter: blur(12px);
+}
+
+.site-shell {
+  display: flex;
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 18px 24px;
+  align-items: center;
+  justify-content: space-between;
+  gap: 24px;
+}
+
+.site-brand a {
+  color: #18181b;
+  text-decoration: none;
+  font-size: 1.1rem;
+  font-weight: 600;
+}
+
+.site-nav {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 20px;
+}
+
+.site-nav a,
+.site-nav .is-active {
+  font-size: 0.95rem;
+  font-weight: 500;
+  color: #18181b;
+  text-decoration: none;
+}
+
+.site-nav .is-active {
+  color: #57534e;
+}
+
 .page {
   max-width: 860px;
   margin: 0 auto;
-  padding: 56px 24px 80px;
+  padding: 48px 24px 80px;
   background: #fffdf7;
 }
 
@@ -25,23 +70,23 @@ h3 {
 }
 
 h1 {
-  margin: 0 0 32px;
-  font-size: clamp(2.4rem, 6vw, 4.5rem);
+  margin: 0 0 28px;
+  font-size: clamp(2.1rem, 5vw, 3.4rem);
 }
 
 h2 {
-  margin-top: 56px;
-  font-size: clamp(1.9rem, 4vw, 2.8rem);
+  margin-top: 52px;
+  font-size: clamp(1.7rem, 3.5vw, 2.4rem);
 }
 
 h3 {
   margin-top: 36px;
-  font-size: 1.5rem;
+  font-size: 1.25rem;
 }
 
 p,
 li {
-  font-size: 1.1rem;
+  font-size: 1rem;
 }
 
 ul {
@@ -57,4 +102,20 @@ code {
   border-radius: 6px;
   background: #f1efe6;
   font-size: 0.95em;
+}
+
+@media (max-width: 640px) {
+  .site-shell {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 10px;
+  }
+
+  .site-nav {
+    gap: 14px;
+  }
+
+  .page {
+    padding-top: 32px;
+  }
 }
