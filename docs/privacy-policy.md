@@ -1,6 +1,7 @@
 ---
 title: CLI Dojo Privacy Policy
 permalink: /privacy-policy/
+layout: default
 ---
 
 # CLI Dojo プライバシーポリシー

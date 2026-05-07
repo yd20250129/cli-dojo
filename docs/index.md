@@ -1,6 +1,7 @@
 ---
 title: CLI Dojo Policies
 permalink: /
+layout: default
 ---
 
 # CLI Dojo Policies
