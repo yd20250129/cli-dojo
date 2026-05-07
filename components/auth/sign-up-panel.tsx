@@ -3,7 +3,7 @@
 import { Loader2, Mail, MoveRight } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
-import { useSignUp } from "@clerk/nextjs";
+import { useClerk, useSignUp } from "@clerk/nextjs";
 
 import { AuthPanelCard } from "@/components/auth/auth-panel-card";
 import { Button } from "@/components/ui/button";
@@ -67,6 +67,7 @@ export function SignUpPanel({
 }: SignUpPanelProps) {
   const router = useRouter();
   const t = getTranslator(locale);
+  const clerk = useClerk();
   const { signUp } = useSignUp();
   const [step, setStep] = useState<SignUpStep>("identifier");
   const [email, setEmail] = useState("");
@@ -171,7 +172,8 @@ export function SignUpPanel({
   };
 
   const handleOAuth = async (strategy: "oauth_github" | "oauth_google") => {
-    if (!signUp) {
+    const legacySignUp = clerk.client?.signUp;
+    if (!legacySignUp) {
       return;
     }
 
@@ -179,15 +181,12 @@ export function SignUpPanel({
     setIsSocialLoading(strategy);
 
     try {
-      const ssoResult = await signUp.sso({
+      await legacySignUp.authenticateWithRedirect({
         strategy,
-        redirectUrl: redirectTo,
-        redirectCallbackUrl: "/auth/sso-callback",
+        redirectUrl: "/auth/sso-callback",
+        redirectUrlComplete: redirectTo,
+        continueSignUp: true,
       });
-      if (ssoResult.error) {
-        setError(ssoResult.error.message || t("auth.errors.oauthFailed"));
-        setIsSocialLoading(null);
-      }
     } catch (signUpError) {
       setError(getClerkErrorMessage(signUpError, t("auth.errors.oauthFailed")));
       setIsSocialLoading(null);

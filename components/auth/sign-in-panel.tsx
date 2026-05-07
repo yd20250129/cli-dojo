@@ -312,7 +312,8 @@ export function SignInPanel({
   };
 
   const handleOAuth = async (strategy: "oauth_github" | "oauth_google") => {
-    if (!signIn) {
+    const legacySignIn = clerk.client?.signIn;
+    if (!legacySignIn) {
       return;
     }
 
@@ -320,15 +321,12 @@ export function SignInPanel({
     setIsSocialLoading(strategy);
 
     try {
-      const ssoResult = await signIn.sso({
+      await legacySignIn.authenticateWithRedirect({
         strategy,
-        redirectUrl: redirectTo,
-        redirectCallbackUrl: "/auth/sso-callback",
+        redirectUrl: "/auth/sso-callback",
+        redirectUrlComplete: redirectTo,
+        continueSignIn: true,
       });
-      if (ssoResult.error) {
-        setError(ssoResult.error.message || t("auth.errors.oauthFailed"));
-        setIsSocialLoading(null);
-      }
     } catch (signInError) {
       setError(getClerkErrorMessage(signInError, t("auth.errors.oauthFailed")));
       setIsSocialLoading(null);
