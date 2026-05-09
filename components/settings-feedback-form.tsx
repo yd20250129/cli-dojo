@@ -206,7 +206,7 @@ export function SettingsFeedbackForm({
           ) : null}
         </div>
 
-        <div className="rounded-xl border border-border bg-surface-subtle p-3 text-sm text-muted-foreground">
+        <div className="text-sm leading-6 text-muted-foreground">
           {t("settings.feedback.form.notice")}
         </div>
 
