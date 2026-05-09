@@ -1,8 +1,8 @@
 "use client";
 
 import type React from "react";
-import { Loader2, Paperclip, X } from "lucide-react";
-import { useState } from "react";
+import { ImageUp, Loader2, Paperclip, Upload, X } from "lucide-react";
+import { useRef, useState } from "react";
 import { toast } from "sonner";
 
 import { submitFeedback } from "@/lib/client/api";
@@ -11,10 +11,10 @@ import {
   FEEDBACK_MESSAGE_MAX_LENGTH,
   FEEDBACK_SCREENSHOT_MAX_BYTES,
   formatBytes,
+  validateFeedbackScreenshot,
 } from "@/lib/shared/validation";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import type { FeedbackCategory, Locale } from "@/types";
 
@@ -34,6 +34,18 @@ export function SettingsFeedbackForm({
   const [message, setMessage] = useState("");
   const [screenshot, setScreenshot] = useState<File | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const fileInputRef = useRef<HTMLInputElement | null>(null);
+
+  const setNextScreenshot = (nextFile: File | null) => {
+    const validation = validateFeedbackScreenshot(nextFile);
+
+    if (!validation.ok) {
+      toast.error(validation.errors[0] ?? t("settings.feedback.form.submitError"));
+      return;
+    }
+
+    setScreenshot(nextFile && nextFile.size ? nextFile : null);
+  };
 
   const handleSubmit = async () => {
     setIsSubmitting(true);
@@ -56,8 +68,38 @@ export function SettingsFeedbackForm({
 
   const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const nextFile = event.target.files?.[0] ?? null;
-    setScreenshot(nextFile);
+    setNextScreenshot(nextFile);
     event.target.value = "";
+  };
+
+  const handleDrop = (event: React.DragEvent<HTMLButtonElement>) => {
+    event.preventDefault();
+
+    if (isSubmitting) {
+      return;
+    }
+
+    const nextFile = event.dataTransfer.files?.[0] ?? null;
+    setNextScreenshot(nextFile);
+  };
+
+  const handlePaste = (event: React.ClipboardEvent<HTMLButtonElement>) => {
+    if (isSubmitting) {
+      return;
+    }
+
+    const imageItem = Array.from(event.clipboardData.items).find(
+      (item) => item.kind === "file" && item.type.startsWith("image/"),
+    );
+
+    const nextFile = imageItem?.getAsFile() ?? null;
+
+    if (!nextFile) {
+      return;
+    }
+
+    event.preventDefault();
+    setNextScreenshot(nextFile);
   };
 
   return (
@@ -107,13 +149,33 @@ export function SettingsFeedbackForm({
           <label className="text-sm font-medium text-muted-foreground" htmlFor="feedback-screenshot">
             {t("settings.feedback.form.screenshotLabel")}
           </label>
-          <Input
+          <input
+            ref={fileInputRef}
             id="feedback-screenshot"
             type="file"
             accept="image/png,image/jpeg,image/webp"
             disabled={isSubmitting}
             onChange={handleFileChange}
+            className="sr-only"
           />
+          <button
+            type="button"
+            onClick={() => fileInputRef.current?.click()}
+            onDragOver={(event) => event.preventDefault()}
+            onDrop={handleDrop}
+            onPaste={handlePaste}
+            disabled={isSubmitting}
+            className="flex w-full flex-col items-center justify-center gap-3 rounded-xl border border-dashed border-border bg-surface-subtle px-4 py-6 text-center transition-colors hover:bg-surface-warm disabled:cursor-not-allowed disabled:opacity-60"
+          >
+            <div className="flex items-center gap-2 text-sm font-medium text-foreground">
+              <Upload className="size-4 text-muted-foreground" />
+              <span>{t("settings.feedback.form.selectScreenshot")}</span>
+            </div>
+            <div className="flex items-center gap-2 text-xs text-muted-foreground">
+              <ImageUp className="size-4" />
+              <span>{t("settings.feedback.form.screenshotPasteHint")}</span>
+            </div>
+          </button>
           <div className="text-xs text-muted-foreground">
             {t("settings.feedback.form.screenshotHint", {
               maxSize: formatBytes(FEEDBACK_SCREENSHOT_MAX_BYTES),

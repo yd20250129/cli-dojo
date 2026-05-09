@@ -76,12 +76,12 @@ h1 {
 
 h2 {
   margin-top: 52px;
-  font-size: clamp(1.7rem, 3.5vw, 2.4rem);
+  font-size: clamp(1.45rem, 3vw, 2rem);
 }
 
 h3 {
   margin-top: 36px;
-  font-size: 1.25rem;
+  font-size: 1.12rem;
 }
 
 p,
