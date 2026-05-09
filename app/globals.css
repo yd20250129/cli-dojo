@@ -98,46 +98,46 @@
      Always reference semantic tokens below.
      ============================================================ */
 
-  /* Teal scale (hue 150) — brand primary */
-  --color-teal-100: oklch(0.95 0.05 150);
-  --color-teal-200: oklch(0.90 0.08 150);
-  --color-teal-500: oklch(0.65 0.15 150);
-  --color-teal-600: oklch(0.56 0.15 150);
-  --color-teal-700: oklch(0.45 0.13 150);
-  --color-teal-800: oklch(0.35 0.10 150);
+  /* Teal scale (hue 162) — brand primary; chroma 0.20 for education-friendly vibrancy */
+  --color-teal-100: oklch(0.94 0.06 162);
+  --color-teal-200: oklch(0.88 0.10 162);
+  --color-teal-500: oklch(0.58 0.20 162);
+  --color-teal-600: oklch(0.52 0.20 162);
+  --color-teal-700: oklch(0.43 0.18 162);
+  --color-teal-800: oklch(0.34 0.14 162);
 
-  /* Warm neutral scale (hue 100) — replaces zinc throughout the app */
-  --color-neutral-50:  oklch(0.99 0.02 100);
-  --color-neutral-100: oklch(0.97 0.02 100);
-  --color-neutral-150: oklch(0.95 0.02 100);
-  --color-neutral-300: oklch(0.88 0.02 100);
-  --color-neutral-500: oklch(0.62 0.02 100);
-  --color-neutral-600: oklch(0.50 0.02 100);
-  --color-neutral-700: oklch(0.38 0.02 100);
-  --color-neutral-800: oklch(0.28 0.02 100);
-  --color-neutral-950: oklch(0.15 0.02 100);
+  /* Warm neutral scale (hue 95) — subtle warmth, chroma 0.01 for clean readability */
+  --color-neutral-50:  oklch(0.99 0.01 95);
+  --color-neutral-100: oklch(0.96 0.01 95);
+  --color-neutral-150: oklch(0.93 0.01 95);
+  --color-neutral-300: oklch(0.85 0.01 95);
+  --color-neutral-500: oklch(0.62 0.01 95);
+  --color-neutral-600: oklch(0.50 0.01 95);
+  --color-neutral-700: oklch(0.38 0.01 95);
+  --color-neutral-800: oklch(0.27 0.01 95);
+  --color-neutral-950: oklch(0.14 0.01 95);
 
   /* Warm brand beige — unifies #f6f1e3 / #faf7ef / #fcfaf4 */
   --color-warm-50:  oklch(0.975 0.025 95);
   --color-warm-100: oklch(0.960 0.025 95);
 
-  /* Success (hue 145 — near primary teal for visual harmony) */
-  --color-success-50:  oklch(0.97 0.05 145);
-  --color-success-100: oklch(0.93 0.08 145);
-  --color-success-200: oklch(0.87 0.10 145);
-  --color-success-600: oklch(0.55 0.16 145);
-  --color-success-700: oklch(0.46 0.14 145);
-  --color-success-800: oklch(0.36 0.11 145);
-  --color-success-950: oklch(0.18 0.07 145);
+  /* Success (hue 140 — 22° from primary teal, clearly distinct on quiz feedback) */
+  --color-success-50:  oklch(0.97 0.05 140);
+  --color-success-100: oklch(0.93 0.08 140);
+  --color-success-200: oklch(0.87 0.11 140);
+  --color-success-600: oklch(0.52 0.20 140);
+  --color-success-700: oklch(0.43 0.17 140);
+  --color-success-800: oklch(0.35 0.13 140);
+  --color-success-950: oklch(0.18 0.07 140);
 
-  /* Error (hue 20 — matches existing --destructive) */
-  --color-error-50:  oklch(0.97 0.04 20);
-  --color-error-100: oklch(0.93 0.07 20);
-  --color-error-200: oklch(0.87 0.10 20);
-  --color-error-500: oklch(0.62 0.18 20);
-  --color-error-600: oklch(0.54 0.18 20);
-  --color-error-700: oklch(0.44 0.15 20);
-  --color-error-950: oklch(0.19 0.07 20);
+  /* Error (hue 22 — 140° from success, maximum contrast for quiz wrong answers) */
+  --color-error-50:  oklch(0.97 0.04 22);
+  --color-error-100: oklch(0.93 0.07 22);
+  --color-error-200: oklch(0.87 0.11 22);
+  --color-error-500: oklch(0.62 0.19 22);
+  --color-error-600: oklch(0.54 0.19 22);
+  --color-error-700: oklch(0.44 0.16 22);
+  --color-error-950: oklch(0.19 0.07 22);
 
   /* Warning (hue 75 — amber) */
   --color-warning-100: oklch(0.95 0.08 75);
@@ -150,38 +150,38 @@
   /* ============================================================
      SHADCN / TAILWIND SEMANTIC TOKENS (existing — unchanged)
      ============================================================ */
-  --background: oklch(0.99 0.02 100);
-  --foreground: oklch(0.2 0.02 100);
+  --background: var(--color-neutral-50);
+  --foreground: oklch(0.22 0.01 95);
   --card: oklch(1 0 0);
-  --card-foreground: oklch(0.2 0.02 100);
+  --card-foreground: oklch(0.22 0.01 95);
   --popover: oklch(1 0 0);
-  --popover-foreground: oklch(0.2 0.02 100);
-  --primary: oklch(0.65 0.15 150);
-  --primary-foreground: oklch(0.98 0 0);
+  --popover-foreground: oklch(0.22 0.01 95);
+  --primary: var(--color-teal-600);
+  --primary-foreground: oklch(0.99 0 0);
   --secondary: var(--color-teal-100);
   --secondary-foreground: var(--color-teal-800);
   --muted: var(--color-neutral-150);
-  --muted-foreground: var(--color-neutral-600);
+  --muted-foreground: oklch(0.44 0.01 95);
   --accent: var(--color-warm-50);
   --accent-foreground: var(--color-neutral-800);
-  --destructive: oklch(0.6 0.15 20);
+  --destructive: oklch(0.54 0.19 22);
   --border: var(--color-neutral-300);
   --input: var(--color-neutral-300);
-  --ring: oklch(0.65 0.15 150);
+  --ring: var(--color-teal-600);
   --chart-1: oklch(0.87 0 0);
   --chart-2: oklch(0.556 0 0);
   --chart-3: oklch(0.439 0 0);
   --chart-4: oklch(0.371 0 0);
   --chart-5: oklch(0.269 0 0);
   --radius: 0.5rem;
-  --sidebar: oklch(0.99 0.02 100);
-  --sidebar-foreground: oklch(0.2 0.02 100);
-  --sidebar-primary: oklch(0.65 0.15 150);
-  --sidebar-primary-foreground: oklch(0.98 0 0);
-  --sidebar-accent: oklch(0.93 0.05 150);
-  --sidebar-accent-foreground: oklch(0.3 0.1 150);
-  --sidebar-border: oklch(0.9 0.02 100);
-  --sidebar-ring: oklch(0.65 0.15 150);
+  --sidebar: var(--color-neutral-50);
+  --sidebar-foreground: oklch(0.22 0.01 95);
+  --sidebar-primary: var(--color-teal-600);
+  --sidebar-primary-foreground: oklch(0.99 0 0);
+  --sidebar-accent: var(--color-teal-100);
+  --sidebar-accent-foreground: var(--color-teal-800);
+  --sidebar-border: var(--color-neutral-300);
+  --sidebar-ring: var(--color-teal-600);
 
   /* ============================================================
      APP-SPECIFIC SEMANTIC TOKENS (new)
@@ -223,18 +223,18 @@
   --choice-wrong-border:   var(--color-error-500);
   --choice-wrong-text:     var(--color-error-950);
 
-  /* Progress status badges */
-  --badge-perfect-bg:      var(--color-success-100);
-  --badge-perfect-text:    var(--color-success-800);
-  --badge-completed-bg:    var(--color-info-100);
-  --badge-completed-text:  var(--color-info-800);
+  /* Progress status badges — education-friendly: gold=perfect, teal=completed, amber=wip */
+  --badge-perfect-bg:      oklch(0.90 0.12 80);
+  --badge-perfect-text:    oklch(0.38 0.14 80);
+  --badge-completed-bg:    var(--color-teal-200);
+  --badge-completed-text:  var(--color-teal-800);
   --badge-inprogress-bg:   var(--color-warning-100);
   --badge-inprogress-text: var(--color-warning-800);
   --badge-notstarted-bg:   var(--color-neutral-150);
   --badge-notstarted-text: var(--color-neutral-600);
 
-  /* Hero gradient stops (replaces inline rgba hardcodes) */
-  --gradient-hero-teal: oklch(0.65 0.15 145 / 18%);
+  /* Hero gradient stops */
+  --gradient-hero-teal: oklch(0.58 0.15 162 / 18%);
   --gradient-hero-dark: oklch(0.25 0 0 / 8%);
 
   /* Typography */
@@ -243,85 +243,86 @@
 
 .dark {
   /* ============================================================
-     SHADCN / TAILWIND SEMANTIC TOKENS (existing — unchanged)
+     SHADCN / TAILWIND SEMANTIC TOKENS — DARK
+     Cool navy dark (hue 235) for modern, polished dark mode.
      ============================================================ */
-  --background: oklch(0.18 0.02 100);
-  --foreground: oklch(0.98 0.01 100);
-  --card: oklch(0.22 0.02 100);
-  --card-foreground: oklch(0.98 0.01 100);
-  --popover: oklch(0.22 0.02 100);
-  --popover-foreground: oklch(0.98 0.01 100);
-  --primary: oklch(0.7 0.15 150);
-  --primary-foreground: oklch(0.2 0.02 100);
-  --secondary: oklch(0.28 0.05 150);
-  --secondary-foreground: oklch(0.98 0.01 100);
-  --muted: oklch(0.25 0.02 100);
-  --muted-foreground: oklch(0.7 0.02 100);
-  --accent: oklch(0.28 0.05 150);
-  --accent-foreground: oklch(0.98 0.01 100);
-  --destructive: oklch(0.7 0.15 20);
-  --border: oklch(1 0 0 / 10%);
-  --input: oklch(1 0 0 / 15%);
-  --ring: oklch(0.7 0.15 150);
+  --background: oklch(0.13 0.01 235);
+  --foreground: oklch(0.94 0.01 235);
+  --card: oklch(0.18 0.01 235);
+  --card-foreground: oklch(0.94 0.01 235);
+  --popover: oklch(0.18 0.01 235);
+  --popover-foreground: oklch(0.94 0.01 235);
+  --primary: oklch(0.65 0.20 162);
+  --primary-foreground: oklch(0.13 0.01 235);
+  --secondary: oklch(0.22 0.05 162);
+  --secondary-foreground: oklch(0.94 0.01 235);
+  --muted: oklch(0.21 0.01 235);
+  --muted-foreground: oklch(0.65 0.01 235);
+  --accent: oklch(0.22 0.05 162);
+  --accent-foreground: oklch(0.94 0.01 235);
+  --destructive: oklch(0.65 0.19 22);
+  --border: oklch(0.30 0.01 235);
+  --input: oklch(0.30 0.01 235);
+  --ring: oklch(0.65 0.20 162);
   --chart-1: oklch(0.87 0 0);
   --chart-2: oklch(0.556 0 0);
   --chart-3: oklch(0.439 0 0);
   --chart-4: oklch(0.371 0 0);
   --chart-5: oklch(0.269 0 0);
-  --sidebar: oklch(0.18 0.02 100);
-  --sidebar-foreground: oklch(0.98 0.01 100);
-  --sidebar-primary: oklch(0.7 0.15 150);
-  --sidebar-primary-foreground: oklch(0.2 0.02 100);
-  --sidebar-accent: oklch(0.28 0.05 150);
-  --sidebar-accent-foreground: oklch(0.98 0.01 100);
-  --sidebar-border: oklch(1 0 0 / 10%);
-  --sidebar-ring: oklch(0.7 0.15 150);
+  --sidebar: oklch(0.13 0.01 235);
+  --sidebar-foreground: oklch(0.94 0.01 235);
+  --sidebar-primary: oklch(0.65 0.20 162);
+  --sidebar-primary-foreground: oklch(0.13 0.01 235);
+  --sidebar-accent: oklch(0.22 0.05 162);
+  --sidebar-accent-foreground: oklch(0.94 0.01 235);
+  --sidebar-border: oklch(0.30 0.01 235);
+  --sidebar-ring: oklch(0.65 0.20 162);
 
   /* ============================================================
-     APP-SPECIFIC SEMANTIC TOKENS — DARK (new)
+     APP-SPECIFIC SEMANTIC TOKENS — DARK
      ============================================================ */
-  --surface-page:        oklch(0.15 0.02 100);
-  --surface-raised:      oklch(0.22 0.02 100 / 90%);
-  --surface-subtle:      oklch(0.20 0.02 100);
-  --surface-warm:        oklch(0.23 0.03 95);
-  --surface-warm-border: oklch(1 0 0 / 12%);
+  --surface-page:        oklch(0.13 0.01 235);
+  --surface-raised:      oklch(0.18 0.01 235 / 92%);
+  --surface-subtle:      oklch(0.23 0.01 235);
+  --surface-warm:        oklch(0.18 0.01 235);
+  --surface-warm-border: oklch(0.28 0.01 235);
 
-  --text-secondary:      oklch(0.82 0.01 100);
-  --text-tertiary:       oklch(0.70 0.01 100);
-  --text-brand-accent:   oklch(0.65 0.14 150);
+  --text-secondary:      oklch(0.80 0.01 235);
+  --text-tertiary:       oklch(0.65 0.01 235);
+  --text-brand-accent:   oklch(0.70 0.18 162);
 
-  --status-success:             oklch(0.60 0.15 145);
-  --status-success-bg:          oklch(0.20 0.05 145);
-  --status-success-border:      oklch(0.32 0.08 145);
-  --status-success-text:        oklch(0.70 0.12 145);
-  --status-success-text-strong: oklch(0.90 0.08 145);
-  --status-error:               oklch(0.65 0.18 20);
-  --status-error-bg:            oklch(0.20 0.05 20);
-  --status-error-border:        oklch(0.32 0.08 20);
-  --status-error-text:          oklch(0.72 0.15 20);
-  --status-error-text-strong:   oklch(0.90 0.08 20);
+  --status-success:             oklch(0.60 0.18 140);
+  --status-success-bg:          oklch(0.18 0.05 140);
+  --status-success-border:      oklch(0.30 0.08 140);
+  --status-success-text:        oklch(0.68 0.14 140);
+  --status-success-text-strong: oklch(0.88 0.08 140);
+  --status-error:               oklch(0.65 0.18 22);
+  --status-error-bg:            oklch(0.18 0.05 22);
+  --status-error-border:        oklch(0.30 0.08 22);
+  --status-error-text:          oklch(0.72 0.15 22);
+  --status-error-text-strong:   oklch(0.90 0.08 22);
   --status-warning:             oklch(0.72 0.14 75);
-  --status-warning-bg:          oklch(0.22 0.06 75);
+  --status-warning-bg:          oklch(0.20 0.06 75);
   --status-info:                oklch(0.70 0.12 220);
-  --status-info-bg:             oklch(0.20 0.05 220);
+  --status-info-bg:             oklch(0.18 0.05 220);
 
-  --choice-correct-bg:     oklch(0.20 0.05 145);
-  --choice-correct-border: oklch(0.48 0.13 145);
-  --choice-correct-text:   oklch(0.90 0.07 145);
-  --choice-wrong-bg:       oklch(0.20 0.05 20);
-  --choice-wrong-border:   oklch(0.50 0.16 20);
-  --choice-wrong-text:     oklch(0.90 0.06 20);
+  --choice-correct-bg:     oklch(0.18 0.05 140);
+  --choice-correct-border: oklch(0.48 0.15 140);
+  --choice-correct-text:   oklch(0.88 0.07 140);
+  --choice-wrong-bg:       oklch(0.18 0.05 22);
+  --choice-wrong-border:   oklch(0.50 0.16 22);
+  --choice-wrong-text:     oklch(0.90 0.06 22);
 
-  --badge-perfect-bg:      oklch(0.20 0.05 145);
-  --badge-perfect-text:    oklch(0.70 0.12 145);
-  --badge-completed-bg:    oklch(0.20 0.05 220);
-  --badge-completed-text:  oklch(0.70 0.11 220);
-  --badge-inprogress-bg:   oklch(0.22 0.06 75);
+  --badge-perfect-bg:      oklch(0.22 0.08 80);
+  --badge-perfect-text:    oklch(0.78 0.14 80);
+  --badge-completed-bg:    oklch(0.20 0.06 162);
+  --badge-completed-text:  oklch(0.68 0.14 162);
+  --badge-inprogress-bg:   oklch(0.20 0.06 75);
   --badge-inprogress-text: oklch(0.72 0.13 75);
-  --badge-notstarted-bg:   oklch(0.28 0.02 100);
-  --badge-notstarted-text: oklch(0.65 0.01 100);
+  --badge-notstarted-bg:   oklch(0.23 0.01 235);
+  --badge-notstarted-text: oklch(0.60 0.01 235);
 
-  --gradient-hero-teal: oklch(0.50 0.12 145 / 15%);
+  --gradient-hero-teal: oklch(0.45 0.12 162 / 15%);
   --gradient-hero-dark: oklch(0.10 0 0 / 20%);
 }
 
