@@ -9,7 +9,6 @@ import { submitFeedback } from "@/lib/client/api";
 import { getTranslator } from "@/lib/i18n";
 import {
   FEEDBACK_MESSAGE_MAX_LENGTH,
-  FEEDBACK_SCREENSHOT_MAX_BYTES,
   formatBytes,
   validateFeedbackScreenshot,
 } from "@/lib/shared/validation";
@@ -33,6 +32,7 @@ export function SettingsFeedbackForm({
   const [category, setCategory] = useState<FeedbackCategory>("bug");
   const [message, setMessage] = useState("");
   const [screenshot, setScreenshot] = useState<File | null>(null);
+  const [screenshotError, setScreenshotError] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
   const fileInputRef = useRef<HTMLInputElement | null>(null);
 
@@ -40,10 +40,11 @@ export function SettingsFeedbackForm({
     const validation = validateFeedbackScreenshot(nextFile);
 
     if (!validation.ok) {
-      toast.error(validation.errors[0] ?? t("settings.feedback.form.submitError"));
+      setScreenshotError(validation.errors[0] ?? t("settings.feedback.form.submitError"));
       return;
     }
 
+    setScreenshotError("");
     setScreenshot(nextFile && nextFile.size ? nextFile : null);
   };
 
@@ -55,6 +56,7 @@ export function SettingsFeedbackForm({
       setCategory("bug");
       setMessage("");
       setScreenshot(null);
+      setScreenshotError("");
       toast.success(t("settings.feedback.form.submitSuccess"));
       onSubmitted?.();
     } catch (error) {
@@ -165,7 +167,7 @@ export function SettingsFeedbackForm({
             onDrop={handleDrop}
             onPaste={handlePaste}
             disabled={isSubmitting}
-            className="flex w-full flex-col items-center justify-center gap-3 rounded-xl border border-dashed border-border bg-surface-subtle px-4 py-6 text-center transition-colors hover:bg-surface-warm disabled:cursor-not-allowed disabled:opacity-60"
+            className="flex w-full flex-col items-center justify-center gap-2 rounded-xl border border-dashed border-border bg-surface-subtle px-4 py-6 text-center transition-colors hover:bg-surface-warm disabled:cursor-not-allowed disabled:opacity-60"
           >
             <div className="flex items-center gap-2 text-sm font-medium text-foreground">
               <Upload className="size-4 text-muted-foreground" />
@@ -173,14 +175,12 @@ export function SettingsFeedbackForm({
             </div>
             <div className="flex items-center gap-2 text-xs text-muted-foreground">
               <ImageUp className="size-4" />
-              <span>{t("settings.feedback.form.screenshotPasteHint")}</span>
+              <span>{t("settings.feedback.form.screenshotHelp")}</span>
             </div>
           </button>
-          <div className="text-xs text-muted-foreground">
-            {t("settings.feedback.form.screenshotHint", {
-              maxSize: formatBytes(FEEDBACK_SCREENSHOT_MAX_BYTES),
-            })}
-          </div>
+          {screenshotError ? (
+            <div className="text-sm text-[var(--status-error-text-strong)]">{screenshotError}</div>
+          ) : null}
           {screenshot ? (
             <div className="flex items-center justify-between gap-3 rounded-xl border border-border bg-surface-subtle px-3 py-2">
               <div className="min-w-0">
@@ -197,7 +197,10 @@ export function SettingsFeedbackForm({
                 size="icon-sm"
                 variant="ghost"
                 aria-label={t("settings.feedback.form.removeScreenshot")}
-                onClick={() => setScreenshot(null)}
+                onClick={() => {
+                  setScreenshot(null);
+                  setScreenshotError("");
+                }}
                 disabled={isSubmitting}
               >
                 <X className="size-4" />
