@@ -2,6 +2,7 @@ import type {
   AnonymousProgressState,
   AnonymousSectionProgress,
   ChoiceId,
+  FeedbackCategory,
   Question,
   SectionId,
 } from "@/types";
@@ -15,6 +16,10 @@ export type ValidationResult = {
 };
 
 export const DISPLAY_NAME_MAX_LENGTH = 40;
+export const FEEDBACK_MESSAGE_MAX_LENGTH = 1000;
+export const FEEDBACK_SCREENSHOT_MAX_BYTES = 1024 * 1024;
+const feedbackCategories = ["bug", "feature_request", "other"] as const;
+const feedbackScreenshotTypes = ["image/png", "image/jpeg", "image/webp"] as const;
 
 export function isSectionId(value: string): value is SectionId {
   return sectionIds.includes(value as SectionId);
@@ -139,4 +144,123 @@ export function validateDisplayName(value: unknown): ValidationResult & { value:
     value: errors.length === 0 ? normalizedValue : null,
     errors,
   };
+}
+
+export function parseFeedbackCategory(value: unknown): FeedbackCategory | null {
+  if (typeof value !== "string") {
+    return null;
+  }
+
+  return feedbackCategories.includes(value as FeedbackCategory)
+    ? (value as FeedbackCategory)
+    : null;
+}
+
+export function validateFeedbackMessage(
+  value: unknown,
+): ValidationResult & { value: string | null } {
+  if (typeof value !== "string") {
+    return {
+      ok: false,
+      value: null,
+      errors: ["本文を入力してください"],
+    };
+  }
+
+  const normalizedValue = value.trim();
+  const errors: string[] = [];
+
+  if (!normalizedValue) {
+    errors.push("本文を入力してください");
+  }
+
+  if (normalizedValue.length > FEEDBACK_MESSAGE_MAX_LENGTH) {
+    errors.push(`本文は ${FEEDBACK_MESSAGE_MAX_LENGTH} 文字以内で入力してください`);
+  }
+
+  return {
+    ok: errors.length === 0,
+    value: errors.length === 0 ? normalizedValue : null,
+    errors,
+  };
+}
+
+function isFileLike(value: unknown): value is File {
+  return typeof File !== "undefined" && value instanceof File;
+}
+
+export function validateFeedbackScreenshot(
+  value: unknown,
+): ValidationResult & {
+  value:
+    | {
+        filename: string;
+        contentType: string;
+        sizeBytes: number;
+        base64: string;
+      }
+    | null;
+} {
+  if (value == null) {
+    return {
+      ok: true,
+      value: null,
+      errors: [],
+    };
+  }
+
+  if (!isFileLike(value)) {
+    return {
+      ok: false,
+      value: null,
+      errors: ["画像ファイルを選択してください"],
+    };
+  }
+
+  if (!value.size) {
+    return {
+      ok: true,
+      value: null,
+      errors: [],
+    };
+  }
+
+  const errors: string[] = [];
+
+  if (!feedbackScreenshotTypes.includes(value.type as (typeof feedbackScreenshotTypes)[number])) {
+    errors.push("スクリーンショットは PNG / JPEG / WebP のいずれかを選択してください");
+  }
+
+  if (value.size > FEEDBACK_SCREENSHOT_MAX_BYTES) {
+    errors.push(
+      `スクリーンショットは ${formatBytes(FEEDBACK_SCREENSHOT_MAX_BYTES)} 以内にしてください`,
+    );
+  }
+
+  if (errors.length > 0) {
+    return {
+      ok: false,
+      value: null,
+      errors,
+    };
+  }
+
+  return {
+    ok: true,
+    value: {
+      filename: value.name || "screenshot",
+      contentType: value.type,
+      sizeBytes: value.size,
+      base64: "",
+    },
+    errors: [],
+  };
+}
+
+export function formatBytes(value: number) {
+  if (value >= 1024 * 1024) {
+    return `${Math.round((value / (1024 * 1024)) * 10) / 10}MB`;
+  }
+
+  return `${Math.round((value / 1024) * 10) / 10}KB`;
 }

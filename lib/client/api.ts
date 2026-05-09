@@ -6,11 +6,13 @@ import type {
   ApiSuccess,
   ChoiceId,
   CurrentSectionAttempt,
+  FeedbackSubmission,
   MigrateProgressResult,
   ProgressSummary,
   SectionAttempt,
   SectionId,
   SectionResult,
+  SubmitFeedbackRequest,
   UpdateProfileRequest,
   UserProfile,
 } from "@/types";
@@ -26,12 +28,16 @@ export class ApiRequestError extends Error {
 }
 
 async function requestJson<T>(path: string, init: RequestInit = {}) {
+  const headers =
+    init.body instanceof FormData
+      ? init.headers
+      : {
+          "Content-Type": "application/json",
+          ...init.headers,
+        };
   const response = await fetch(path, {
     ...init,
-    headers: {
-      "Content-Type": "application/json",
-      ...init.headers,
-    },
+    headers,
   });
   const payload = (await response.json()) as ApiSuccess<T> | ApiErrorResponse;
 
@@ -114,5 +120,20 @@ export function updateProfile(request: UpdateProfileRequest) {
   return requestJson<UserProfile>("/api/settings/profile", {
     method: "PATCH",
     body: JSON.stringify(request),
+  });
+}
+
+export function submitFeedback(request: SubmitFeedbackRequest) {
+  const formData = new FormData();
+  formData.set("category", request.category);
+  formData.set("message", request.message);
+
+  if (request.screenshot) {
+    formData.set("screenshot", request.screenshot);
+  }
+
+  return requestJson<FeedbackSubmission>("/api/settings/feedback", {
+    method: "POST",
+    body: formData,
   });
 }

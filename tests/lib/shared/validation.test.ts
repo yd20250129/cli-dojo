@@ -2,10 +2,16 @@ import { describe, expect, it } from "vitest";
 
 import {
   DISPLAY_NAME_MAX_LENGTH,
+  FEEDBACK_MESSAGE_MAX_LENGTH,
+  FEEDBACK_SCREENSHOT_MAX_BYTES,
+  formatBytes,
   isChoiceId,
+  parseFeedbackCategory,
   isSectionId,
   parseAnonymousProgressState,
   validateDisplayName,
+  validateFeedbackMessage,
+  validateFeedbackScreenshot,
   validateQuestionData,
 } from "../../../lib/shared/validation";
 import type { Question } from "../../../types";
@@ -150,6 +156,84 @@ describe("validation helpers", () => {
       ok: false,
       value: null,
       errors: [`Display name must be ${DISPLAY_NAME_MAX_LENGTH} characters or fewer`],
+    });
+
+    expect(validateDisplayName("Yudai\u0000Tanaka")).toEqual({
+      ok: false,
+      value: null,
+      errors: ["Display name contains unsupported control characters"],
+    });
+  });
+
+  it("parses feedback categories", () => {
+    expect(parseFeedbackCategory("bug")).toBe("bug");
+    expect(parseFeedbackCategory("feature_request")).toBe("feature_request");
+    expect(parseFeedbackCategory("other")).toBe("other");
+    expect(parseFeedbackCategory("unknown")).toBeNull();
+  });
+
+  it("validates feedback messages", () => {
+    expect(validateFeedbackMessage("  something happened  ")).toEqual({
+      ok: true,
+      value: "something happened",
+      errors: [],
+    });
+
+    expect(validateFeedbackMessage("   ")).toEqual({
+      ok: false,
+      value: null,
+      errors: ["本文を入力してください"],
+    });
+
+    expect(validateFeedbackMessage("a".repeat(FEEDBACK_MESSAGE_MAX_LENGTH + 1))).toEqual({
+      ok: false,
+      value: null,
+      errors: [`本文は ${FEEDBACK_MESSAGE_MAX_LENGTH} 文字以内で入力してください`],
+    });
+  });
+
+  it("validates feedback screenshots", () => {
+    const file = new File(["hello"], "capture.png", { type: "image/png" });
+    const result = validateFeedbackScreenshot(file);
+
+    expect(result.ok).toBe(true);
+    expect(result.value).toEqual({
+      filename: "capture.png",
+      contentType: "image/png",
+      sizeBytes: 5,
+      base64: "",
+    });
+
+    const invalidType = new File(["hello"], "capture.gif", { type: "image/gif" });
+    expect(validateFeedbackScreenshot(invalidType)).toEqual({
+      ok: false,
+      value: null,
+      errors: ["スクリーンショットは PNG / JPEG / WebP のいずれかを選択してください"],
+    });
+
+    const largeFile = new File(["a".repeat(FEEDBACK_SCREENSHOT_MAX_BYTES + 1)], "large.png", {
+      type: "image/png",
+    });
+    expect(validateFeedbackScreenshot(largeFile)).toEqual({
+      ok: false,
+      value: null,
+      errors: [
+        `スクリーンショットは ${formatBytes(FEEDBACK_SCREENSHOT_MAX_BYTES)} 以内にしてください`,
+      ],
+    });
+
+    expect(validateFeedbackScreenshot({})).toEqual({
+      ok: false,
+      value: null,
+      errors: ["画像ファイルを選択してください"],
+    });
+
+    expect(
+      validateFeedbackScreenshot(new File([], "empty.png", { type: "image/png" })),
+    ).toEqual({
+      ok: true,
+      value: null,
+      errors: [],
     });
   });
 });

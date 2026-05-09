@@ -12,6 +12,7 @@ export type Region = "JP" | "US";
 export type Currency = "JPY" | "USD";
 export type CategoryKey = string;
 export type LegalDocumentKind = "terms" | "privacy";
+export type FeedbackCategory = "bug" | "feature_request" | "other";
 
 export type UserPreferences = {
   locale: Locale;
@@ -131,12 +132,14 @@ export type ApiSuccess<T> = {
 export type AppErrorCode =
   | "UNAUTHORIZED"
   | "INVALID_SECTION"
+  | "INVALID_FEEDBACK"
   | "QUESTION_NOT_FOUND"
   | "QUESTION_DATA_INVALID"
   | "ATTEMPT_NOT_FOUND"
   | "ANSWER_ALREADY_EXISTS"
   | "PROGRESS_FETCH_FAILED"
   | "PROGRESS_SAVE_FAILED"
+  | "FEEDBACK_SAVE_FAILED"
   | "DB_ERROR"
   | "UNKNOWN";
 
@@ -169,6 +172,17 @@ export type UpdateProfileRequest = {
 
 export type UserProfile = {
   displayName: string;
+};
+
+export type SubmitFeedbackRequest = {
+  category: FeedbackCategory;
+  message: string;
+  screenshot?: File | null;
+};
+
+export type FeedbackSubmission = {
+  id: string;
+  createdAt: string;
 };
 
 export type MigrateProgressResultReason =

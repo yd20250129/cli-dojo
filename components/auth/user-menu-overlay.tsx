@@ -15,6 +15,7 @@ import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 
 import { AuthOverlayFrame } from "@/components/auth/auth-overlay-frame";
+import { SettingsFeedbackForm } from "@/components/settings-feedback-form";
 import { SettingsSections } from "@/components/settings-sections";
 import { resolveLoginMethod } from "@/lib/shared/auth-methods";
 import { Button } from "@/components/ui/button";
@@ -33,7 +34,7 @@ export function UserMenuOverlay({ locale, onClose }: UserMenuOverlayProps) {
   const router = useRouter();
   const clerk = useClerk();
   const { user } = useUser();
-  const [activeView, setActiveView] = useState<"menu" | "account">("menu");
+  const [activeView, setActiveView] = useState<"menu" | "account" | "feedback">("menu");
 
   const handleSignOut = async () => {
     try {
@@ -52,9 +53,6 @@ export function UserMenuOverlay({ locale, onClose }: UserMenuOverlayProps) {
   const loginMethod = resolveLoginMethod(user);
   const privacyPolicyUrl = getLegalUrl("privacy", locale, "JP");
   const termsUrl = getLegalUrl("terms", locale, "JP");
-  const handleFeedbackSelection = () => {
-    toast.success(t("settings.feedbackSent"));
-  };
 
   useEffect(() => {
     setDisplayName(fallbackName);
@@ -94,6 +92,10 @@ export function UserMenuOverlay({ locale, onClose }: UserMenuOverlayProps) {
               onNameUpdated={setDisplayName}
             />
           </div>
+        ) : activeView === "feedback" ? (
+          <div className="max-h-[60vh] overflow-y-auto bg-surface-warm p-5">
+            <SettingsFeedbackForm locale={locale} onSubmitted={() => setActiveView("menu")} />
+          </div>
         ) : (
           <div className="divide-y divide-border">
             <button
@@ -131,7 +133,7 @@ export function UserMenuOverlay({ locale, onClose }: UserMenuOverlayProps) {
             <button
               type="button"
               className="flex w-full items-center gap-3 px-5 py-4 text-left text-foreground transition-colors hover:bg-surface-subtle"
-              onClick={handleFeedbackSelection}
+              onClick={() => setActiveView("feedback")}
             >
               <MessageSquare className="size-4 text-muted-foreground" />
               <span className="text-sm font-medium">{t("settings.feedbackLabel")}</span>

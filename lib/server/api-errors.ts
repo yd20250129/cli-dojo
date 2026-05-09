@@ -3,12 +3,14 @@ import type { AppErrorCode } from "@/types";
 const messages: Record<AppErrorCode, string> = {
   UNAUTHORIZED: "再ログインしてください",
   INVALID_SECTION: "セクションが見つかりません",
+  INVALID_FEEDBACK: "フィードバックの入力内容を確認してください",
   QUESTION_NOT_FOUND: "問題データがありません",
   QUESTION_DATA_INVALID: "問題データに不整合があります",
   ATTEMPT_NOT_FOUND: "学習結果が見つかりません",
   ANSWER_ALREADY_EXISTS: "この問題は回答済みです",
   PROGRESS_FETCH_FAILED: "進捗を読み込めませんでした",
   PROGRESS_SAVE_FAILED: "進捗を保存できませんでした。学習は続けられます",
+  FEEDBACK_SAVE_FAILED: "フィードバックを保存できませんでした",
   DB_ERROR: "データベース処理に失敗しました",
   UNKNOWN: "エラーが発生しました",
 };

@@ -253,6 +253,25 @@
     "terms": {
       "menuLabel": "利用規約"
     },
-    "feedbackSent": "フィードバック機能は準備中です（スタブ）"
+    "feedback": {
+      "form": {
+        "title": "ご意見・ご要望",
+        "categoryLabel": "カテゴリ",
+        "messageLabel": "本文",
+        "messagePlaceholder": "発生した状況や改善してほしい内容を入力してください",
+        "screenshotLabel": "スクリーンショット（任意）",
+        "screenshotHint": "PNG / JPEG / WebP を1枚まで添付できます。最大 {{maxSize}}。",
+        "removeScreenshot": "スクリーンショットを外す",
+        "notice": "送信内容は CLI Dojo の改善に利用します。個人情報や機密情報は含めないでください。",
+        "submit": "送信する",
+        "submitSuccess": "フィードバックを送信しました",
+        "submitError": "フィードバックの送信に失敗しました",
+        "categories": {
+          "bug": "不具合",
+          "feature_request": "改善要望",
+          "other": "その他"
+        }
+      }
+    }
   }
 }

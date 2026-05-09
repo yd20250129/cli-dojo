@@ -121,6 +121,7 @@ db/migrations/008_stop_writing_account_compatibility_fields.sql
 db/migrations/009_drop_account_compatibility_columns.sql
 db/migrations/010_drop_legacy_learner_support.sql
 db/migrations/011_add_user_display_name.sql
+db/migrations/012_create_feedback_submissions.sql
 ```
 
 Manual operation helper:
