@@ -120,6 +120,7 @@ db/migrations/007_add_canonical_user_profile_fields.sql
 db/migrations/008_stop_writing_account_compatibility_fields.sql
 db/migrations/009_drop_account_compatibility_columns.sql
 db/migrations/010_drop_legacy_learner_support.sql
+db/migrations/011_add_user_display_name.sql
 ```
 
 Manual operation helper:

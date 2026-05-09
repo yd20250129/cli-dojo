@@ -1,9 +1,11 @@
 import { describe, expect, it } from "vitest";
 
 import {
+  DISPLAY_NAME_MAX_LENGTH,
   isChoiceId,
   isSectionId,
   parseAnonymousProgressState,
+  validateDisplayName,
   validateQuestionData,
 } from "../../../lib/shared/validation";
 import type { Question } from "../../../types";
@@ -127,5 +129,27 @@ describe("validation helpers", () => {
         "Duplicate question id: SEC01-001",
       ]),
     );
+  });
+
+  it("normalizes a valid display name", () => {
+    expect(validateDisplayName("  Yudai   Tanaka  ")).toEqual({
+      ok: true,
+      value: "Yudai Tanaka",
+      errors: [],
+    });
+  });
+
+  it("rejects invalid display names", () => {
+    expect(validateDisplayName("   ")).toEqual({
+      ok: false,
+      value: null,
+      errors: ["Display name is required"],
+    });
+
+    expect(validateDisplayName("a".repeat(DISPLAY_NAME_MAX_LENGTH + 1))).toEqual({
+      ok: false,
+      value: null,
+      errors: [`Display name must be ${DISPLAY_NAME_MAX_LENGTH} characters or fewer`],
+    });
   });
 });

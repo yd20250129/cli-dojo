@@ -20,6 +20,13 @@ function getVerifiedPrimaryEmail(
     : null;
 }
 
+function getClerkDisplayName(
+  user: Awaited<ReturnType<typeof currentUser>>,
+): string | null {
+  const displayName = user?.fullName?.trim() || user?.username?.trim();
+  return displayName || null;
+}
+
 export async function getAuthenticatedUser() {
   const { userId } = await auth();
 
@@ -36,5 +43,6 @@ export async function getAuthenticatedUser() {
   return getOrCreateAuthenticatedUser({
     clerkUserId: userId,
     verifiedEmail: getVerifiedPrimaryEmail(clerkUser),
+    displayName: getClerkDisplayName(clerkUser),
   });
 }

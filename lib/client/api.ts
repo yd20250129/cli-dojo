@@ -11,6 +11,8 @@ import type {
   SectionAttempt,
   SectionId,
   SectionResult,
+  UpdateProfileRequest,
+  UserProfile,
 } from "@/types";
 
 export class ApiRequestError extends Error {
@@ -106,4 +108,11 @@ export function fetchSectionResult(sectionId: SectionId, attemptId?: string) {
   const query = attemptId ? `?attemptId=${encodeURIComponent(attemptId)}` : "";
 
   return requestJson<SectionResult | null>(`/api/sections/${sectionId}/result${query}`);
+}
+
+export function updateProfile(request: UpdateProfileRequest) {
+  return requestJson<UserProfile>("/api/settings/profile", {
+    method: "PATCH",
+    body: JSON.stringify(request),
+  });
 }

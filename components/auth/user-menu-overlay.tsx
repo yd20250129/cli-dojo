@@ -10,12 +10,13 @@ import {
   Settings2,
   ShieldCheck,
 } from "lucide-react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 
 import { AuthOverlayFrame } from "@/components/auth/auth-overlay-frame";
 import { SettingsSections } from "@/components/settings-sections";
+import { resolveLoginMethod } from "@/lib/shared/auth-methods";
 import { Button } from "@/components/ui/button";
 import { UserAvatar } from "@/components/ui/user-avatar";
 import { getTranslator } from "@/lib/i18n";
@@ -44,14 +45,20 @@ export function UserMenuOverlay({ locale, onClose }: UserMenuOverlayProps) {
     }
   };
 
-  const displayName = user?.fullName || user?.username || "User";
+  const fallbackName = user?.fullName || user?.username || "User";
+  const [displayName, setDisplayName] = useState(fallbackName);
   const email = user?.primaryEmailAddress?.emailAddress || "";
   const imageUrl = user?.imageUrl || "";
+  const loginMethod = resolveLoginMethod(user);
   const privacyPolicyUrl = getLegalUrl("privacy", locale, "JP");
   const termsUrl = getLegalUrl("terms", locale, "JP");
   const handleFeedbackSelection = () => {
     toast.success(t("settings.feedbackSent"));
   };
+
+  useEffect(() => {
+    setDisplayName(fallbackName);
+  }, [fallbackName]);
 
   return (
     <AuthOverlayFrame onClose={onClose} className="max-w-lg">
@@ -82,7 +89,9 @@ export function UserMenuOverlay({ locale, onClose }: UserMenuOverlayProps) {
               imageUrl={imageUrl}
               name={displayName}
               email={email}
+              loginMethod={loginMethod}
               showAvatar={false}
+              onNameUpdated={setDisplayName}
             />
           </div>
         ) : (

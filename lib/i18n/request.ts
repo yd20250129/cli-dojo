@@ -29,6 +29,13 @@ function getVerifiedPrimaryEmail(
     : null;
 }
 
+function getClerkDisplayName(
+  user: Awaited<ReturnType<typeof currentUser>>,
+): string | null {
+  const displayName = user?.fullName?.trim() || user?.username?.trim();
+  return displayName || null;
+}
+
 export async function resolveRequestPreferences(): Promise<UserPreferences> {
   const cookieStore = await cookies();
   const cookieLocale = cookieStore.get(localeCookieName)?.value;
@@ -53,6 +60,7 @@ export async function resolveRequestPreferences(): Promise<UserPreferences> {
   const userProfile = await getOrCreateAuthenticatedUser({
     clerkUserId: userId,
     verifiedEmail: getVerifiedPrimaryEmail(user),
+    displayName: getClerkDisplayName(user),
   });
 
   return {

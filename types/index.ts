@@ -32,11 +32,14 @@ export type AnonymousProgressState = Partial<Record<SectionId, AnonymousSectionP
 export type AuthenticatedUser = UserPreferences & {
   userId: string;
   clerkUserId: string;
+  displayName: string | null;
   canonicalEmail: string | null;
   canonicalEmailVerified: boolean;
   createdAt: string;
   updatedAt: string;
 };
+
+export type LoginMethod = "email" | "google" | "github" | "unknown";
 
 export type Section = {
   id: SectionId;
@@ -158,6 +161,14 @@ export type SaveAnswerRequest = {
 
 export type MigrateAnonymousProgressRequest = {
   anonymousProgress: AnonymousProgressState;
+};
+
+export type UpdateProfileRequest = {
+  displayName: string;
+};
+
+export type UserProfile = {
+  displayName: string;
 };
 
 export type MigrateProgressResultReason =

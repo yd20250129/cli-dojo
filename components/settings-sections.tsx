@@ -1,23 +1,26 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { toast } from "sonner";
 import { Loader2 } from "lucide-react";
 import { useUser } from "@clerk/nextjs";
 
+import { updateProfile } from "@/lib/client/api";
 import { getTranslator } from "@/lib/i18n";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { UserAvatar } from "@/components/ui/user-avatar";
-import type { Locale } from "@/types";
+import type { Locale, LoginMethod } from "@/types";
 
 type SettingsSectionsProps = {
   locale: Locale;
   imageUrl: string;
   name: string;
   email: string;
+  loginMethod: LoginMethod;
   showAvatar?: boolean;
+  onNameUpdated?: (name: string) => void;
 };
 
 export function SettingsSections({
@@ -25,7 +28,9 @@ export function SettingsSections({
   imageUrl,
   name: initialName,
   email,
+  loginMethod,
   showAvatar = true,
+  onNameUpdated,
 }: SettingsSectionsProps) {
   const t = getTranslator(locale);
   const { user } = useUser();
@@ -33,18 +38,20 @@ export function SettingsSections({
   const [editedName, setEditedName] = useState(initialName);
   const [isSavingName, setIsSavingName] = useState(false);
 
-  const handleSaveName = async () => {
-    if (!user) {
-      return;
+  useEffect(() => {
+    if (!isEditingName) {
+      setEditedName(initialName);
     }
+  }, [initialName, isEditingName]);
 
+  const handleSaveName = async () => {
     setIsSavingName(true);
 
     try {
-      const parts = editedName.trim().split(" ");
-      const firstName = parts[0] || "";
-      const lastName = parts.slice(1).join(" ") || "";
-      await user.update({ firstName, lastName });
+      const profile = await updateProfile({ displayName: editedName });
+      await user?.reload();
+      setEditedName(profile.displayName);
+      onNameUpdated?.(profile.displayName);
       toast.success(t("settings.profile.nameUpdated"));
       setIsEditingName(false);
     } catch {
@@ -91,7 +98,7 @@ export function SettingsSections({
                     variant="ghost"
                     onClick={() => {
                       setIsEditingName(false);
-                      setEditedName(user?.fullName || initialName);
+                      setEditedName(initialName);
                     }}
                     disabled={isSavingName}
                   >
@@ -101,7 +108,7 @@ export function SettingsSections({
               </div>
             ) : (
               <div className="flex items-center justify-between gap-3">
-                <div className="font-medium text-foreground">{user?.fullName || initialName}</div>
+                <div className="font-medium text-foreground">{initialName}</div>
                 <Button size="sm" variant="outline" onClick={() => setIsEditingName(true)}>
                   {t("settings.profile.editName")}
                 </Button>
@@ -115,6 +122,15 @@ export function SettingsSections({
             {t("settings.profile.emailLabel")}
           </div>
           <div className="text-foreground">{email}</div>
+        </div>
+
+        <div className="space-y-1 border-t border-border pt-4">
+          <div className="text-sm font-medium text-muted-foreground">
+            {t("settings.profile.loginMethodLabel")}
+          </div>
+          <div className="text-foreground">
+            {t(`settings.profile.loginMethod.${loginMethod}`)}
+          </div>
         </div>
 
         <div className="rounded-md border border-border bg-surface-subtle p-3 text-sm text-muted-foreground">

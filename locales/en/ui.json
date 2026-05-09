@@ -106,6 +106,13 @@
       "nameUpdated": "Name updated successfully",
       "nameUpdateFailed": "Failed to update name",
       "emailLabel": "Email Address",
+      "loginMethodLabel": "Current login method",
+      "loginMethod": {
+        "email": "Email / Password",
+        "google": "Google",
+        "github": "GitHub",
+        "unknown": "Unknown"
+      },
       "providerNotice": "Authentication settings are managed by your provider (Google/GitHub, etc.)."
     },
     "privacy": {

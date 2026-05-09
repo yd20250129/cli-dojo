@@ -10,6 +10,7 @@ import type { AuthenticatedUser } from "@/types";
 type UserRow = {
   id: string;
   clerk_user_id: string;
+  display_name: string | null;
   canonical_email: string | null;
   canonical_email_verified: boolean;
   locale: string;
@@ -28,6 +29,7 @@ function mapAuthenticatedUser(row: UserRow): AuthenticatedUser {
   return {
     userId: row.id,
     clerkUserId: row.clerk_user_id,
+    displayName: row.display_name,
     canonicalEmail: row.canonical_email,
     canonicalEmailVerified: row.canonical_email_verified,
     locale: isLocale(row.locale) ? row.locale : defaultUserPreferences.locale,
@@ -50,6 +52,11 @@ function isUniqueViolation(error: unknown) {
 
 function normalizeEmail(email: string | null | undefined) {
   const value = email?.trim().toLowerCase();
+  return value ? value : null;
+}
+
+function normalizeDisplayName(displayName: string | null | undefined) {
+  const value = displayName?.trim().replace(/\s+/g, " ");
   return value ? value : null;
 }
 
@@ -112,10 +119,29 @@ async function syncCanonicalEmail(userId: string, verifiedEmail?: string | null)
   `;
 }
 
+async function syncDisplayName(userId: string, displayName?: string | null) {
+  const normalizedDisplayName = normalizeDisplayName(displayName);
+
+  if (!normalizedDisplayName) {
+    return;
+  }
+
+  const sql = getSql();
+  await sql`
+    UPDATE users
+    SET
+      display_name = ${normalizedDisplayName},
+      updated_at = now()
+    WHERE id = ${userId}
+      AND display_name IS DISTINCT FROM ${normalizedDisplayName}
+  `;
+}
+
 async function ensureUserIdentity(params: {
   userId: string;
   clerkUserId: string;
   verifiedEmail?: string | null;
+  displayName?: string | null;
 }) {
   const sql = getSql();
   const email = normalizeEmail(params.verifiedEmail);
@@ -143,6 +169,7 @@ async function ensureUserIdentity(params: {
   `;
 
   await syncCanonicalEmail(params.userId, email);
+  await syncDisplayName(params.userId, params.displayName);
 }
 
 async function findLinkedUserIdByVerifiedEmail(email: string) {
@@ -163,12 +190,15 @@ async function findLinkedUserIdByVerifiedEmail(email: string) {
 async function createUser(params: {
   clerkUserId: string;
   verifiedEmail?: string | null;
+  displayName?: string | null;
 }) {
   const sql = getSql();
   const email = normalizeEmail(params.verifiedEmail);
+  const displayName = normalizeDisplayName(params.displayName);
   const rows = await sql`
     WITH new_user AS (
       INSERT INTO users (
+        display_name,
         canonical_email,
         canonical_email_verified,
         locale,
@@ -177,6 +207,7 @@ async function createUser(params: {
         currency
       )
       VALUES (
+        ${displayName},
         ${email},
         ${Boolean(email)},
         ${defaultUserPreferences.locale},
@@ -214,8 +245,10 @@ async function createUser(params: {
 export async function getOrCreateAuthenticatedUser(params: {
   clerkUserId: string;
   verifiedEmail?: string | null;
+  displayName?: string | null;
 }): Promise<AuthenticatedUser> {
   const email = normalizeEmail(params.verifiedEmail);
+  const displayName = normalizeDisplayName(params.displayName);
   const existingIdentityUser = await getUserByIdentity(params.clerkUserId);
 
   if (existingIdentityUser) {
@@ -223,6 +256,7 @@ export async function getOrCreateAuthenticatedUser(params: {
       userId: existingIdentityUser.userId,
       clerkUserId: params.clerkUserId,
       verifiedEmail: email,
+      displayName,
     });
 
     const syncedUser =
@@ -239,6 +273,7 @@ export async function getOrCreateAuthenticatedUser(params: {
         userId: linkedUserId,
         clerkUserId: params.clerkUserId,
         verifiedEmail: email,
+        displayName,
       });
 
       const linkedUser = await getUserById(linkedUserId, params.clerkUserId);
@@ -253,6 +288,7 @@ export async function getOrCreateAuthenticatedUser(params: {
     return await createUser({
       clerkUserId: params.clerkUserId,
       verifiedEmail: email,
+      displayName,
     });
   } catch (error) {
     if (!isUniqueViolation(error)) {
@@ -270,9 +306,36 @@ export async function getOrCreateAuthenticatedUser(params: {
       userId: user.userId,
       clerkUserId: params.clerkUserId,
       verifiedEmail: email,
+      displayName,
     });
 
     const syncedUser = (await getUserById(user.userId, params.clerkUserId)) ?? user;
     return syncedUser;
   }
+}
+
+export async function updateUserDisplayName(params: {
+  userId: string;
+  clerkUserId: string;
+  displayName: string;
+}) {
+  const normalizedDisplayName = normalizeDisplayName(params.displayName);
+
+  if (!normalizedDisplayName) {
+    throw new Error("displayName is required");
+  }
+
+  const sql = getSql();
+  const rows = await sql`
+    UPDATE users
+    SET
+      display_name = ${normalizedDisplayName},
+      updated_at = now()
+    WHERE id = ${params.userId}
+    RETURNING
+      users.*,
+      ${params.clerkUserId}::text AS clerk_user_id
+  `;
+
+  return mapAuthenticatedUser(rows[0] as UserRow);
 }

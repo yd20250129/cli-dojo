@@ -237,6 +237,13 @@
       "nameUpdated": "ユーザー名を更新しました",
       "nameUpdateFailed": "ユーザー名の更新に失敗しました",
       "emailLabel": "メールアドレス",
+      "loginMethodLabel": "現在のログイン方法",
+      "loginMethod": {
+        "email": "Email / Password",
+        "google": "Google",
+        "github": "GitHub",
+        "unknown": "不明"
+      },
       "providerNotice": "認証情報の変更は、ご利用のプロバイダー（Google/GitHubなど）側で管理されます。"
     },
     "privacy": {
