@@ -3,7 +3,7 @@
 import { useAuth } from "@clerk/nextjs";
 import Link from "next/link";
 import { useEffect, useMemo, useState, useSyncExternalStore } from "react";
-import { ArrowRight, CheckCircle2, CircleGauge, Sparkles } from "lucide-react";
+import { ArrowRight, CheckCircle2, CircleGauge, Sparkles, TrendingUp } from "lucide-react";
 
 import { getTranslator } from "@/lib/i18n";
 import { AppHeader } from "@/components/app-header";
@@ -113,15 +113,15 @@ export function HomeView({ locale, sections }: HomeViewProps) {
         <section className="grid gap-5 lg:grid-cols-[1.2fr_0.8fr]">
           <div className="flex h-full flex-col justify-center space-y-6 lg:pr-8">
             <div className="flex flex-wrap items-center gap-2">
-              <span className="inline-flex items-center gap-1 rounded-full border border-primary/20 bg-primary/10 px-3 py-1 text-xs font-medium text-primary">
+              <span className="inline-flex items-center gap-1 rounded-full border border-primary/20 bg-card px-3 py-1 text-xs font-medium text-primary">
                 <Sparkles className="size-3.5" />
                 {t("home.badges.commandLearner")}
               </span>
-              <span className="inline-flex items-center gap-1 rounded-full border border-border bg-surface-subtle px-3 py-1 text-xs font-medium text-muted-foreground">
+              <span className="inline-flex items-center gap-1 rounded-full border border-border bg-card px-3 py-1 text-xs font-medium text-foreground/70">
                 <CheckCircle2 className="size-3.5" />
                 {t("home.badges.recordSupport")}
               </span>
-              <span className="inline-flex items-center gap-1 rounded-full border border-border bg-surface-subtle px-3 py-1 text-xs font-medium text-muted-foreground">
+              <span className="inline-flex items-center gap-1 rounded-full border border-border bg-card px-3 py-1 text-xs font-medium text-foreground/70">
                 <CircleGauge className="size-3.5" />
                 {t("home.badges.sectionCount")}
               </span>
@@ -140,7 +140,7 @@ export function HomeView({ locale, sections }: HomeViewProps) {
               {t("home.hero.description")}
             </p>
           </div>
-          <Card className="self-start border-border bg-surface-raised shadow-sm backdrop-blur">
+          <Card className="self-start border-border bg-surface-raised shadow-sm">
             <CardHeader>
               <CardTitle>{t("home.summary.title")}</CardTitle>
               <p className="text-sm text-muted-foreground">
@@ -154,24 +154,37 @@ export function HomeView({ locale, sections }: HomeViewProps) {
             <CardContent className="space-y-4">
               <Progress value={percent(visibleProgress?.overallProgressRate ?? 0)} />
               <div className="grid grid-cols-2 gap-3">
-                <div className="rounded-xl border border-border bg-surface-subtle p-3">
-                  <p className="text-sm text-muted-foreground">{t("home.summary.progressRate")}</p>
-                  <p className="text-2xl font-semibold">{percent(visibleProgress?.overallProgressRate ?? 0)}%</p>
+                <div className="flex items-center justify-center gap-3.5">
+                  <TrendingUp className="size-8 shrink-0 text-cta-warm-border" />
+                  <div>
+                    <p className="text-sm text-muted-foreground">{t("home.summary.progressRate")}</p>
+                    <p className="text-2xl font-semibold">{percent(visibleProgress?.overallProgressRate ?? 0)}%</p>
+                  </div>
                 </div>
-                <div className="rounded-xl border border-border bg-surface-subtle p-3">
-                  <p className="text-sm text-muted-foreground">{t("home.summary.correctRate")}</p>
-                  <p className="text-2xl font-semibold">{percent(visibleProgress?.overallCorrectRate ?? 0)}%</p>
+                <div className="flex items-center justify-center gap-3.5">
+                  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="size-8 shrink-0 text-cta-warm-border" aria-hidden="true">
+                    <circle cx="12" cy="12" r="10" />
+                    <circle cx="12" cy="12" r="6" />
+                  </svg>
+                  <div>
+                    <p className="text-sm text-muted-foreground">{t("home.summary.correctRate")}</p>
+                    <p className="text-2xl font-semibold">{percent(visibleProgress?.overallCorrectRate ?? 0)}%</p>
+                  </div>
                 </div>
               </div>
               {visibleError ? <p className="text-sm text-status-error">{visibleError}</p> : null}
             </CardContent>
             <CardFooter>
               {isSignedIn ? (
-                <Button asChild variant="outline" className="w-full">
+                <Button asChild variant="outline" className="w-full border-2 border-primary/30 bg-card text-primary hover:bg-primary/5">
                   <Link href="/progress">{t("home.summary.details")}</Link>
                 </Button>
               ) : (
-                <Button variant="outline" className="w-full" onClick={openSignInModal}>
+                <Button
+                  variant="outline"
+                  className="w-full border-cta-warm-border bg-cta-warm-bg text-cta-warm-text hover:bg-cta-warm-bg/80"
+                  onClick={openSignInModal}
+                >
                   {t("home.summary.signInPrompt")}
                 </Button>
               )}

@@ -88,6 +88,10 @@
   --color-badge-notstarted-bg:   var(--badge-notstarted-bg);
   --color-badge-notstarted-text: var(--badge-notstarted-text);
 
+  --color-cta-warm-bg:     var(--cta-warm-bg);
+  --color-cta-warm-border: var(--cta-warm-border);
+  --color-cta-warm-text:   var(--cta-warm-text);
+
   --letter-spacing-eyebrow:      var(--tracking-eyebrow);
 }
 
@@ -191,8 +195,15 @@
   --surface-page:        var(--color-neutral-100);
   --surface-raised:      oklch(1 0 0 / 90%);
   --surface-subtle:      var(--color-neutral-150);
-  --surface-warm:        var(--color-warm-50);
-  --surface-warm-border: oklch(0.90 0.025 95);
+
+  /* Header: 案A = amber-yellow / 案B = warm-gray. Switch by commenting one pair. */
+  --surface-warm:        oklch(0.94 0.01 95);
+  --surface-warm-border: oklch(0.88 0.01 95);
+
+  /* CTA warm: login/prompt button yellow fill */
+  --cta-warm-bg:     oklch(0.93 0.09 80);
+  --cta-warm-border: oklch(0.82 0.11 78);
+  --cta-warm-text:   oklch(0.34 0.10 65);
 
   /* Text hierarchy */
   --text-secondary:      var(--color-neutral-700);
@@ -284,8 +295,12 @@
   --surface-page:        oklch(0.13 0.01 235);
   --surface-raised:      oklch(0.18 0.01 235 / 92%);
   --surface-subtle:      oklch(0.23 0.01 235);
-  --surface-warm:        oklch(0.18 0.01 235);
-  --surface-warm-border: oklch(0.28 0.01 235);
+  --surface-warm:        oklch(0.17 0.02 235);
+  --surface-warm-border: oklch(0.27 0.01 235);
+
+  --cta-warm-bg:     oklch(0.22 0.07 80);
+  --cta-warm-border: oklch(0.38 0.10 78);
+  --cta-warm-text:   oklch(0.82 0.10 78);
 
   --text-secondary:      oklch(0.80 0.01 235);
   --text-tertiary:       oklch(0.65 0.01 235);

@@ -43,7 +43,7 @@ export function AppHeader({ locale }: { locale: Locale }) {
 
   return (
     <>
-      <header className="sticky top-0 z-30 border-b border-surface-warm-border bg-surface-warm/90 backdrop-blur supports-[backdrop-filter]:bg-surface-warm/80">
+      <header className="sticky top-0 z-30 shadow-sm bg-surface-warm/95 backdrop-blur supports-[backdrop-filter]:bg-surface-warm/95">
         <div className="mx-auto flex w-full max-w-6xl flex-col gap-3 px-4 py-3 sm:flex-row sm:items-center sm:justify-between">
         <div className="flex items-center justify-between gap-3">
           <Link className="font-mono text-lg font-semibold tracking-normal" href="/">
