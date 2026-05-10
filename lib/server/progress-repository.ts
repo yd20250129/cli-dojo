@@ -119,9 +119,10 @@ export async function getOrCreateCurrentAttempt(params: {
 export async function createRetryAttempt(params: {
   userId: string;
   sectionId: SectionId;
+  totalQuestions?: number;
 }): Promise<CurrentSectionAttempt> {
   const sql = getSql();
-  const totalQuestions = getTotalQuestions(params.sectionId);
+  const totalQuestions = params.totalQuestions ?? getTotalQuestions(params.sectionId);
   const rows = await sql`
     INSERT INTO section_attempts (
       user_id,
@@ -351,17 +352,17 @@ export async function getProgressSummary(userId: string): Promise<ProgressSummar
 
   const aggregateRows = await sql`
     SELECT
-      attempt_id,
-      COUNT(*)::int AS answered_count,
-      COALESCE(SUM(CASE WHEN is_correct THEN 1 ELSE 0 END), 0)::int AS correct_count,
+      section_id,
+      COUNT(DISTINCT question_id)::int AS answered_count,
+      COUNT(DISTINCT CASE WHEN is_correct THEN question_id END)::int AS correct_count,
       MAX(answered_at) AS latest_answered_at
     FROM answer_records
     WHERE user_id = ${userId}
-    GROUP BY attempt_id
+    GROUP BY section_id
   `;
-  const aggregateByAttempt = new Map(
+  const aggregateBySection = new Map(
     aggregateRows.map((row) => [
-      String(row.attempt_id),
+      String(row.section_id),
       {
         answeredCount: Number(row.answered_count),
         correctCount: Number(row.correct_count),
@@ -374,7 +375,7 @@ export async function getProgressSummary(userId: string): Promise<ProgressSummar
 
   const sectionProgress: SectionProgress[] = sections.map((section) => {
     const attempt = latestBySection.get(section.id);
-    const aggregate = attempt ? aggregateByAttempt.get(attempt.id) : null;
+    const aggregate = aggregateBySection.get(section.id);
     const answeredCount = aggregate?.answeredCount ?? 0;
     const correctCount = aggregate?.correctCount ?? 0;
     const totalQuestions = getTotalQuestions(section.id);
@@ -384,14 +385,11 @@ export async function getProgressSummary(userId: string): Promise<ProgressSummar
       answeredCount,
       correctCount,
       totalQuestions,
-      correctRate: answeredCount === 0 ? 0 : correctCount / answeredCount,
+      correctRate: totalQuestions === 0 ? 0 : correctCount / totalQuestions,
       latestAttemptNo: attempt?.attempt_no ?? null,
       latestAnsweredAt: aggregate?.latestAnsweredAt ?? null,
       isCompleted: answeredCount >= totalQuestions,
-      isPerfect:
-        attempt?.status === "completed" &&
-        totalQuestions > 0 &&
-        correctCount === totalQuestions,
+      isPerfect: totalQuestions > 0 && correctCount === totalQuestions,
     };
   });
 
@@ -415,7 +413,7 @@ export async function getProgressSummary(userId: string): Promise<ProgressSummar
     overallProgressRate:
       totalQuestionCount === 0 ? 0 : totalAnsweredCount / totalQuestionCount,
     overallCorrectRate:
-      totalAnsweredCount === 0 ? 0 : totalCorrectCount / totalAnsweredCount,
+      totalQuestionCount === 0 ? 0 : totalCorrectCount / totalQuestionCount,
     sections: sectionProgress,
   };
 }
@@ -431,7 +429,8 @@ function getAnonymousAnswerEntries(
   }
 
   return getQuestionsBySectionId(sectionId).flatMap((question) => {
-    const selectedChoiceId = sectionState.answers[question.id];
+    const selectedChoiceId =
+      sectionState.cumulativeAnswers?.[question.id] ?? sectionState.answers[question.id];
 
     if (!selectedChoiceId) {
       return [];

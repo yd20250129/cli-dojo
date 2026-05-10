@@ -91,7 +91,8 @@
       "answer": "正解"
     },
     "actions": {
-      "retry": "もう一度挑戦"
+      "retryIncorrect": "間違えた問題に再チャレンジ",
+      "retryAll": "1問目から再チャレンジ"
     },
     "messages": {
       "perfect": "全問正解です",

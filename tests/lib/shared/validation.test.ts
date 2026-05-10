@@ -56,6 +56,11 @@ describe("validation helpers", () => {
         answers: {
           "SEC01-001": "A",
         },
+        cumulativeAnswers: {
+          "SEC01-001": "A",
+        },
+        correctQuestionIds: [],
+        currentQuestionIds: null,
         latestAnsweredAt: "2026-05-01T00:00:00.000Z",
       },
     });

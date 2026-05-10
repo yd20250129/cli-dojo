@@ -25,6 +25,9 @@ export type AttemptStatus = "in_progress" | "completed";
 
 export type AnonymousSectionProgress = {
   answers: Record<string, ChoiceId>;
+  cumulativeAnswers: Record<string, ChoiceId>;
+  correctQuestionIds: string[];
+  currentQuestionIds: string[] | null;
   latestAnsweredAt: string | null;
 };
 
@@ -153,6 +156,7 @@ export type ApiErrorResponse = {
 export type CreateAttemptRequest = {
   sectionId: SectionId;
   retry?: boolean;
+  questionIds?: string[];
 };
 
 export type SaveAnswerRequest = {

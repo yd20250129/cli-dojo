@@ -20,8 +20,9 @@ import {
 } from "@/components/ui/card";
 import { Progress } from "@/components/ui/progress";
 import {
-  clearAnonymousSectionProgress,
+  getAnonymousIncorrectQuestionIds,
   getAnonymousSectionResult,
+  resetAnonymousSectionAttempt,
 } from "@/lib/client/anonymous-progress";
 import { fetchSectionResult, startAttempt } from "@/lib/client/api";
 import type { Locale, Section, SectionResult } from "@/types";
@@ -112,17 +113,46 @@ export function ResultView({ locale, section, attemptId, anonymous = false }: Re
     };
   }, [anonymous, attemptId, isLoaded, isSignedIn, locale, section.id]);
 
-  async function handleRetry() {
+  async function handleRetryAll() {
     setRetrying(true);
 
     if (!isSignedIn) {
-      clearAnonymousSectionProgress(section.id);
+      resetAnonymousSectionAttempt(section.id);
       router.push(`/section/${section.id}`);
       return;
     }
 
     try {
-      await startAttempt(section.id, true);
+      await startAttempt(section.id, { retry: true });
+      router.push(`/section/${section.id}`);
+    } catch {
+      toast.error(t("result.errors.retryFailed"));
+    } finally {
+      setRetrying(false);
+    }
+  }
+
+  async function handleRetryIncorrect() {
+    if (!result || result.incorrectAnswers.length === 0) {
+      return;
+    }
+
+    setRetrying(true);
+
+    const incorrectQuestionIds = result.incorrectAnswers.map((answer) => answer.questionId);
+
+    if (!isSignedIn) {
+      const anonymousIncorrectQuestionIds = getAnonymousIncorrectQuestionIds(section.id);
+      resetAnonymousSectionAttempt(
+        section.id,
+        anonymousIncorrectQuestionIds.length > 0 ? anonymousIncorrectQuestionIds : incorrectQuestionIds,
+      );
+      router.push(`/section/${section.id}`);
+      return;
+    }
+
+    try {
+      await startAttempt(section.id, { retry: true, questionIds: incorrectQuestionIds });
       router.push(`/section/${section.id}`);
     } catch {
       toast.error(t("result.errors.retryFailed"));
@@ -226,9 +256,15 @@ export function ResultView({ locale, section, attemptId, anonymous = false }: Re
             <Button asChild variant="outline">
               <Link href="/">{t("app.common.backHome")}</Link>
             </Button>
-            <Button disabled={retrying} onClick={handleRetry}>
+            {result && result.incorrectAnswers.length > 0 ? (
+              <Button disabled={retrying} onClick={handleRetryIncorrect} variant="outline">
+                <RotateCcw className="size-4" />
+                {t("result.actions.retryIncorrect")}
+              </Button>
+            ) : null}
+            <Button disabled={retrying} onClick={handleRetryAll}>
               <RotateCcw className="size-4" />
-              {t("result.actions.retry")}
+              {t("result.actions.retryAll")}
             </Button>
           </CardFooter>
         </Card>

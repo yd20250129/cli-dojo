@@ -15,6 +15,12 @@
   "progress": {
     "title": "Progress"
   },
+  "result": {
+    "actions": {
+      "retryIncorrect": "Retry missed questions",
+      "retryAll": "Restart from question 1"
+    }
+  },
   "auth": {
     "eyebrow": "CLI Dojo Authentication",
     "backHome": "Back home",

@@ -65,8 +65,11 @@ export function migrateAnonymousProgress(anonymousProgress: AnonymousProgressSta
   });
 }
 
-export function startAttempt(sectionId: SectionId, retry = false) {
-  if (!retry) {
+export function startAttempt(
+  sectionId: SectionId,
+  options: { retry?: boolean; questionIds?: string[] } = {},
+) {
+  if (!options.retry) {
     const existingRequest = startAttemptRequests.get(sectionId);
 
     if (existingRequest) {
@@ -76,10 +79,14 @@ export function startAttempt(sectionId: SectionId, retry = false) {
 
   const request = requestJson<CurrentSectionAttempt>("/api/attempts", {
     method: "POST",
-    body: JSON.stringify({ sectionId, retry }),
+    body: JSON.stringify({
+      sectionId,
+      retry: options.retry,
+      questionIds: options.questionIds,
+    }),
   });
 
-  if (retry) {
+  if (options.retry) {
     return request;
   }
 

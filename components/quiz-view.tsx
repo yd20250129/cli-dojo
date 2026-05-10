@@ -20,10 +20,11 @@ import {
 } from "@/components/ui/card";
 import { Progress } from "@/components/ui/progress";
 import {
+  getAnonymousAttemptQuestionIds,
   getAnonymousAnsweredQuestionIds,
   recordAnonymousAnswer,
 } from "@/lib/client/anonymous-progress";
-import { completeAttempt, saveAnswer, startAttempt } from "@/lib/client/api";
+import { completeAttempt, fetchSectionResult, saveAnswer, startAttempt } from "@/lib/client/api";
 import { getResumeQuestionIndex } from "@/lib/shared/resume";
 import { cn } from "@/lib/utils";
 import type { ChoiceId, Locale, Question, Section, SectionAttempt } from "@/types";
@@ -38,6 +39,7 @@ export function QuizView({ locale, section, questions }: QuizViewProps) {
   const { isLoaded, userId } = useAuth();
   const router = useRouter();
   const [attempt, setAttempt] = useState<SectionAttempt | null>(null);
+  const [activeQuestions, setActiveQuestions] = useState(questions);
   const [currentIndex, setCurrentIndex] = useState(0);
   const [selectedChoiceId, setSelectedChoiceId] = useState<ChoiceId | null>(null);
   const [isSaving, setIsSaving] = useState(false);
@@ -46,13 +48,25 @@ export function QuizView({ locale, section, questions }: QuizViewProps) {
   const isSignedIn = isLoaded && Boolean(userId);
   const t = getTranslator(locale);
 
-  const currentQuestion = questions[currentIndex];
-  const isLastQuestion = currentIndex === questions.length - 1;
+  const currentQuestion = activeQuestions[currentIndex];
+  const isLastQuestion = currentIndex === activeQuestions.length - 1;
   const isCorrect = selectedChoiceId === currentQuestion?.answer;
-  const progressValue = ((currentIndex + (selectedChoiceId ? 1 : 0)) / questions.length) * 100;
+  const progressValue =
+    activeQuestions.length === 0
+      ? 0
+      : ((currentIndex + (selectedChoiceId ? 1 : 0)) / activeQuestions.length) * 100;
 
   useEffect(() => {
     const translate = getTranslator(locale);
+    const resolveQuestions = (questionIds: string[] | null) => {
+      if (!questionIds || questionIds.length === 0) {
+        return questions;
+      }
+
+      const questionIdSet = new Set(questionIds);
+      const filteredQuestions = questions.filter((question) => questionIdSet.has(question.id));
+      return filteredQuestions.length > 0 ? filteredQuestions : questions;
+    };
 
     if (!isLoaded) {
       return;
@@ -62,8 +76,9 @@ export function QuizView({ locale, section, questions }: QuizViewProps) {
 
     if (!isSignedIn) {
       setAttempt(null);
+      const scopedQuestions = resolveQuestions(getAnonymousAttemptQuestionIds(section.id));
       const answeredQuestionIds = getAnonymousAnsweredQuestionIds(section.id);
-      const resumeIndex = getResumeQuestionIndex(questions, answeredQuestionIds);
+      const resumeIndex = getResumeQuestionIndex(scopedQuestions, answeredQuestionIds);
 
       if (resumeIndex === -1 && answeredQuestionIds.length > 0) {
         router.push(`/section/${section.id}/result?anonymous=1`);
@@ -72,6 +87,7 @@ export function QuizView({ locale, section, questions }: QuizViewProps) {
         };
       }
 
+      setActiveQuestions(scopedQuestions);
       setCurrentIndex(resumeIndex === -1 ? 0 : resumeIndex);
       setSelectedChoiceId(null);
       setStartError("");
@@ -81,10 +97,21 @@ export function QuizView({ locale, section, questions }: QuizViewProps) {
     }
 
     startAttempt(section.id)
-      .then((data) => {
+      .then(async (data) => {
         if (active) {
           setAttempt(data);
-          const resumeIndex = getResumeQuestionIndex(questions, data.answeredQuestionIds);
+          let scopedQuestions = questions;
+
+          if (data.totalQuestions < questions.length) {
+            const latestResult = await fetchSectionResult(section.id);
+            const retryQuestionIds = latestResult?.incorrectAnswers.map((answer) => answer.questionId) ?? [];
+            scopedQuestions = resolveQuestions(retryQuestionIds);
+          }
+
+          const resumeIndex = getResumeQuestionIndex(scopedQuestions, data.answeredQuestionIds);
+
+          setActiveQuestions(scopedQuestions);
+
           if (resumeIndex === -1) {
             completeAttempt(data.id)
               .then(() => {
@@ -175,7 +202,7 @@ export function QuizView({ locale, section, questions }: QuizViewProps) {
     }
   }
 
-  if (questions.length === 0) {
+  if (activeQuestions.length === 0) {
     return (
       <div className="min-h-screen bg-background">
         <AppHeader locale={locale} />
@@ -211,7 +238,7 @@ export function QuizView({ locale, section, questions }: QuizViewProps) {
             <CardTitle>
               {t("quiz.header.progress", {
                 current: currentIndex + 1,
-                total: questions.length,
+                total: activeQuestions.length,
               })}
             </CardTitle>
             <CardDescription>{currentQuestion.category}</CardDescription>
@@ -229,7 +256,7 @@ export function QuizView({ locale, section, questions }: QuizViewProps) {
             <h2 className="text-xl font-semibold leading-8">{currentQuestion.question}</h2>
 
             <div className="grid gap-3">
-              {currentQuestion.choices.map((choice) => {
+              {currentQuestion?.choices.map((choice) => {
                 const answered = Boolean(selectedChoiceId);
                 const isSelected = selectedChoiceId === choice.id;
                 const isAnswer = currentQuestion.answer === choice.id;

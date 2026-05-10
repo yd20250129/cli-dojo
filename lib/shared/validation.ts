@@ -31,7 +31,13 @@ export function isChoiceId(value: string): value is ChoiceId {
 
 function isAnonymousSectionProgress(
   value: unknown,
-): value is { answers?: unknown; latestAnsweredAt?: unknown } {
+): value is {
+  answers?: unknown;
+  cumulativeAnswers?: unknown;
+  correctQuestionIds?: unknown;
+  currentQuestionIds?: unknown;
+  latestAnsweredAt?: unknown;
+} {
   return Boolean(value && typeof value === "object" && !Array.isArray(value));
 }
 
@@ -48,12 +54,14 @@ export function parseAnonymousProgressState(value: unknown): AnonymousProgressSt
     }
 
     const rawAnswers = rawSection.answers;
+    const rawCumulativeAnswers = rawSection.cumulativeAnswers;
 
     if (!rawAnswers || typeof rawAnswers !== "object" || Array.isArray(rawAnswers)) {
       continue;
     }
 
     const answers: Record<string, ChoiceId> = {};
+    const cumulativeAnswers: Record<string, ChoiceId> = {};
 
     for (const [questionId, choiceId] of Object.entries(rawAnswers)) {
       if (typeof questionId === "string" && typeof choiceId === "string" && isChoiceId(choiceId)) {
@@ -61,8 +69,23 @@ export function parseAnonymousProgressState(value: unknown): AnonymousProgressSt
       }
     }
 
+    if (rawCumulativeAnswers && typeof rawCumulativeAnswers === "object" && !Array.isArray(rawCumulativeAnswers)) {
+      for (const [questionId, choiceId] of Object.entries(rawCumulativeAnswers)) {
+        if (typeof questionId === "string" && typeof choiceId === "string" && isChoiceId(choiceId)) {
+          cumulativeAnswers[questionId] = choiceId;
+        }
+      }
+    }
+
     const sectionState: AnonymousSectionProgress = {
       answers,
+      cumulativeAnswers: Object.keys(cumulativeAnswers).length > 0 ? cumulativeAnswers : answers,
+      correctQuestionIds: Array.isArray(rawSection.correctQuestionIds)
+        ? rawSection.correctQuestionIds.filter((questionId): questionId is string => typeof questionId === "string")
+        : [],
+      currentQuestionIds: Array.isArray(rawSection.currentQuestionIds)
+        ? rawSection.currentQuestionIds.filter((questionId): questionId is string => typeof questionId === "string")
+        : null,
       latestAnsweredAt:
         typeof rawSection.latestAnsweredAt === "string" ? rawSection.latestAnsweredAt : null,
     };
